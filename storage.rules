@@ -1,6 +1,6 @@
 service firebase.storage {
   function isUserAuthenticated(userID) {
-    return request.auth.uid === userID
+    return request.auth.uid == userID
   }
 
   match /b/{bucket}/o {

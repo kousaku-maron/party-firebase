@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   function isUserAuthenticated(userID) {
-    return request.auth.uid === userID
+    return request.auth.uid == userID
   }
 
   match /databases/{database}/documents {
