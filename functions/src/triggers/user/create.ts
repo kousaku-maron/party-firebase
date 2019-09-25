@@ -3,7 +3,7 @@ import { firestore } from 'firebase-admin'
 import { FieldValue } from '@google-cloud/firestore'
 import { initialUser } from '../../entities'
 
-export const createUser = functions.auth.user().onCreate(async (user) => {
+export const createUser = functions.auth.user().onCreate(async user => {
   const uid = user.uid
   const name = user.displayName
   if (!uid) throw new Error('not found uid')
@@ -28,7 +28,7 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
   const result = {
     documentID: userRef.id,
     path: userRef.path,
-    value: user,
+    value: user
   }
 
   return { message: 'New User is created successfully', contents: [result] }
