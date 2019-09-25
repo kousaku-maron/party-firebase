@@ -6,8 +6,7 @@ service cloud.firestore {
 
   match /databases/{database}/documents {
     match /users/{userID} {
-    	allow read;
-      allow update: if isUserAuthenticated(userID);
+      allow read, update: if isUserAuthenticated(userID);
     }
   }
 }
