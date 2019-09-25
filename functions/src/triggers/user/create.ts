@@ -1,12 +1,14 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
+import { FieldValue } from '@google-cloud/firestore'
 import { initialUser } from '../../entities'
 
 export const createUser = functions.auth.user().onCreate(async (user) => {
   const uid = user.uid
+  const name = user.displayName
   if (!uid) throw new Error('not found uid')
 
-  const newUser = initialUser({ uid })
+  const newUser = initialUser({ uid, name })
 
   const db = firestore()
   const batch = db.batch()
@@ -17,7 +19,8 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
     enabled: newUser.enabled,
     uid: newUser.uid,
     name: newUser.name,
-    tumbnailURL: newUser.thumbnailURL
+    createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp()
   })
 
   await batch.commit()

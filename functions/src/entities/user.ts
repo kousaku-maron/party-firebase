@@ -1,7 +1,7 @@
 export type User = {
   enabled: boolean
   uid: string
-  name: string
+  name?: string
   thumbnailURL?: string
 }
 
@@ -21,11 +21,11 @@ export const buildUser = ({
   return user
 }
 
-export const initialUser = ({ uid }: { uid: string }) => {
+export const initialUser = ({ uid, name }: { uid: string, name?: string }) => {
   const user: User = {
     enabled: true,
     uid,
-    name: '未設定'
+    name
   }
 
   return user
