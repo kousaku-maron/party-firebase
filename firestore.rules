@@ -1,8 +1,13 @@
+rules_version = '2';
 service cloud.firestore {
+  function isUserAuthenticated(userID) {
+    return request.auth.uid === userID
+  }
+
   match /databases/{database}/documents {
     match /users/{userID} {
     	allow read;
-      allow create, update: if request.auth.uid == userID;
+      allow update: if isUserAuthenticated(userID);
     }
   }
 }
