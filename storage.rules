@@ -8,9 +8,11 @@ service firebase.storage {
   }
 
   match /b/{bucket}/o {
-    match /users/{userID}/{userThumnailPath} {
-      allow read: if isAuthenticated();
-      allow write: if isUserAuthenticated(userID);
+    match /users/{userID}/ {
+      match /{userThumnailPath} {
+        allow read: if isAuthenticated();
+        allow write: if isUserAuthenticated(userID);
+      }
 
       match /secure/{secureImagePath} {
         allow read, write: if isUserAuthenticated(userID);
