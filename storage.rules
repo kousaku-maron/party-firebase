@@ -1,6 +1,6 @@
 service firebase.storage {
    function isAuthenticated() {
-    return request.auth.uid
+    return request.auth.uid != null
   }
 
   function isUserAuthenticated(userID) {
@@ -8,7 +8,7 @@ service firebase.storage {
   }
 
   match /b/{bucket}/o {
-    match /users/{userID}/ {
+    match /users/{userID} {
       match /{userThumnailPath} {
         allow read: if isAuthenticated();
         allow write: if isUserAuthenticated(userID);
