@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   function isAuthenticated() {
-    return request.auth.uid
+    return request.auth.uid != null
   }
 
   function isUserAuthenticated(userID) {
