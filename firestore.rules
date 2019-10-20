@@ -4,13 +4,19 @@ service cloud.firestore {
     return request.auth.uid != null
   }
 
-  function isUserAuthenticated(userID) {
-    return request.auth.uid == userID
+  function isUserAuthenticated(uid) {
+    return request.auth.uid == uid
+  }
+
+  function isAcceptUpdateUser() {
+    return request.resource.data.userID == resource.data.userID
+      && request.resource.data.enabled == resource.data.enabled 
+      && request.resource.data.isAccepted == resource.data.isAccepted
   }
 
   match /databases/{database}/documents {
-    match /users/{userID} {
-      allow update: if isUserAuthenticated(userID);
+    match /users/{uid} {
+      allow update: if isUserAuthenticated(uid) && isAcceptUpdateUser();
       allow read: if isAuthenticated();
     }
 
