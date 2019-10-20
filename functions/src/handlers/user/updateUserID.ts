@@ -21,7 +21,7 @@ export const updateUserID = functions.https.onCall(async (data, context) => {
   batch.set(userRef, {
     userID,
     updatedAt: FieldValue.serverTimestamp()
-  })
+  }, { merge: true })
 
   await batch.commit()
 
