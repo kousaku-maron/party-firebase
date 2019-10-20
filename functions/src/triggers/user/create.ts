@@ -19,6 +19,7 @@ export const createUser = functions.auth.user().onCreate(async user => {
 
   batch.set(userRef, {
     enabled: newUser.enabled,
+    isAccepted: newUser.isAccepted,
     uid: newUser.uid,
     userID: newUser.userID,
     name: newUser.name,
