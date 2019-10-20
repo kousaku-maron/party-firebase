@@ -3,19 +3,19 @@ service firebase.storage {
     return request.auth.uid != null
   }
 
-  function isUserAuthenticated(userID) {
-    return request.auth.uid == userID
+  function isUserAuthenticated(uid) {
+    return request.auth.uid == uid
   }
 
   match /b/{bucket}/o {
-    match /users/{userID} {
+    match /users/{uid} {
       match /{userThumnailPath} {
         allow read: if isAuthenticated();
-        allow write: if isUserAuthenticated(userID);
+        allow write: if isUserAuthenticated(uid);
       }
 
       match /secure/{secureImagePath} {
-        allow read, write: if isUserAuthenticated(userID);
+        allow read, write: if isUserAuthenticated(uid);
       }
     }
   }
