@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import { AppleStoreButton, GooglePlayStoreButton } from '../atoms'
 
 const HomePage = () => {
   const classes = useStyles()
@@ -13,30 +13,30 @@ const HomePage = () => {
         <Typography className={classes.companyText}>Gorori.llc</Typography>
       </div>
       <div className={classes.messageContainer}>
-        <Typography className={classes.subtitleText}>
-          飲み会 マッチングアプリ
-        </Typography>
+        <Typography className={classes.subtitleText}>飲み会 マッチングアプリ</Typography>
         <div className={classes.titleWrapper}>
-          <Typography className={classes.titleText}>
-            Nomoca
-          </Typography>
+          <Typography className={classes.titleText}>Nomoca</Typography>
         </div>
         <div className={classes.actionArea}>
           <div className={classes.appleWrapper}>
-            <Button variant='outlined' color='primary' fullWidth={true}>
-              <Typography className={classes.whiteText}>Apple Store</Typography>
-            </Button>
+            <AppleStoreButton />
           </div>
           <div className={classes.googleWrapper}>
-            <Button variant='outlined' color='primary' fullWidth={true}>
-              <Typography className={classes.whiteText}>Google Store</Typography>
-            </Button>
+            {/* TODO: GooglePlayStoreButtonで使用している画像の周りに透明箇所があり見た目サイズがAppleStoreButtonと変わるため、手動でサイズを指定して対応。 */}
+            <GooglePlayStoreButton height={57.5} width={138} />
           </div>
         </div>
-        
+
         <Typography className={classes.whiteText}>
-          <Link className={classes.linkText} to="/terms">利用規約</Link>および<Link className={classes.linkText} to="/privacy">プライバシーポリシー</Link>に同意して、アプリをインストール。
-        </Typography> 
+          <Link className={classes.linkText} to="/terms">
+            利用規約
+          </Link>
+          および
+          <Link className={classes.linkText} to="/privacy">
+            プライバシーポリシー
+          </Link>
+          に同意して、アプリをインストール。
+        </Typography>
       </div>
     </div>
   )
@@ -52,8 +52,8 @@ const useStyles = makeStyles(() =>
       padding: 96
     },
     messageContainer: {
-      paddingTop: 100,
-      width: 278,
+      paddingTop: '20vh',
+      width: 278
     },
     actionArea: {
       display: 'flex',
@@ -74,7 +74,8 @@ const useStyles = makeStyles(() =>
     },
     googleWrapper: {
       flex: 1,
-      paddingLeft: 6
+      paddingLeft: 6,
+      marginTop: -4 // TODO: GooglePlayStoreButtonで使用している画像の周りに透明箇所があるため、一旦negative marginで対応。
     },
     companyText: {
       fontSize: 18,
@@ -87,7 +88,7 @@ const useStyles = makeStyles(() =>
     },
     subtitleText: {
       fontSize: 24,
-      color: 'white',
+      color: 'white'
     },
     linkText: {
       fontSize: 12,
@@ -97,7 +98,7 @@ const useStyles = makeStyles(() =>
     },
     whiteText: {
       fontSize: 12,
-      color: 'white',
+      color: 'white'
     }
   })
 )
