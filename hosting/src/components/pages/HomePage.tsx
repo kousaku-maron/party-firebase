@@ -3,12 +3,16 @@ import { Link } from 'react-router-dom'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { AppleStoreButton, GooglePlayStoreButton } from '../atoms'
+import BackgroundImage from '../../../assets/images/background.jpg'
 
 const HomePage = () => {
   const classes = useStyles()
 
   return (
     <div className={classes.container}>
+      <div className={classes.backgroundWrapper}>
+        <img className={classes.backgroundImage} src={BackgroundImage} />
+      </div>
       <div className={classes.companyWrapper}>
         <Typography className={classes.companyText}>Gorori.llc</Typography>
       </div>
@@ -48,7 +52,6 @@ const useStyles = makeStyles(() =>
       position: 'relative',
       width: '100vw',
       height: '100vh',
-      backgroundColor: 'black',
       padding: 96
     },
     messageContainer: {
@@ -59,6 +62,14 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       width: '100%',
       paddingBottom: 12
+    },
+    backgroundWrapper: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      heigth: '100vh',
+      zIndex: -5
     },
     companyWrapper: {
       position: 'absolute',
@@ -76,6 +87,11 @@ const useStyles = makeStyles(() =>
       flex: 1,
       paddingLeft: 6,
       marginTop: -4 // TODO: GooglePlayStoreButtonで使用している画像の周りに透明箇所があるため、一旦negative marginで対応。
+    },
+    backgroundImage: {
+      width: '100vw',
+      height: '100vh',
+      objectFit: 'cover'
     },
     companyText: {
       fontSize: 18,
