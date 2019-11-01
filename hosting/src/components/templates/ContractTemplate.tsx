@@ -17,7 +17,7 @@ const ContractTemplate: React.FC<Props> = props => {
   const classes = useStyles()
 
   return (
-    <React.Fragment>
+    <div className={classes.scrollView}>
       <AppBar>
         <Toolbar>
           <Typography variant="h6">Nomoka</Typography>
@@ -25,26 +25,37 @@ const ContractTemplate: React.FC<Props> = props => {
       </AppBar>
       <Toolbar id="back-to-top-anchor" />
       <Container className={classes.container}>
-        <Card className={classes.card}>
-          <CardHeader title={props.title} />
-          <CardContent>{children}</CardContent>
-        </Card>
+        <div className={classes.cardWrapper}>
+          <Card className={classes.card}>
+            <CardHeader title={props.title} />
+            <CardContent>{children}</CardContent>
+          </Card>
+        </div> 
       </Container>
-    </React.Fragment>
+    </div>
   )
 }
 
 const useStyles = makeStyles(() =>
   createStyles({
+    scrollView: {
+      overflow: 'scroll',
+      height: '100vh'
+    },
     container: {
       display: 'flex',
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center'
     },
+    cardWrapper: {
+      paddingTop: 64,
+      paddingBottom: 64
+    },
     card: {
       width: '100%',
-      maxWidth: 740
+      maxWidth: 740,
+      padding: 24
     }
   })
 )
