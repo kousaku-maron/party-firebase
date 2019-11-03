@@ -7,7 +7,6 @@ export type Company = {
   privacyEstablishedAt: Date
 }
 
-// どうしようね...　笑
 export const initCompany = () => {
   const company: Company = {
     name: '株式会社 Party Project',

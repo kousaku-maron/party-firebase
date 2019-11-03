@@ -2,13 +2,14 @@ import React from 'react'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import { PinnedTypography } from '../atoms'
-import { getCompany } from '../../repositories'
+import { getCompany, getAppInfo } from '../../repositories'
 
 type Props = {
   size?: 'small' | 'medium' | 'large'
 }
 
 const company = getCompany()
+const appInfo = getAppInfo()
 
 const PrivacyContents: React.FC<Props> = ({ size = 'medium' }) => {
   let subTitleVariant: TypographyProps['variant'] = 'h6'
@@ -30,11 +31,11 @@ const PrivacyContents: React.FC<Props> = ({ size = 'medium' }) => {
       <div className={classes.columnWrapper}>
         <Typography className={classes.body}>
           {company.name}（以下「当社」といいます）は、お客様よりお預かりした個人情報の保護に努めることを社会的責務として、今後も信頼いただける企業を目指すため、個人情報のお取り扱いに関する方針を定め、大切な個人情報の適正な管理と利用、保護に努めております。
-          当社の提供するサービス「Nomoca（以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、以下のとおり当社の個人情報保護方針に基づき本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
+          当社の提供するサービス「{appInfo.name}（以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、以下のとおり当社の個人情報保護方針に基づき本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
         </Typography>
         <div className={classes.divider} />
         <Typography className={classes.body}>
-          当社の提供するサービス「Nomoca（以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
+          当社の提供するサービス「{appInfo.name}（以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
         </Typography>
       </div>
 

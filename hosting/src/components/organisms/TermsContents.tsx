@@ -2,13 +2,14 @@ import React from 'react'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import { PinnedTypography } from '../atoms'
-import { getCompany } from '../../repositories'
+import { getCompany, getAppInfo } from '../../repositories'
 
 type Props = {
   size?: 'small' | 'medium' | 'large'
 }
 
 const company = getCompany()
+const appInfo = getAppInfo()
 
 const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
   let subTitleVariant: TypographyProps['variant'] = 'h6'
@@ -29,7 +30,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
     <div>
       <div className={classes.columnWrapper}>
         <Typography className={classes.body}>
-          この規約（以下「本規約」といいます）は、{company.name}（以下「当社」といいます）が提供するNomoca（ノモカ）に関する全てのサービス（以下「本サービス」といいます）の利用に関する条件を、本サービスを利用するお客様（以下「利用者」といいます）と当社との間で定めるものです。
+          この規約（以下「本規約」といいます）は、{company.name}（以下「当社」といいます）が提供する{appInfo.name}に関する全てのサービス（以下「本サービス」といいます）の利用に関する条件を、本サービスを利用するお客様（以下「利用者」といいます）と当社との間で定めるものです。
         </Typography>
       </div>
 
@@ -251,11 +252,11 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="5." pinSize={24} className={classes.body}>
-          利用者以外の自然人・法人・団体・組織等の第三者（以下、「第三者」といいます）に自己のNomocaアカウントを譲渡して、本サービスを利用させる行為
+          利用者以外の自然人・法人・団体・組織等の第三者（以下、「第三者」といいます）に自己の{appInfo.name}アカウントを譲渡して、本サービスを利用させる行為
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="6." pinSize={24} className={classes.body}>
-          第三者に自己のNomocaアカウントのログインに必要な情報を閲覧可能な状態にしておく行為
+          第三者に自己の{appInfo.name}アカウントのログインに必要な情報を閲覧可能な状態にしておく行為
         </PinnedTypography>
         <div className={classes.divider} />
 
