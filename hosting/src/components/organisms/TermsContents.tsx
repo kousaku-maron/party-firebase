@@ -2,10 +2,14 @@ import React from 'react'
 import { makeStyles, createStyles } from '@material-ui/core/styles'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import { PinnedTypography } from '../atoms'
+import { getCompany, getAppInfo } from '../../repositories'
 
 type Props = {
   size?: 'small' | 'medium' | 'large'
 }
+
+const company = getCompany()
+const appInfo = getAppInfo()
 
 const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
   let subTitleVariant: TypographyProps['variant'] = 'h6'
@@ -26,7 +30,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
     <div>
       <div className={classes.columnWrapper}>
         <Typography className={classes.body}>
-          この規約（以下「本規約」といいます）は、Gorori合同会社（以下「当社」といいます）が提供するNomoca（ノモカ）に関する全てのサービス（以下「本サービス」といいます）の利用に関する条件を、本サービスを利用するお客様（以下「利用者」といいます）と当社との間で定めるものです。
+          この規約（以下「本規約」といいます）は、{company.name}（以下「当社」といいます）が提供する{appInfo.name}に関する全てのサービス（以下「本サービス」といいます）の利用に関する条件を、本サービスを利用するお客様（以下「利用者」といいます）と当社との間で定めるものです。
         </Typography>
       </div>
 
@@ -67,7 +71,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
         </div>
         <Typography className={classes.body}>
           本サービスは、日本在住の男女を対象とした、
-          18歳以上（高校生は除く）の方の飲み会メンバー探しをサポートするサービスです。
+          20歳以上の方の飲み会メンバー探しをサポートするサービスです。
           本サービスは、一部のサービスおよび機能を、無料でご利用いただけます。 飲み会メンバー探しのために、
           有料の機能をお使いいただくことをお勧めしています。なお、本サービスは飲み会メンバーを見つけることを保証するものではありません。
         </Typography>
@@ -118,7 +122,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           <Typography variant={subTitleVariant}>第6条　利用資格</Typography>
         </div>
         <PinnedTypography pin="1." className={classes.body}>
-          18歳以上（高校生は除く）のみが利用可能なサービスです。年齢の判断は、当社が会員登録時のFacebookに登録された生年月日、本人の自己申告等を元に合理的な範囲で行うものであり、全ての本サービスの会員が常時18歳以上であることを当社が保証するものではありません。登録後に違反が発見された場合、当社判断で会員登録を無効とさせていただきます。当社は、無効とする措置により利用者に発生した損害について一切の責任を負わないものとします。
+          20歳以上のみが利用可能なサービスです。年齢の判断は、当社が会員登録時のFacebookに登録された生年月日、本人の自己申告等を元に合理的な範囲で行うものであり、全ての本サービスの会員が常時20歳以上であることを当社が保証するものではありません。登録後に違反が発見された場合、当社判断で会員登録を無効とさせていただきます。当社は、無効とする措置により利用者に発生した損害について一切の責任を負わないものとします。
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="2." className={classes.body}>
@@ -248,11 +252,11 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="5." pinSize={24} className={classes.body}>
-          利用者以外の自然人・法人・団体・組織等の第三者（以下、「第三者」といいます）に自己のNomocaアカウントを譲渡して、本サービスを利用させる行為
+          利用者以外の自然人・法人・団体・組織等の第三者（以下、「第三者」といいます）に自己の{appInfo.name}アカウントを譲渡して、本サービスを利用させる行為
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="6." pinSize={24} className={classes.body}>
-          第三者に自己のNomocaアカウントのログインに必要な情報を閲覧可能な状態にしておく行為
+          第三者に自己の{appInfo.name}アカウントのログインに必要な情報を閲覧可能な状態にしておく行為
         </PinnedTypography>
         <div className={classes.divider} />
 
@@ -269,7 +273,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="10." pinSize={24} className={classes.body}>
-          18歳未満（高校生を含む）の会員登録および本サービスの利用
+          20歳未満の会員登録および本サービスの利用
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="11." pinSize={24} className={classes.body}>
@@ -367,7 +371,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           </PinnedTypography>
           <div className={classes.divider} />
           <PinnedTypography pin="・" className={classes.body}>
-            性的または暴力的な手法で18歳未満の人を不当に利用するコンテンツ。または、18歳未満の人から個人情報を求める構成要素を提供するコンテンツ
+            性的または暴力的な手法で20歳未満の人を不当に利用するコンテンツ。または、20歳未満の人から個人情報を求める構成要素を提供するコンテンツ
           </PinnedTypography>
           <div className={classes.divider} />
           <PinnedTypography pin="・" className={classes.body}>
@@ -446,7 +450,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           <Typography variant={subTitleVariant}>第12条　利用料金</Typography>
         </div>
         <Typography className={classes.body}>
-          本サービスは、一部のサービスおよび機能を、無料でご利用いただけます。追加機能を利用するには、チケットなどの有料サービスを購入する必要があります。なお、購入後の変更・キャンセルはお受けできませんのでご了承ください。
+          本サービスは、一部のサービスおよび機能を、無料でご利用いただけます。追加機能を利用するには、有料サービスを購入する必要があります。なお、購入後の変更・キャンセルはお受けできませんのでご了承ください。
           また、お客様が申し込まれた有料サービスを利用期間の途中で利用休止またはご解約（解約は退会フォームからお願いいたします）された場合も、返金や有料サービスの精算は一切行っておりませんのでご注意ください。
         </Typography>
       </div>
@@ -601,13 +605,12 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           <Typography variant={subTitleVariant}>第21条　児童を誘引する行為の規制</Typography>
         </div>
         <Typography className={classes.body}>本サービスでは、児童を誘引する行為の規制を行っております。</Typography>
-        {/* <div className={classes.divider} /> */}
-        {/* MEMO: 身分書確認が実装されたら、アクティブにする */}
-        {/* <Typography>
+        <div className={classes.divider} />
+        <Typography>
           この目的は、「本サービス利用に起因する児童買春その他の犯罪から児童を保護し、もって児童の健全な育成に資すること」です。
           このような目的を実現するため、本サービスではサービス利用に当たって男女共に身分証明書など予め定められた方法による年齢確認を行っております。
         </Typography>
-        <div className={classes.divider} /> */}
+        <div className={classes.divider} />
       </div>
 
       <div className={classes.columnWrapper}>
@@ -640,9 +643,9 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           <Typography variant={subTitleVariant}>第23条　本サービスのご利用上の注意</Typography>
         </div>
         <PinnedTypography pin="1." className={classes.body}>
-          本サービスは、飲み会メンバーを探している18歳以上（高校生は除く）の方に対して、飲み会メンバー探しをサポートするサービスですが、
+          本サービスは、飲み会メンバーを探している20歳以上の方に対して、飲み会メンバー探しをサポートするサービスですが、
           不特定多数の方がご利用になっているため、場合によっては本サービスを悪用されたりする可能性があります。そのような可能性があることをご認識のうえ、
-          他の会員（特にメッセージのやり取りを行う他の会員）に対してのやりとり方法、個人情報の開示に関しては、慎重に考えて、本サービスをご利用ください。また、やり取りをしている会員が18歳以上か否かは初回登録時のFacebookの情報およびご本人の自己申告による情報等を元に当社が合理的な範囲で判断しております。そのため、全ての会員様が18歳以上であることを保証するものではございません。他の会員に対して本サービス以外でのやりとり手段の提供、個人情報等重要な情報の開示を行う場合は、慎重に検討し自己の責任のうえで行うようにしてください。規約違反の疑いがある会員を発見した場合は、すみやかに違反報告ボタン、またはお問い合せより違反内容をご報告ください。
+          他の会員（特にメッセージのやり取りを行う他の会員）に対してのやりとり方法、個人情報の開示に関しては、慎重に考えて、本サービスをご利用ください。また、やり取りをしている会員が20歳以上か否かは初回登録時のFacebookの情報およびご本人の自己申告による情報等を元に当社が合理的な範囲で判断しております。そのため、全ての会員様が20歳以上であることを保証するものではございません。他の会員に対して本サービス以外でのやりとり手段の提供、個人情報等重要な情報の開示を行う場合は、慎重に検討し自己の責任のうえで行うようにしてください。規約違反の疑いがある会員を発見した場合は、すみやかに違反報告ボタン、またはお問い合せより違反内容をご報告ください。
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="2." className={classes.body}>
@@ -687,7 +690,9 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
         <div className={classes.subTitleWrapper}>
           <Typography variant={subTitleVariant}>第27条　附則</Typography>
         </div>
-        <Typography className={classes.body}>2020年X月XX日 制定・施行</Typography>
+        <Typography className={classes.body}>
+          {company.privacyEstablishedAt.getFullYear()}年{company.privacyEstablishedAt.getMonth() + 1}月{company.privacyEstablishedAt.getDate()}日 制定・施行
+        </Typography>
       </div>
     </div>
   )
