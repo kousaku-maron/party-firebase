@@ -7,6 +7,9 @@
       "hosting": {
         "nomoca-lp": [
           "nomoca-lp"
+        ],
+        "admin": [
+          "nomoca-admin2"
         ]
       }
     }
