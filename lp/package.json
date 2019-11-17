@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server",
     "build": "webpack",
-    "deploy": "webpack && firebase deploy --only hosting"
+    "deploy": "webpack && firebase deploy --only hosting:nomoca-lp"
   },
   "devDependencies": {
     "@types/react": "^16.9.4",
