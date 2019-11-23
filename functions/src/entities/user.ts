@@ -1,6 +1,7 @@
 export type User = {
   enabled: boolean
   isAccepted: boolean
+  isAnonymous: boolean
   uid: string
   userID: string
   name?: string
@@ -10,6 +11,7 @@ export type User = {
 export const buildUser = ({
   enabled,
   isAccepted,
+  isAnonymous,
   userID,
   uid,
   name,
@@ -17,20 +19,22 @@ export const buildUser = ({
 }: {
   enabled: boolean
   isAccepted: boolean
+  isAnonymous: boolean
   uid: string
   userID: string
   name?: string
   thumbnailURL?: string
 }) => {
-  const user: User = { enabled, isAccepted, userID, name, uid, thumbnailURL }
+  const user: User = { enabled, isAccepted, isAnonymous, userID, name, uid, thumbnailURL }
 
   return user
 }
 
-export const initialUser = ({ uid, userID, name }: { uid: string, userID: string, name?: string }) => {
+export const initialUser = ({ uid, userID, name, isAnonymous }: { uid: string, userID: string, name?: string, isAnonymous: boolean }) => {
   const user: User = {
     enabled: true,
     isAccepted: false,
+    isAnonymous,
     uid,
     userID,
     name
@@ -38,3 +42,5 @@ export const initialUser = ({ uid, userID, name }: { uid: string, userID: string
 
   return user
 }
+
+export const ANONYMOUS_USERNAME = 'anonymous'

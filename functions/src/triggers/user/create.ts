@@ -1,16 +1,18 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { FieldValue } from '@google-cloud/firestore'
-import { initialUser } from '../../entities'
+import { initialUser, ANONYMOUS_USERNAME } from '../../entities'
 import { getRandomID } from '../../services/util'
 
 export const createUser = functions.auth.user().onCreate(async user => {
   const uid = user.uid
-  const name = user.displayName
+  const isAnonymous = user.providerData.length === 0 // MEMO: 匿名認証時は空になっているぽい。
+  const name = user.displayName ? user.displayName : ANONYMOUS_USERNAME
+
   if (!uid) throw new Error('not found uid')
 
   const userID = getRandomID()
-  const newUser = initialUser({ uid, userID, name })
+  const newUser = initialUser({ uid, userID, name, isAnonymous })
 
   const db = firestore()
   const batch = db.batch()
@@ -20,6 +22,7 @@ export const createUser = functions.auth.user().onCreate(async user => {
   batch.set(userRef, {
     enabled: newUser.enabled,
     isAccepted: newUser.isAccepted,
+    isAnonymous: newUser.isAnonymous,
     uid: newUser.uid,
     userID: newUser.userID,
     name: newUser.name,
