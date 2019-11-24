@@ -18,6 +18,10 @@ service cloud.firestore {
     match /users/{uid} {
       allow update: if isUserAuthenticated(uid) && isAcceptUpdateUser();
       allow read: if isAuthenticated();
+
+      match /options/secure {
+        allow read, write: if isUserAuthenticated(uid);
+      }
     }
 
     match /parties/{partyID} {
