@@ -14,6 +14,11 @@ service cloud.firestore {
       && request.resource.data.isAccepted == resource.data.isAccepted
   }
 
+  function isAcceptCreateMessage() {
+    // return request.resource.data.writerUID == request.auth.uid || request.resource.data.writerUID == 'admin'
+    return request.resource.data.text && request.resource.data.text.length > 0
+  }
+
   match /databases/{database}/documents {
     match /users/{uid} {
       allow update: if isUserAuthenticated(uid) && isAcceptUpdateUser();
@@ -27,8 +32,18 @@ service cloud.firestore {
     match /parties/{partyID} {
       allow read: if isAuthenticated();
 
-      match /{document=**} {
+      // for DEMO
+      match /messages/{messageID} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated() && isAcceptCreateMessage();
+      }
+
+      match /groups/{groupID} {
         allow read, write: if isAuthenticated();
+        
+        match /{document=**} {
+          allow read, write: if isAuthenticated();
+        }
       }
     }
   }
