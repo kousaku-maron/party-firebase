@@ -8,6 +8,7 @@
     "strict": true,
     "target": "es2015"
   },
+  "esModuleInterop": true,
   "compileOnSave": true,
   "include": [
     "src"
