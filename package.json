@@ -2,8 +2,5 @@
   "scripts": {
     "deploy:firestore:rules": "firebase deploy --only firestore:rules",
     "deploy:storage:rules": "firebase deploy --only storage:rules"
-  },
-  "dependencies": {
-    "moment": "^2.24.0"
   }
 }
