@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "insta-693eb"
+  },
+  "targets": {
+    "insta-693eb": {
+      "hosting": {
+        "nomoca-lp": [
+          "nomoca-lp"
+        ],
+        "admin": [
+          "nomoca-admin2"
+        ]
+      }
+    }
+  }
+}

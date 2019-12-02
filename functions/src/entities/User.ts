@@ -30,7 +30,17 @@ export const buildUser = ({
   return user
 }
 
-export const initialUser = ({ uid, userID, name, isAnonymous }: { uid: string, userID: string, name?: string, isAnonymous: boolean }) => {
+export const initialUser = ({
+  uid,
+  userID,
+  name,
+  isAnonymous
+}: {
+  uid: string
+  userID: string
+  name?: string
+  isAnonymous: boolean
+}) => {
   const user: User = {
     enabled: true,
     isAccepted: false,

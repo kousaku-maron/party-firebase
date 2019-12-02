@@ -1,3 +1,4 @@
+//Message.ts
 import { firestore } from 'firebase-admin'
 
 // same gifted-chat Reply type
@@ -50,3 +51,23 @@ export const buildMessage = (data: firestore.DocumentData) => {
   }
   return newMessage
 }
+
+export const buildMessageUser = (data: firestore.DocumentData) => {
+  const user: MessageUser = {
+    enabled: data.enabled,
+    isAccepted: data.isAccepted,
+    isAnonymous: data.isAnonymous,
+    uid: data.uid,
+    userID: data.userID,
+    name: data.name,
+    thumbnailURL: data.thumbnailURL || null,
+    gender: data.gender || null
+  }
+
+  return user
+}
+
+export type CreateMessage = Pick<
+  Message,
+  'text' | 'user' | 'writerUID' | 'system' | 'quickReplies' | 'imageURL' | 'videoURL'
+>
