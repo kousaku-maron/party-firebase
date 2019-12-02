@@ -1,4 +1,3 @@
-//Message.ts
 import { firestore } from 'firebase-admin'
 
 // same gifted-chat Reply type
@@ -50,6 +49,21 @@ export const buildMessage = (data: firestore.DocumentData) => {
     quickReplies: data.quickReplies
   }
   return newMessage
+}
+
+export const partyMaster = () => {
+  const user: MessageUser = {
+    enabled: true,
+    isAccepted: true,
+    isAnonymous: false,
+    uid: 'tYwmmOkToqWSY7Eaq07YadJpngA',
+    userID: 'nyIMVTf3oCMK2OT6D9wc',
+    name: 'Party Master',
+    thumbnailURL: 'gs://insta-693eb.appspot.com/users/tYwmmOkToqWSY7Eaq07YadJpngA/thumbs/jigsaw_200x200.jpg',
+    gender: 'male'
+  }
+
+  return user
 }
 
 export const buildMessageUser = (data: firestore.DocumentData) => {

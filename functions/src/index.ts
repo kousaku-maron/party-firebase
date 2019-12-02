@@ -8,5 +8,3 @@ export { entryParty } from './handlers/party'
 
 export { createUser } from './triggers/user'
 export { createMessage } from './triggers/message'
-
-export { updateEventsLike } from './triggers/events'
