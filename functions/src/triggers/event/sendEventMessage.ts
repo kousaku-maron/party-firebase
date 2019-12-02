@@ -15,7 +15,13 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const likeThreshold = beforeData.likeThreshold
   const beforeLike = beforeData.like
   const afterLike = afterData.like
-  if (afterLike < likeThreshold || afterLike < beforeLike || beforeData.isSentEventMessage === true) return null
+  if (
+    afterLike < likeThreshold ||
+    afterLike < beforeLike ||
+    afterLike == beforeLike ||
+    beforeData.isSentEventMessage === true
+  )
+    return null
 
   const roomsRef = db.collection('parties')
   const getMessagesRef = (partyID: string) => {
