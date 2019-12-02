@@ -16,8 +16,7 @@
     "expo-server-sdk": "^3.4.0",
     "firebase-admin": "~7.0.0",
     "firebase-functions": "^3.2.0",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",

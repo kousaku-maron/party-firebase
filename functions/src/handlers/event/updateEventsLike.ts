@@ -1,73 +1,54 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateMessage, buildMessageUser, MessageUser, partyMaster, createDocument } from '../../entities'
+import { updateDocument, Event, nizikai } from '../../entities'
 
-export const updateEventsLike = functions.https.onCall(async data => {
+export const updateEventsLike = functions.https.onCall(async (data, context) => {
   const db = firestore()
-  const partyID = data.partyID as string
-  const partyRef = db.collection('parties').doc(partyID)
+  const batch = db.batch()
+  const uid = context!.auth!.uid
+
+  const roomID = data.roomID as string
+  const partyRef = db.collection('parties').doc(roomID)
   const eventRef = partyRef.collection('events')
   //TODO:今後イベントごとに取得するようにする, partyMasterのuid, userは要相談 あとでpartyMasterアカウントを作って入れる
-  const eventName = 'nizikai'
-  const masterMessage = '２次会に行きたい人が過半数を超えました'
-  const eventsSnapShot = await eventRef.where('name', '==', eventName).get()
+  const eventsSnapShot = await eventRef.where('name', '==', nizikai.eventName).get()
   const eventIDs = eventsSnapShot.docs.map((doc: firestore.DocumentData) => {
-    try {
-      return doc.id
-    } catch (e) {
-      return { error: e }
-    }
+    return doc.id
   })
-  if (eventIDs.length !== 1) return null
-  const eventID = eventIDs[0]
 
-  const roomsRef = db.collection('parties')
-  const getMessagesRef = (partyID: string) => {
-    return roomsRef.doc(partyID).collection('messages')
-  }
-  const setMessage = async (partyID: string, messageText: string, user: MessageUser) => {
-    const messagesRef = getMessagesRef(partyID)
-    const message: CreateMessage = {
-      text: messageText,
-      user,
-      writerUID: user.uid,
-      system: false
-    }
-    try {
-      await messagesRef.doc().set(createDocument<CreateMessage>(message))
-      console.log('Sending message is scuceeded')
-      return { result: true }
-    } catch (e) {
-      console.warn(e)
-      return { result: false }
-    }
-  }
+  if (eventIDs.length !== 1) return null
+  const eventID = eventIDs[0] as string
+
   /* 暫定masterをentitiesから呼び出す */
-  const user = buildMessageUser(partyMaster)
   const eventSnapShot = await eventRef.doc(eventID).get()
   const eventSnapShotData = eventSnapShot.data()
   if (!eventSnapShotData) return null
-  const beforelike = eventSnapShotData.like
-  const isSentEventMessage = eventSnapShotData.isSentEventMessage
-  const increment = firestore.FieldValue.increment(eventSnapShotData.increment)
-  const decrement = firestore.FieldValue.increment(eventSnapShotData.decrement)
-  const likeThreshold = eventSnapShotData.likeThreshold
+  const increment = firestore.FieldValue.increment(eventSnapShotData.increment as number)
+  const decrement = firestore.FieldValue.increment(eventSnapShotData.decrement as number)
+  if (eventSnapShotData.likedUid.includes(uid) === true) return null
 
-  if (data.isNizikaiLike === false) {
+  if (data.eventLike === false) {
     console.log('decrement')
-    eventRef.doc(eventID).update({
-      like: decrement
-    })
+    await batch.update(
+      eventRef.doc(eventID),
+      updateDocument<Event>({
+        like: decrement,
+        likedUid: firestore.FieldValue.arrayUnion(uid)
+      })
+    )
   }
-  if (data.isNizikaiLike === true) {
+  if (data.eventLike === true) {
     console.log('increment')
-    eventRef.doc(eventID).update({
-      like: increment
-    })
+    await batch.update(
+      eventRef.doc(eventID),
+      updateDocument<Event>({
+        like: increment,
+        likedUid: firestore.FieldValue.arrayUnion(uid)
+      })
+    )
   }
-  if (likeThreshold <= beforelike + 1 && isSentEventMessage === false) {
-    setMessage(partyID, masterMessage, user)
-  }
+
+  await batch.commit()
 
   const result = {
     documentID: partyRef.id,

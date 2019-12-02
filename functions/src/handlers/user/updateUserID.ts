@@ -10,18 +10,22 @@ export const updateUserID = functions.https.onCall(async (data, context) => {
   const batch = db.batch()
 
   const usersRef = db.collection('users')
-  const snapshot = await usersRef.where("userID", "==", userID).get()
+  const snapshot = await usersRef.where('userID', '==', userID).get()
 
-  if(snapshot.docs.length > 0) {
+  if (snapshot.docs.length > 0) {
     return { message: `already exist your userID ${userID}`, contents: null }
   }
 
   const userRef = db.collection('users').doc(uid)
 
-  batch.set(userRef, {
-    userID,
-    updatedAt: FieldValue.serverTimestamp()
-  }, { merge: true })
+  batch.set(
+    userRef,
+    {
+      userID,
+      updatedAt: FieldValue.serverTimestamp()
+    },
+    { merge: true }
+  )
 
   await batch.commit()
 

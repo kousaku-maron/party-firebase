@@ -51,21 +51,18 @@ export const buildMessage = (data: firestore.DocumentData) => {
   return newMessage
 }
 
-export const partyMaster = () => {
-  const user: MessageUser = {
-    enabled: true,
-    isAccepted: true,
-    isAnonymous: false,
-    uid: 'tYwmmOkToqWSY7Eaq07YadJpngA',
-    userID: 'nyIMVTf3oCMK2OT6D9wc',
-    name: 'Party Master',
-    thumbnailURL: 'gs://insta-693eb.appspot.com/users/tYwmmOkToqWSY7Eaq07YadJpngA/thumbs/jigsaw_200x200.jpg',
-    gender: 'male'
-  }
-
-  return user
+export const partyMaster: MessageUser = {
+  enabled: true,
+  isAccepted: true,
+  isAnonymous: false,
+  uid: 'tYwmmOkToqWSY7Eaq07YadJpngA',
+  userID: 'nyIMVTf3oCMK2OT6D9wc',
+  name: 'Party Master',
+  thumbnailURL: 'gs://insta-693eb.appspot.com/users/tYwmmOkToqWSY7Eaq07YadJpngA/thumbs/jigsaw_200x200.jpg',
+  gender: 'male'
 }
 
+//MEMO:現在はparty masterを埋め込みにしてるが，将来的にdocumentからとってくる可能性があるため残しています
 export const buildMessageUser = (data: firestore.DocumentData) => {
   const user: MessageUser = {
     enabled: data.enabled,
