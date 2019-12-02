@@ -1,8 +1,8 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import {CreateMessage, buildMessageUser, MessageUser, partyMaster, createDocument } from '../../entities'
+import { CreateMessage, buildMessageUser, MessageUser, partyMaster, createDocument } from '../../entities'
 
-export const updateEventsLike = functions.https.onCall(async (data, context) => {
+export const updateEventsLike = functions.https.onCall(async data => {
   const db = firestore()
   const partyID = data.partyID as string
   const partyRef = db.collection('parties').doc(partyID)
@@ -25,7 +25,6 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
   const getMessagesRef = (partyID: string) => {
     return roomsRef.doc(partyID).collection('messages')
   }
-  console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
   const setMessage = async (partyID: string, messageText: string, user: MessageUser) => {
     const messagesRef = getMessagesRef(partyID)
     const message: CreateMessage = {
