@@ -58,7 +58,8 @@ export const partyMaster: MessageUser = {
   uid: 'tYwmmOkToqWSY7Eaq07YadJpngA',
   userID: 'nyIMVTf3oCMK2OT6D9wc',
   name: 'Party Master',
-  thumbnailURL: 'gs://insta-693eb.appspot.com/users/tYwmmOkToqWSY7Eaq07YadJpngA/thumbs/jigsaw_200x200.jpg',
+  thumbnailURL:
+    'https://firebasestorage.googleapis.com/v0/b/insta-693eb.appspot.com/o/users%2FtYwmmOkToqWSY7Eaq07YadJpngA%2Fjigsaw.jpg?alt=media&token=1c3fd68d-8169-4471-bced-280dcdf6b546',
   gender: 'male'
 }
 

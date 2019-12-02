@@ -22,7 +22,7 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
   /* 暫定masterをentitiesから呼び出す */
   const eventSnapShot = await eventRef.doc(eventID).get()
   const eventSnapShotData = eventSnapShot.data()
-  if (!eventSnapShotData) return null
+  if (!eventSnapShotData) throw new Error('not found eventSnapShotData')
   const increment = firestore.FieldValue.increment(eventSnapShotData.increment as number)
   const decrement = firestore.FieldValue.increment(eventSnapShotData.decrement as number)
   if (eventSnapShotData.likedUid.includes(uid) === true) return null

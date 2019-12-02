@@ -30,7 +30,7 @@ export const buildEvent = ({
   like: number
   likeThreshold: number
   name: string
-  likedUid: string[] | firestore.FieldValue
+  likedUid: string[]
 }) => {
   const newEvent = {
     decrement,
