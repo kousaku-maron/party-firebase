@@ -1,13 +1,20 @@
 import { firestore } from 'firebase-admin'
 
+type Weaken<T, K extends keyof T> = {
+  [P in keyof T]: P extends K ? any : T[P]
+}
+
 export type Event = {
-  decrement?: number
-  increment?: number
   isSentEventMessage?: boolean
-  like?: number | firestore.FieldValue
+  like?: number
   likeThreshold?: number
   name?: string
-  likedUid?: string[] | firestore.FieldValue
+  likedUids?: string[]
+}
+
+export interface UpdateEvent extends Weaken<Event, 'like' | 'likedUids'> {
+  like?: firestore.FieldValue
+  likedUids?: firestore.FieldValue
 }
 
 export const nizikai = {

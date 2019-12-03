@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, Event, nizikai } from '../../entities'
+import { updateDocument, UpdateEvent, nizikai } from '../../entities'
 
 export const updateEventsLike = functions.https.onCall(async (data, context) => {
   const db = firestore()
@@ -19,13 +19,12 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
   if (eventIDs.length !== 1) return null
   const eventID = eventIDs[0] as string
 
-  /* 暫定masterをentitiesから呼び出す */
   const eventSnapShot = await eventRef.doc(eventID).get()
-  const eventSnapShotData = eventSnapShot.data()
-  if (!eventSnapShotData) throw new Error('not found eventSnapShotData')
-  const increment = firestore.FieldValue.increment(eventSnapShotData.increment as number)
-  const decrement = firestore.FieldValue.increment(eventSnapShotData.decrement as number)
-  if (eventSnapShotData.likedUid.includes(uid) === true)
+  if (!eventSnapShot.exists) throw new Error('not found eventSnapShotData')
+  const eventSnapShotData = eventSnapShot.data() as firestore.DocumentData
+  const increment = firestore.FieldValue.increment(1)
+  const decrement = firestore.FieldValue.increment(-1)
+  if (eventSnapShotData.likedUids.includes(uid))
     return {
       message: 'You have already liked',
       contents: [
@@ -37,27 +36,14 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
       ]
     }
 
-  if (data.eventLike === false) {
-    console.log('decrement')
-    await batch.update(
-      eventRef.doc(eventID),
-      updateDocument<Event>({
-        like: decrement,
-        likedUid: firestore.FieldValue.arrayUnion(uid)
-      })
-    )
-  }
-  if (data.eventLike === true) {
-    console.log('increment')
-    await batch.update(
-      eventRef.doc(eventID),
-      updateDocument<Event>({
-        like: increment,
-        likedUid: firestore.FieldValue.arrayUnion(uid)
-      })
-    )
-  }
-
+  await batch.update(
+    eventRef.doc(eventID),
+    updateDocument<UpdateEvent>({
+      like: data.eventLike ? increment : decrement,
+      likedUids: firestore.FieldValue.arrayUnion(uid),
+      isSentEventMessage: true
+    })
+  )
   await batch.commit()
 
   const result = {
