@@ -65,7 +65,7 @@ export const partyMaster: MessageUser = {
 
 //MEMO:現在はparty masterを埋め込みにしてるが，将来的にdocumentからとってくる可能性があるため残しています
 export const buildMessageUser = (data: firestore.DocumentData) => {
-  const user: MessageUser = {
+  const newUser: MessageUser = {
     enabled: data.enabled,
     isAccepted: data.isAccepted,
     isAnonymous: data.isAnonymous,
@@ -76,7 +76,7 @@ export const buildMessageUser = (data: firestore.DocumentData) => {
     gender: data.gender || null
   }
 
-  return user
+  return newUser
 }
 
 export type CreateMessage = Pick<

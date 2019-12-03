@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateMessage, partyMaster, createDocument, nizikai } from '../../entities'
+import { CreateMessage, partyMaster, createDocument, nizikai, buildAfterEvent } from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
 export const sendEventMessage = functions.firestore.document(eventPath).onUpdate(async (change, context) => {
@@ -8,11 +8,9 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const batch = db.batch()
   const partyID = context.params.partyID
 
-  const beforeData = change.before.data() as firestore.DocumentData
-  const afterData = change.after.data() as firestore.DocumentData
-  const likeThreshold = beforeData.likeThreshold
-  const afterLike = afterData.like
-  if (afterLike < likeThreshold || beforeData.isSentEventMessage === true) return null
+  const afterData = buildAfterEvent(change.after.data() as firestore.DocumentData)
+  if (afterData.like < afterData.likeThreshold || afterData.isSentEventMessage === false)
+    return { message: ` Sending event message terms are not satisfied`, contents: null }
 
   const roomsRef = db.collection('parties')
   const messagesRef = roomsRef.doc(partyID).collection('messages')
@@ -20,12 +18,11 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
     text: nizikai.masterMessage,
     user: partyMaster,
     writerUID: partyMaster.uid,
-    system: false
+    system: true
   }
 
   try {
     await batch.set(messagesRef.doc(), createDocument<CreateMessage>(message), { merge: true })
-    console.log('Sending message is scuceeded')
   } catch (e) {
     console.warn(e)
   }

@@ -16,15 +16,17 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
     return doc.id
   })
 
-  if (eventIDs.length !== 1) return null
+  if (eventIDs.length !== 1) throw new Error('neventIDs contains multiple elements')
   const eventID = eventIDs[0] as string
 
   const eventSnapShot = await eventRef.doc(eventID).get()
   if (!eventSnapShot.exists) throw new Error('not found eventSnapShotData')
+
   const eventSnapShotData = eventSnapShot.data() as firestore.DocumentData
   const increment = firestore.FieldValue.increment(1)
   const decrement = firestore.FieldValue.increment(-1)
-  if (eventSnapShotData.likedUids.includes(uid))
+
+  if (eventSnapShotData.likedUIDs.includes(uid))
     return {
       message: 'You have already liked',
       contents: [
@@ -40,7 +42,7 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
     eventRef.doc(eventID),
     updateDocument<UpdateEvent>({
       like: data.eventLike ? increment : decrement,
-      likedUids: firestore.FieldValue.arrayUnion(uid),
+      likedUIDs: firestore.FieldValue.arrayUnion(uid),
       isSentEventMessage: true
     })
   )
