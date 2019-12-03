@@ -25,7 +25,17 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
   if (!eventSnapShotData) throw new Error('not found eventSnapShotData')
   const increment = firestore.FieldValue.increment(eventSnapShotData.increment as number)
   const decrement = firestore.FieldValue.increment(eventSnapShotData.decrement as number)
-  if (eventSnapShotData.likedUid.includes(uid) === true) return null
+  if (eventSnapShotData.likedUid.includes(uid) === true)
+    return {
+      message: 'You have already liked',
+      contents: [
+        {
+          documentID: partyRef.id,
+          path: partyRef.path,
+          value: false
+        }
+      ]
+    }
 
   if (data.eventLike === false) {
     console.log('decrement')
@@ -53,7 +63,7 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
   const result = {
     documentID: partyRef.id,
     path: partyRef.path,
-    value: null
+    value: true
   }
 
   return { message: 'Update EventsLike successfully', contents: [result] }
