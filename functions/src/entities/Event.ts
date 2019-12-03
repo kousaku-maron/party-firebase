@@ -23,16 +23,12 @@ export const nizikai = {
 }
 
 export const buildEvent = ({
-  decrement,
-  increment,
   isSentEventMessage,
   like,
   likeThreshold,
   name,
   likedUid
 }: {
-  decrement: number
-  increment: number
   isSentEventMessage: boolean
   like: number
   likeThreshold: number
@@ -40,8 +36,6 @@ export const buildEvent = ({
   likedUid: string[]
 }) => {
   const newEvent = {
-    decrement,
-    increment,
     isSentEventMessage,
     like,
     likeThreshold,
