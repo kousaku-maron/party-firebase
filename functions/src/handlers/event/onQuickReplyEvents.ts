@@ -49,25 +49,15 @@ export const onQuickReplyEvents = functions.https.onCall(async (data, context) =
     count: 1
   }
 
-  if (replyType === 'negative') {
-    await batch.set(
-      eventRef.doc(eventID),
-      updateDocument<UpdateEvent>({
-        negativeReplies: firestore.FieldValue.arrayUnion(storeEventReply),
-        repliedUIDs: firestore.FieldValue.arrayUnion(uid)
-      })
-    )
-  }
-
-  if (replyType === 'positive') {
-    await batch.set(
-      eventRef.doc(eventID),
-      updateDocument<UpdateEvent>({
-        positiveReplies: firestore.FieldValue.arrayUnion(storeEventReply),
-        repliedUIDs: firestore.FieldValue.arrayUnion(uid)
-      })
-    )
-  }
+  batch.set(
+    eventRef.doc(eventID),
+    updateDocument<UpdateEvent>({
+      ...(replyType === 'negative' && { negativeReplies: firestore.FieldValue.arrayUnion(storeEventReply) }),
+      ...(replyType === 'positive' && { positiveReplies: firestore.FieldValue.arrayUnion(storeEventReply) }),
+      repliedUIDs: firestore.FieldValue.arrayUnion(uid)
+    }),
+    { merge: true }
+  )
 
   await batch.commit()
 
