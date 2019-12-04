@@ -1,11 +1,6 @@
 import { firestore } from 'firebase-admin'
 import { Reply } from 'react-native-gifted-chat'
 
-export const nizikai = {
-  eventName: 'nizikai',
-  masterMessage: '２次会に行きたい人が過半数を超えました'
-}
-
 export type EventTypes = 'nizikai' | 'afterParty'
 
 export const EventTypeMessages = {
@@ -20,8 +15,7 @@ export const EventTypeMessages = {
 export type EventReply = {
   gender: 'male' | 'female'
   replies: Reply[]
-  positiveCount: number
-  negativeCount: number
+  count: number
 }
 
 export type Event = {
@@ -36,7 +30,8 @@ export type Event = {
 export type UpdateEvent = {
   positiveReplies?: firestore.FieldValue
   negativeReplies?: firestore.FieldValue
-  repliedUIDs: firestore.FieldValue
+  repliedUIDs?: firestore.FieldValue
+  isSentEventMessage?: boolean
 }
 
 export const buildEvent = (data: firestore.DocumentData) => {

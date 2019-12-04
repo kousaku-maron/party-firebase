@@ -46,8 +46,7 @@ export const onQuickReplyEvents = functions.https.onCall(async (data, context) =
   const storeEventReply: EventReply = {
     gender,
     replies,
-    positiveCount: replyType === 'positive' ? 1 : 0,
-    negativeCount: replyType === 'negative' ? 1 : 0
+    count: 1
   }
 
   if (replyType === 'negative') {
