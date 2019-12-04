@@ -5,58 +5,27 @@ export const nizikai = {
   masterMessage: '２次会に行きたい人が過半数を超えました'
 }
 
-type Weaken<T, K extends keyof T> = {
-  [P in keyof T]: P extends K ? any : T[P]
-}
-
 export type Event = {
   isSentEventMessage?: boolean
-  like?: number
-  likeThreshold?: number
+  like: number
+  likeThreshold: number
   name?: string
-  likedUIDs?: string[]
+  likedUIDs: string[]
 }
 
-export interface UpdateEvent extends Weaken<Event, 'like' | 'likedUIDs'> {
+export interface UpdateEvent extends Omit<Event, 'like' | 'likedUIDs' | 'likeThreshold'> {
   like?: firestore.FieldValue
   likedUIDs?: firestore.FieldValue
+  likeThreshold?: number
 }
 
-export interface AfterEvent extends Weaken<Event, 'like' | 'likeThreshold'> {
-  like: number
-  likeThreshold: number
-}
-
-export const buildEvent = ({
-  isSentEventMessage,
-  like,
-  likeThreshold,
-  name,
-  likedUIDs
-}: {
-  isSentEventMessage: boolean
-  like: number
-  likeThreshold: number
-  name: string
-  likedUIDs: string[]
-}) => {
+export const buildEvent = (data: firestore.DocumentData) => {
   const newEvent: Event = {
-    isSentEventMessage,
-    like,
-    likeThreshold,
-    name,
-    likedUIDs
-  }
-  return newEvent
-}
-
-export const buildAfterEvent = (afterData: firestore.DocumentData) => {
-  const newEvent: AfterEvent = {
-    isSentEventMessage: afterData.isSentEventMessage,
-    like: afterData.like,
-    likeThreshold: afterData.likeThreshold,
-    name: afterData.name,
-    likedUIDs: afterData.likedUIDs
+    isSentEventMessage: data.isSentEventMessage,
+    like: data.like,
+    likeThreshold: data.likeThreshold,
+    name: data.name,
+    likedUIDs: data.likedUIDs
   }
   return newEvent
 }

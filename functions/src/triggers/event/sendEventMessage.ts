@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateMessage, partyMaster, createDocument, nizikai, buildAfterEvent } from '../../entities'
+import { CreateMessage, partyMaster, createDocument, nizikai, buildEvent } from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
 export const sendEventMessage = functions.firestore.document(eventPath).onUpdate(async (change, context) => {
@@ -8,9 +8,10 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const batch = db.batch()
   const partyID = context.params.partyID
 
-  const afterData = buildAfterEvent(change.after.data() as firestore.DocumentData)
-  if (afterData.like < afterData.likeThreshold || afterData.isSentEventMessage === false)
+  const afterData = buildEvent(change.after.data() as firestore.DocumentData)
+  if (afterData.like < afterData.likeThreshold || !afterData.isSentEventMessage) {
     return { message: ` Sending event message terms are not satisfied`, contents: null }
+  }
 
   const roomsRef = db.collection('parties')
   const messagesRef = roomsRef.doc(partyID).collection('messages')
