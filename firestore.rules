@@ -34,6 +34,10 @@ service cloud.firestore {
       allow read: if isAuthenticated();
 
       // for DEMO
+      match /events/{eventsID} {
+        allow read, write: if isAuthenticated();
+      }
+
       match /messages/{messageID} {
         allow read: if isAuthenticated();
         allow write: if isAuthenticated() && isAcceptCreateMessage();
@@ -43,7 +47,10 @@ service cloud.firestore {
         allow read, write: if isAuthenticated();
         
         match /{document=**} {
-          allow read, write: if isAuthenticated();
+          allow read: if isAuthenticated();
+        }
+        match /members/{memberID}{
+          allow write: if isAuthenticated();
         }
       }
     }

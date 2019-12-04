@@ -18,14 +18,17 @@ export const createUser = functions.auth.user().onCreate(async user => {
 
   const userRef = db.collection('users').doc(uid)
 
-  batch.set(userRef, createDocument<User>({
-    enabled: newUser.enabled,
-    isAccepted: newUser.isAccepted,
-    isAnonymous: newUser.isAnonymous,
-    uid: newUser.uid,
-    userID: newUser.userID,
-    name: newUser.name
-  }))
+  batch.set(
+    userRef,
+    createDocument<User>({
+      enabled: newUser.enabled,
+      isAccepted: newUser.isAccepted,
+      isAnonymous: newUser.isAnonymous,
+      uid: newUser.uid,
+      userID: newUser.userID,
+      name: newUser.name
+    })
+  )
 
   const secureRef = userRef.collection('options').doc('secure')
 

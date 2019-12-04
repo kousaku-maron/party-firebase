@@ -50,3 +50,36 @@ export const buildMessage = (data: firestore.DocumentData) => {
   }
   return newMessage
 }
+
+export const partyMaster: MessageUser = {
+  enabled: true,
+  isAccepted: true,
+  isAnonymous: false,
+  uid: 'tYwmmOkToqWSY7Eaq07YadJpngA',
+  userID: 'nyIMVTf3oCMK2OT6D9wc',
+  name: 'Party Master',
+  thumbnailURL:
+    'https://firebasestorage.googleapis.com/v0/b/insta-693eb.appspot.com/o/users%2FtYwmmOkToqWSY7Eaq07YadJpngA%2Fjigsaw.jpg?alt=media&token=1c3fd68d-8169-4471-bced-280dcdf6b546',
+  gender: 'male'
+}
+
+//MEMO:現在はparty masterを埋め込みにしてるが，将来的にdocumentからとってくる可能性があるため残しています
+export const buildMessageUser = (data: firestore.DocumentData) => {
+  const newUser: MessageUser = {
+    enabled: data.enabled,
+    isAccepted: data.isAccepted,
+    isAnonymous: data.isAnonymous,
+    uid: data.uid,
+    userID: data.userID,
+    name: data.name,
+    thumbnailURL: data.thumbnailURL || null,
+    gender: data.gender || null
+  }
+
+  return newUser
+}
+
+export type CreateMessage = Pick<
+  Message,
+  'text' | 'user' | 'writerUID' | 'system' | 'quickReplies' | 'imageURL' | 'videoURL'
+>
