@@ -1,1 +1,1 @@
-export * from './updateEventsLike'
+export * from './onQuickReplyEvents'
