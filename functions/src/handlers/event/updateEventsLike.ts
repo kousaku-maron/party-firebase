@@ -26,7 +26,7 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
   const increment = firestore.FieldValue.increment(1)
   const decrement = firestore.FieldValue.increment(-1)
 
-  if (eventSnapShotData.likedUIDs.includes(uid))
+  if (eventSnapShotData.likedUIDs.includes(uid)) {
     return {
       message: 'You have already liked',
       contents: [
@@ -37,6 +37,7 @@ export const updateEventsLike = functions.https.onCall(async (data, context) => 
         }
       ]
     }
+  }
 
   await batch.update(
     eventRef.doc(eventID),
