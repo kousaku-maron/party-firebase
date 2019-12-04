@@ -19,8 +19,17 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
 
   const event = buildEvent(change.after.data()!)
 
-  // TODO: repliesのpositiveCountを集計させて判定させるように修正。
-  if (!event.isSentEventMessage && event.positiveReplies.length >= event.threshold) {
+  const femalePositiveCount = event.positiveReplies
+    .filter(eventReply => eventReply.gender === 'female')
+    .map(eventReply => eventReply.count)
+    .reduce((acc, value) => acc + value)
+
+  const malePositiveCount = event.positiveReplies
+    .filter(eventReply => eventReply.gender === 'male')
+    .map(eventReply => eventReply.count)
+    .reduce((acc, value) => acc + value)
+
+  if (!event.isSentEventMessage && femalePositiveCount >= event.threshold && malePositiveCount >= event.threshold) {
     const roomsRef = db.collection('parties')
     const messagesRef = roomsRef.doc(partyID).collection('messages')
     const message: CreateMessage = {
