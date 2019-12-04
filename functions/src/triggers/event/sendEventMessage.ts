@@ -1,6 +1,12 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateMessage, partyMaster, createDocument, nizikai, buildEvent } from '../../entities'
+import {
+  CreateMessage,
+  partyMaster,
+  createDocument,
+  buildEvent /*, EventTypeMessages */,
+  nizikai
+} from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
 export const sendEventMessage = functions.firestore.document(eventPath).onUpdate(async (change, context) => {
@@ -8,9 +14,16 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const batch = db.batch()
   const partyID = context.params.partyID
 
-  const afterData = buildEvent(change.after.data() as firestore.DocumentData)
-  if (afterData.like < afterData.likeThreshold || !afterData.isSentEventMessage) {
-    return { message: ` Sending event message terms are not satisfied`, contents: null }
+  const event = buildEvent(change.after.data()!)
+  if (!event.isSentEventMessage && event.positiveReplies.length >= event.threshold) {
+    // const roomsRef = db.collection('parties')
+    // const messagesRef = roomsRef.doc(partyID).collection('messages')
+    // const message: CreateMessage = {
+    //   text: EventTypeMessages[event.name!] && '？？？',
+    //   user: partyMaster,
+    //   writerUID: partyMaster.uid,
+    //   system: true
+    // }
   }
 
   const roomsRef = db.collection('parties')
@@ -31,7 +44,7 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const result = {
     documentID: change.after.ref,
     path: change.after.ref.path,
-    value: afterData
+    value: event
   }
 
   return { message: 'Sending event message is succeded', contents: [result] }
