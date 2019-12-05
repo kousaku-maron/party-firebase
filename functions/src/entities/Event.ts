@@ -1,5 +1,11 @@
 import { firestore } from 'firebase-admin'
-import { Reply } from 'react-native-gifted-chat'
+
+// react-native-gifted-chat type
+export type GiftedChatReply = {
+  title: string
+  value: string
+  messageId?: any
+}
 
 export type ReplyType = 'positive' | 'negative'
 
@@ -7,7 +13,7 @@ export type EventType = 'nizikai' | 'afterParty'
 
 export type EventReply = {
   gender: 'male' | 'female'
-  replies: Reply[]
+  replies: GiftedChatReply[]
   count: number
 }
 

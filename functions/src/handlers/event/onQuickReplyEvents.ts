@@ -1,12 +1,19 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, UpdateEvent, ReplyType, EventType, buildEvent, EventReply } from '../../entities'
-import { Reply } from 'react-native-gifted-chat'
+import {
+  updateDocument,
+  UpdateEvent,
+  ReplyType,
+  EventType,
+  buildEvent,
+  EventReply,
+  GiftedChatReply
+} from '../../entities'
 
 export const onQuickReplyEvents = functions.https.onCall(async (data, context) => {
   const roomID = data.roomID as string
   const eventType = data.eventType as EventType
-  const replies = data.quickReplies as Reply[]
+  const replies = data.quickReplies as GiftedChatReply[]
   const replyType = data.replyType as ReplyType
   const gender = data.gender as 'male' | 'female' // TODO: userデータfetchして判定させる。
 

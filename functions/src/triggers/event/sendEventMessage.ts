@@ -42,7 +42,11 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
     }
 
     batch.set(messagesRef.doc(), createDocument<CreateMessage>(message), { merge: true })
-    batch.set(change.after.ref, updateDocument<UpdateEvent>({ isSendEventMessage: true }), { merge: true })
+    batch.set(
+      change.after.ref,
+      updateDocument<UpdateEvent>({ isSendEventMessage: true }),
+      { merge: true }
+    )
 
     await batch.commit()
   }
