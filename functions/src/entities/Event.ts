@@ -1,16 +1,9 @@
 import { firestore } from 'firebase-admin'
 import { Reply } from 'react-native-gifted-chat'
 
-export type EventTypes = 'nizikai' | 'afterParty'
+export type ReplyType = 'positive' | 'negative'
 
-export const EventTypeMessages = {
-  nizikai: {
-    activeAanswerMessage: '２次会に行きたい人が過半数を超えました'
-  },
-  afterParty: {
-    activeAanswerMessage: 'イベントが発生しました'
-  }
-}
+export type EventType = 'nizikai' | 'afterParty'
 
 export type EventReply = {
   gender: 'male' | 'female'
@@ -19,11 +12,11 @@ export type EventReply = {
 }
 
 export type Event = {
-  isSentEventMessage?: boolean
+  isSendEventMessage: boolean
   positiveReplies: EventReply[]
   negativeReplies: EventReply[]
   threshold: number
-  name?: string
+  name: string
   repliedUIDs: string[]
 }
 
@@ -31,12 +24,12 @@ export type UpdateEvent = {
   positiveReplies?: firestore.FieldValue
   negativeReplies?: firestore.FieldValue
   repliedUIDs?: firestore.FieldValue
-  isSentEventMessage?: boolean
+  isSendEventMessage?: boolean
 }
 
 export const buildEvent = (data: firestore.DocumentData) => {
   const newEvent: Event = {
-    isSentEventMessage: data.isSentEventMessage,
+    isSendEventMessage: data.isSendEventMessage,
     positiveReplies: data.positiveReplies,
     negativeReplies: data.negativeReplies,
     threshold: data.threshold,
@@ -44,4 +37,13 @@ export const buildEvent = (data: firestore.DocumentData) => {
     repliedUIDs: data.repliedUIDs
   }
   return newEvent
+}
+
+export const eventTypeMessages = {
+  nizikai: {
+    activeAnswerMessage: '２次会ありな人がそれなりにいるのでどうですか？'
+  },
+  afterParty: {
+    activeAnswerMessage: 'また集まりたい人がそれなりにいるみたいです、また集まりますか？'
+  }
 }

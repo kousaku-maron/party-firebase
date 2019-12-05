@@ -1,13 +1,13 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, UpdateEvent, EventTypes, buildEvent, EventReply } from '../../entities'
+import { updateDocument, UpdateEvent, ReplyType, EventType, buildEvent, EventReply } from '../../entities'
 import { Reply } from 'react-native-gifted-chat'
 
 export const onQuickReplyEvents = functions.https.onCall(async (data, context) => {
   const roomID = data.roomID as string
-  const eventType = data.eventType as EventTypes
+  const eventType = data.eventType as EventType
   const replies = data.quickReplies as Reply[]
-  const replyType = data.replyType as 'negative' | 'positive' // 暫定
+  const replyType = data.replyType as ReplyType
   const gender = data.gender as 'male' | 'female' // TODO: userデータfetchして判定させる。
 
   const db = firestore()
@@ -16,7 +16,8 @@ export const onQuickReplyEvents = functions.https.onCall(async (data, context) =
 
   const partyRef = db.collection('parties').doc(roomID)
   const eventRef = partyRef.collection('events')
-  //TODO:今後イベントごとに取得するようにする, partyMasterのuid, userは要相談 あとでpartyMasterアカウントを作って入れる
+
+  //TODO: 今後イベントごとに取得するようにする, partyMasterのuid, userは要相談 あとでpartyMasterアカウントを作って入れる
   const eventsSnapShot = await eventRef.where('name', '==', eventType).get()
   const eventIDs = eventsSnapShot.docs.map((doc: firestore.DocumentData) => {
     return doc.id
@@ -26,7 +27,7 @@ export const onQuickReplyEvents = functions.https.onCall(async (data, context) =
   const eventID = eventIDs[0] as string
 
   const eventSnapShot = await eventRef.doc(eventID).get()
-  if (!eventSnapShot.exists) throw new Error('not found eventSnapShotData')
+  if (!eventSnapShot.exists) throw new Error('not found event')
 
   const event = buildEvent(eventSnapShot.data()!)
 
