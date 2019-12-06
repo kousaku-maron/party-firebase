@@ -13,7 +13,7 @@ import {
 export const onQuickReplyEvents = functions.https.onCall(async (data, context) => {
   const roomID = data.roomID as string
   const eventType = data.eventType as EventType
-  const replies = data.quickReplies as GiftedChatReply[]
+  const replies = data.replies as GiftedChatReply[]
   const replyType = data.replyType as ReplyType
   const gender = data.gender as 'male' | 'female' // TODO: userデータfetchして判定させる。
 
