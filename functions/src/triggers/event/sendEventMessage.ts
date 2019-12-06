@@ -6,9 +6,9 @@ import {
   createDocument,
   buildEvent,
   updateDocument,
-  UpdateEvent,
-  eventTypeMessages,
-  EventType
+  UpdateEvent
+  // eventTypeMessages,
+  // EventType
 } from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
@@ -35,7 +35,8 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
     const messagesRef = roomRef.collection('messages')
 
     const message: CreateMessage = {
-      text: eventTypeMessages[event.name as EventType] && '登録されていないイベントです[Error]',
+      // text: eventTypeMessages[event.name as EventType] && '登録されていないイベントです[Error]',
+      text: '2次会ありの人がそれなりにいるので行きましょう！',
       user: partyMaster,
       writerUID: partyMaster.uid,
       system: true
