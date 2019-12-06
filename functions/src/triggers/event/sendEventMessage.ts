@@ -1,37 +1,60 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateMessage, partyMaster, createDocument, nizikai, buildEvent } from '../../entities'
+import {
+  CreateMessage,
+  partyMaster,
+  createDocument,
+  buildEvent,
+  updateDocument,
+  UpdateEvent,
+  eventTypeMessages,
+  EventType
+} from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
+
 export const sendEventMessage = functions.firestore.document(eventPath).onUpdate(async (change, context) => {
   const db = firestore()
   const batch = db.batch()
   const partyID = context.params.partyID
 
-  const afterData = buildEvent(change.after.data() as firestore.DocumentData)
-  if (afterData.like < afterData.likeThreshold || !afterData.isSentEventMessage) {
-    return { message: ` Sending event message terms are not satisfied`, contents: null }
+  const event = buildEvent(change.after.data()!)
+
+  const femalePositiveCount = event.positiveReplies
+    .filter(eventReply => eventReply.gender === 'female')
+    .map(eventReply => eventReply.count)
+    .reduce((acc, value) => acc + value)
+
+  const malePositiveCount = event.positiveReplies
+    .filter(eventReply => eventReply.gender === 'male')
+    .map(eventReply => eventReply.count)
+    .reduce((acc, value) => acc + value)
+
+  if (!event.isSendEventMessage && femalePositiveCount >= event.threshold && malePositiveCount >= event.threshold) {
+    const roomRef = db.collection('parties').doc(partyID)
+    const messagesRef = roomRef.collection('messages')
+
+    const message: CreateMessage = {
+      text: eventTypeMessages[event.name as EventType] && '登録されていないイベントです[Error]',
+      user: partyMaster,
+      writerUID: partyMaster.uid,
+      system: true
+    }
+
+    batch.set(messagesRef.doc(), createDocument<CreateMessage>(message), { merge: true })
+    batch.set(
+      change.after.ref,
+      updateDocument<UpdateEvent>({ isSendEventMessage: true }),
+      { merge: true }
+    )
+
+    await batch.commit()
   }
 
-  const roomsRef = db.collection('parties')
-  const messagesRef = roomsRef.doc(partyID).collection('messages')
-  const message: CreateMessage = {
-    text: nizikai.masterMessage,
-    user: partyMaster,
-    writerUID: partyMaster.uid,
-    system: true
-  }
-
-  try {
-    await batch.set(messagesRef.doc(), createDocument<CreateMessage>(message), { merge: true })
-  } catch (e) {
-    console.warn(e)
-  }
-  await batch.commit()
   const result = {
     documentID: change.after.ref,
     path: change.after.ref.path,
-    value: afterData
+    value: event
   }
 
   return { message: 'Sending event message is succeded', contents: [result] }

@@ -1,31 +1,55 @@
 import { firestore } from 'firebase-admin'
 
-export const nizikai = {
-  eventName: 'nizikai',
-  masterMessage: '２次会に行きたい人が過半数を超えました'
+// react-native-gifted-chat type
+export type GiftedChatReply = {
+  title: string
+  value: string
+  messageId?: any
+}
+
+export type ReplyType = 'positive' | 'negative'
+
+export type EventType = 'nizikai' | 'afterParty'
+
+export type EventReply = {
+  gender: 'male' | 'female'
+  replies: GiftedChatReply[]
+  count: number
 }
 
 export type Event = {
-  isSentEventMessage?: boolean
-  like: number
-  likeThreshold: number
-  name?: string
-  likedUIDs: string[]
+  isSendEventMessage: boolean
+  positiveReplies: EventReply[]
+  negativeReplies: EventReply[]
+  threshold: number
+  name: string
+  repliedUIDs: string[]
 }
 
-export interface UpdateEvent extends Omit<Event, 'like' | 'likedUIDs' | 'likeThreshold'> {
-  like?: firestore.FieldValue
-  likedUIDs?: firestore.FieldValue
-  likeThreshold?: number
+export type UpdateEvent = {
+  positiveReplies?: firestore.FieldValue
+  negativeReplies?: firestore.FieldValue
+  repliedUIDs?: firestore.FieldValue
+  isSendEventMessage?: boolean
 }
 
 export const buildEvent = (data: firestore.DocumentData) => {
   const newEvent: Event = {
-    isSentEventMessage: data.isSentEventMessage,
-    like: data.like,
-    likeThreshold: data.likeThreshold,
+    isSendEventMessage: data.isSendEventMessage,
+    positiveReplies: data.positiveReplies,
+    negativeReplies: data.negativeReplies,
+    threshold: data.threshold,
     name: data.name,
-    likedUIDs: data.likedUIDs
+    repliedUIDs: data.repliedUIDs
   }
   return newEvent
+}
+
+export const eventTypeMessages = {
+  nizikai: {
+    activeAnswerMessage: '２次会ありな人がそれなりにいるのでどうですか？'
+  },
+  afterParty: {
+    activeAnswerMessage: 'また集まりたい人がそれなりにいるみたいです、また集まりますか？'
+  }
 }
