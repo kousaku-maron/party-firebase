@@ -7,8 +7,7 @@ import {
   buildEvent,
   updateDocument,
   UpdateEvent,
-  eventTypeMessages,
-  EventType
+  eventTypeMessages
 } from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
@@ -23,12 +22,12 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const femalePositiveCount = event.positiveReplies
     .filter(eventReply => eventReply.gender === 'female')
     .map(eventReply => eventReply.count)
-    .reduce((acc, value) => acc + value)
+    .reduce((acc, value) => acc + value, 0)
 
   const malePositiveCount = event.positiveReplies
     .filter(eventReply => eventReply.gender === 'male')
     .map(eventReply => eventReply.count)
-    .reduce((acc, value) => acc + value)
+    .reduce((acc, value) => acc + value, 0)
 
   if (
     !event.isSendEventMessage &&
@@ -39,14 +38,18 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
     const messagesRef = roomRef.collection('messages')
 
     const message: CreateMessage = {
-      text: eventTypeMessages[event.name as EventType] && '登録されていないイベントです[Error]',
+      text: eventTypeMessages[event.name].activeAnswerMessage ?? '登録されていないイベントです[Error]',
       user: partyMaster,
       writerUID: partyMaster.uid,
       system: true
     }
 
     batch.set(messagesRef.doc(), createDocument<CreateMessage>(message), { merge: true })
-    batch.set(change.after.ref, updateDocument<UpdateEvent>({ isSendEventMessage: true }), { merge: true })
+    batch.set(
+      change.after.ref,
+      updateDocument<UpdateEvent>({ isSendEventMessage: true }),
+      { merge: true }
+    )
 
     await batch.commit()
   }

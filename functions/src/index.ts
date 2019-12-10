@@ -7,7 +7,7 @@ export { updateUserID } from './handlers/user'
 export { entryParty } from './handlers/party'
 
 export { createUser } from './triggers/user'
-export { createMessage, updateDemoTemp } from './triggers/message'
+export { createMessage } from './triggers/message'
 
 export { onQuickReplyEvent } from './handlers/event'
 

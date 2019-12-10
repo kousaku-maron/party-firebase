@@ -23,7 +23,7 @@ export type Event = {
   negativeReplies: EventReply[]
   maleThreshold: number
   femaleThreshold: number
-  name: string
+  name: EventType
   repliedUIDs: string[]
 }
 
