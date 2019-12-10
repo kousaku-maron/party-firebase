@@ -10,7 +10,7 @@ import {
   GiftedChatReply
 } from '../../entities'
 
-export const onQuickReplyEvents = functions.https.onCall(async (data, context) => {
+export const onQuickReplyEvent = functions.https.onCall(async (data, context) => {
   const roomID = data.roomID as string
   const eventType = data.eventType as EventType
   const replies = data.replies as GiftedChatReply[]

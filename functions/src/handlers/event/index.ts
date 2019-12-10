@@ -1,1 +1,1 @@
-export * from './onQuickReplyEvents'
+export * from './onQuickReplyEvent'

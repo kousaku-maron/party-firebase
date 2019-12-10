@@ -9,6 +9,6 @@ export { entryParty } from './handlers/party'
 export { createUser } from './triggers/user'
 export { createMessage, updateDemoTemp } from './triggers/message'
 
-export { onQuickReplyEvents } from './handlers/event'
+export { onQuickReplyEvent } from './handlers/event'
 
 export { sendEventMessage } from './triggers/event'
