@@ -6,9 +6,8 @@ import {
   createDocument,
   buildEvent,
   updateDocument,
-  UpdateEvent
-  // eventTypeMessages,
-  // EventType
+  UpdateEvent,
+  eventTypeMessages
 } from '../../entities'
 
 const eventPath = 'parties/{partyID}/events/{eventID}'
@@ -23,20 +22,23 @@ export const sendEventMessage = functions.firestore.document(eventPath).onUpdate
   const femalePositiveCount = event.positiveReplies
     .filter(eventReply => eventReply.gender === 'female')
     .map(eventReply => eventReply.count)
-    .reduce((acc, value) => acc + value)
+    .reduce((acc, value) => acc + value, 0)
 
   const malePositiveCount = event.positiveReplies
     .filter(eventReply => eventReply.gender === 'male')
     .map(eventReply => eventReply.count)
-    .reduce((acc, value) => acc + value)
+    .reduce((acc, value) => acc + value, 0)
 
-  if (!event.isSendEventMessage && femalePositiveCount >= event.threshold && malePositiveCount >= event.threshold) {
+  if (
+    !event.isSendEventMessage &&
+    femalePositiveCount >= event.femaleThreshold &&
+    malePositiveCount >= event.maleThreshold
+  ) {
     const roomRef = db.collection('parties').doc(partyID)
     const messagesRef = roomRef.collection('messages')
 
     const message: CreateMessage = {
-      // text: eventTypeMessages[event.name as EventType] && '登録されていないイベントです[Error]',
-      text: '2次会ありの人がそれなりにいるので行きましょう！',
+      text: eventTypeMessages[event.name].activeAnswerMessage ?? '登録されていないイベントです[Error]',
       user: partyMaster,
       writerUID: partyMaster.uid,
       system: true

@@ -21,8 +21,9 @@ export type Event = {
   isSendEventMessage: boolean
   positiveReplies: EventReply[]
   negativeReplies: EventReply[]
-  threshold: number
-  name: string
+  maleThreshold: number
+  femaleThreshold: number
+  name: EventType
   repliedUIDs: string[]
 }
 
@@ -38,7 +39,8 @@ export const buildEvent = (data: firestore.DocumentData) => {
     isSendEventMessage: data.isSendEventMessage,
     positiveReplies: data.positiveReplies,
     negativeReplies: data.negativeReplies,
-    threshold: data.threshold,
+    maleThreshold: data.maleThreshold,
+    femaleThreshold: data.femaleThreshold,
     name: data.name,
     repliedUIDs: data.repliedUIDs
   }
@@ -47,7 +49,7 @@ export const buildEvent = (data: firestore.DocumentData) => {
 
 export const eventTypeMessages = {
   nizikai: {
-    activeAnswerMessage: '２次会ありな人がそれなりにいるのでどうですか？'
+    activeAnswerMessage: 'この後どうする？'
   },
   afterParty: {
     activeAnswerMessage: 'また集まりたい人がそれなりにいるみたいです、また集まりますか？'
