@@ -21,3 +21,8 @@ export const buildUser = (data: firebase.firestore.DocumentData) => {
 
   return newUser
 }
+
+export type UpdateUser = {
+  enabled?: boolean
+  isAccepted?: boolean
+}
