@@ -6,10 +6,9 @@ type Result = {
   error?: any
 }
 
-export const signInFacebook = async (): Promise<Result> => {
+export const signOut = async (): Promise<Result> => {
   try {
-    const provider = new firebase.auth.FacebookAuthProvider()
-    await firebase.auth().signInWithRedirect(provider)
+    await firebase.auth().signOut()
     return { success: true }
   } catch (e) {
     console.warn(e)
