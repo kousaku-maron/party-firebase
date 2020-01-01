@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - .github/workflows/hosting_admin.yml
+      - 'admin/**'
 
 jobs:
   build:
