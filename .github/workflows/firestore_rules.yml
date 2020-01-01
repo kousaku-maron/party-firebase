@@ -1,0 +1,20 @@
+name: Firebase Deploy[firestore:rules]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/firestore_rules.yml
+      - firestore.rules
+
+jobs:
+  deploy:
+    name: Deploy for Firestore Rules
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Deploy to Firebase
+        run: |
+          yarn add -D firebase-tools
+          ./node_modules/.bin/firebase deploy --only firestore:rules --token=${{ secrets.FIREBASE_TOKEN }}
