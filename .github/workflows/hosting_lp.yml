@@ -1,0 +1,42 @@
+name: Firebase Build and Deploy
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build For Hosting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install Dependencies
+        run: |
+          cd lp
+          yarn
+      - name: Build
+        run: |
+          cd lp
+          yarn build
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: lp-dist
+          path: lp/dist
+  deploy:
+    name: Deploy for Hosting
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: lp-dist
+          path: lp/dist
+      - name: Deploy to Firebase
+        run: |
+          yarn add -D firebase-tools
+          ./node_modules/.bin/firebase deploy --only hosting:lp --token=${{ secrets.FIREBASE_TOKEN }}
