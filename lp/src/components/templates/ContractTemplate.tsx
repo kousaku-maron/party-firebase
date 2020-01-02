@@ -30,7 +30,7 @@ const ContractTemplate: React.FC<Props> = props => {
             <CardHeader title={props.title} />
             <CardContent>{children}</CardContent>
           </Card>
-        </div> 
+        </div>
       </Container>
     </div>
   )
