@@ -12,6 +12,9 @@ jobs:
   build:
     name: Build For Functions
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -37,6 +40,9 @@ jobs:
     name: Deploy for Functions
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
