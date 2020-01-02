@@ -18,9 +18,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+      - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: '8.x'
+          node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: |
           cd functions
@@ -49,9 +50,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+      - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: '8.x'
+          node-version: ${{ matrix.node-version }}
       - name: Download Artifact[lib]
         uses: actions/download-artifact@master
         with:
