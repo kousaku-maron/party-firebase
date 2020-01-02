@@ -30,12 +30,15 @@ const PrivacyContents: React.FC<Props> = ({ size = 'medium' }) => {
     <div>
       <div className={classes.columnWrapper}>
         <Typography className={classes.body}>
-          {company.name}（以下「当社」といいます）は、お客様よりお預かりした個人情報の保護に努めることを社会的責務として、今後も信頼いただける企業を目指すため、個人情報のお取り扱いに関する方針を定め、大切な個人情報の適正な管理と利用、保護に努めております。
-          当社の提供するサービス「{appInfo.name}（以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、以下のとおり当社の個人情報保護方針に基づき本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
+          {company.name}
+          （以下「当社」といいます）は、お客様よりお預かりした個人情報の保護に努めることを社会的責務として、今後も信頼いただける企業を目指すため、個人情報のお取り扱いに関する方針を定め、大切な個人情報の適正な管理と利用、保護に努めております。
+          当社の提供するサービス「{appInfo.name}
+          （以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、以下のとおり当社の個人情報保護方針に基づき本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
         </Typography>
         <div className={classes.divider} />
         <Typography className={classes.body}>
-          当社の提供するサービス「{appInfo.name}（以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
+          当社の提供するサービス「{appInfo.name}
+          （以下「本サービス」といいます）」における、お客様についての個人情報を含む利用者情報の取扱いについて、本サービスのプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
         </Typography>
       </div>
 
@@ -389,7 +392,8 @@ const PrivacyContents: React.FC<Props> = ({ size = 'medium' }) => {
         <Typography className={classes.body}>E-mail: {company.email}</Typography>
         <div className={classes.divider} />
         <Typography className={classes.body}>
-          {company.privacyEstablishedAt.getFullYear()}年{company.privacyEstablishedAt.getMonth() + 1}月{company.privacyEstablishedAt.getDate()}日 制定・施行
+          {company.privacyEstablishedAt.getFullYear()}年{company.privacyEstablishedAt.getMonth() + 1}月
+          {company.privacyEstablishedAt.getDate()}日 制定・施行
         </Typography>
       </div>
     </div>
