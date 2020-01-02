@@ -19,10 +19,16 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8.x'
         run: |
           cd functions
           yarn
       - name: Build
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8.x'
         run: |
           cd functions
           yarn build
@@ -57,6 +63,9 @@ jobs:
           name: functions-node_modules
           path: functions/node_modules
       - name: Deploy to Firebase
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8.x'
         run: |
           yarn add -D firebase-tools
           ./node_modules/.bin/firebase deploy --only functions --token=${{ secrets.FIREBASE_TOKEN }} --non-interactive -f
