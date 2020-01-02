@@ -21,8 +21,13 @@ service cloud.firestore {
   }
 
   match /databases/{database}/documents {
+    // MEMO: get(...)あまり使いたくない。
+    function getUser() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid))
+    }
+
     match /users/{uid} {
-      allow update: if isUserAuthenticated(uid) && isAcceptUpdateUser();
+      allow update: if (isUserAuthenticated(uid) && isAcceptUpdateUser()) || 'admin' in getUser().data.roles;
       allow read: if isAuthenticated();
 
       match /options/secure {
