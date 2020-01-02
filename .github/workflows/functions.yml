@@ -35,11 +35,12 @@ jobs:
         with:
           name: functions-lib
           path: functions/lib
-      - name: Archive Production Artifact[node_modules]
-        uses: actions/upload-artifact@master
-        with:
-          name: functions-node_modules
-          path: functions/node_modules
+      # node_modulesをアップロードする処理が重いため、毎度手動でインストールさせる。
+      # - name: Archive Production Artifact[node_modules]
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: functions-node_modules
+      #     path: functions/node_modules
   deploy:
     name: Deploy for Functions
     needs: build
@@ -54,16 +55,22 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      # node_modulesをアップロードする処理が重いため、毎度手動でインストールさせる。
+      - name: Install Dependencies
+        run: |
+          cd functions
+          yarn
       - name: Download Artifact[lib]
         uses: actions/download-artifact@master
         with:
           name: functions-lib
           path: functions/lib
-      - name: Download Artifact[node_modules]
-        uses: actions/download-artifact@master
-        with:
-          name: functions-node_modules
-          path: functions/node_modules
+      # node_modulesをアップロードする処理が重いため、毎度手動でインストールさせる。
+      # - name: Download Artifact[node_modules]
+      #   uses: actions/download-artifact@master
+      #   with:
+      #     name: functions-node_modules
+      #     path: functions/node_modules
       - name: Deploy to Firebase
         run: |
           yarn add -D firebase-tools
