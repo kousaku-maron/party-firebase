@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8.x'
       - name: Install Dependencies
         run: |
           cd functions
@@ -46,6 +49,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+        uses: actions/setup-node@v1
+        with:
+          node-version: '8.x'
       - name: Download Artifact[lib]
         uses: actions/download-artifact@master
         with:
