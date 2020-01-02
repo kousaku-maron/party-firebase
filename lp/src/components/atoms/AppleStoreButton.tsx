@@ -20,7 +20,7 @@ const AppleStoreButton = ({ width = 120, height = 50, onClick }: Props) => {
   )
 }
 
-const useStyles = ({ width, height }: { width: number, height: number }) =>
+const useStyles = ({ width, height }: { width: number; height: number }) =>
   makeStyles(() =>
     createStyles({
       container: {

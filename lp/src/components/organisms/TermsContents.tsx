@@ -30,7 +30,8 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
     <div>
       <div className={classes.columnWrapper}>
         <Typography className={classes.body}>
-          この規約（以下「本規約」といいます）は、{company.name}（以下「当社」といいます）が提供する{appInfo.name}に関する全てのサービス（以下「本サービス」といいます）の利用に関する条件を、本サービスを利用するお客様（以下「利用者」といいます）と当社との間で定めるものです。
+          この規約（以下「本規約」といいます）は、{company.name}（以下「当社」といいます）が提供する{appInfo.name}
+          に関する全てのサービス（以下「本サービス」といいます）の利用に関する条件を、本サービスを利用するお客様（以下「利用者」といいます）と当社との間で定めるものです。
         </Typography>
       </div>
 
@@ -70,8 +71,7 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           <Typography variant={subTitleVariant}>第3条　本サービスの内容</Typography>
         </div>
         <Typography className={classes.body}>
-          本サービスは、日本在住の男女を対象とした、
-          20歳以上の方の飲み会メンバー探しをサポートするサービスです。
+          本サービスは、日本在住の男女を対象とした、 20歳以上の方の飲み会メンバー探しをサポートするサービスです。
           本サービスは、一部のサービスおよび機能を、無料でご利用いただけます。 飲み会メンバー探しのために、
           有料の機能をお使いいただくことをお勧めしています。なお、本サービスは飲み会メンバーを見つけることを保証するものではありません。
         </Typography>
@@ -252,7 +252,8 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="5." pinSize={24} className={classes.body}>
-          利用者以外の自然人・法人・団体・組織等の第三者（以下、「第三者」といいます）に自己の{appInfo.name}アカウントを譲渡して、本サービスを利用させる行為
+          利用者以外の自然人・法人・団体・組織等の第三者（以下、「第三者」といいます）に自己の{appInfo.name}
+          アカウントを譲渡して、本サービスを利用させる行為
         </PinnedTypography>
         <div className={classes.divider} />
         <PinnedTypography pin="6." pinSize={24} className={classes.body}>
@@ -691,7 +692,8 @@ const TermsContents: React.FC<Props> = ({ size = 'medium' }) => {
           <Typography variant={subTitleVariant}>第27条　附則</Typography>
         </div>
         <Typography className={classes.body}>
-          {company.privacyEstablishedAt.getFullYear()}年{company.privacyEstablishedAt.getMonth() + 1}月{company.privacyEstablishedAt.getDate()}日 制定・施行
+          {company.privacyEstablishedAt.getFullYear()}年{company.privacyEstablishedAt.getMonth() + 1}月
+          {company.privacyEstablishedAt.getDate()}日 制定・施行
         </Typography>
       </div>
     </div>
