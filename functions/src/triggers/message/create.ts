@@ -1,32 +1,39 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { Expo, ExpoPushMessage } from 'expo-server-sdk'
-import { buildMessage, buildParty, buildSecure } from '../../entities'
+import { buildMessage, buildRoom, buildSecure, updateDocument, UpdateMessage } from '../../entities'
 
 const expo = new Expo()
-const messagePath = 'parties/{partyID}/messages/{messageID}'
+const messagePath = 'rooms/{roomID}/messages/{messageID}'
 
 export const createMessage = functions.firestore.document(messagePath).onCreate(async (snap, context) => {
   if (!snap.exists) {
     return { message: `not exist message`, contents: null }
   }
 
-  const partyID = context.params.partyID
+  const roomID = context.params.roomID
   // const messageID = context.params.messageID
 
-  const message = buildMessage(snap.data()!)
+  const messageSnapshot = await snap.ref.get()
+  if (!messageSnapshot.exists) {
+    return { message: `not exists message` }
+  }
+  const message = buildMessage(messageSnapshot.data()!)
+  if (message.notified) {
+    return { message: 'already send push notification.' }
+  }
 
   const db = firestore()
 
-  const partyRef = db.collection('parties').doc(partyID)
-  const partySnapshot = await partyRef.get()
+  const roomRef = db.collection('rooms').doc(roomID)
+  const roomSnapshot = await roomRef.get()
 
-  if (!partySnapshot.exists) {
-    return { message: `not exits ${partyID} party` }
+  if (!roomSnapshot.exists) {
+    return { message: `not exists ${roomID} room` }
   }
 
-  const party = buildParty(partySnapshot.data()!)
-  const entryUIDs: string[] = party.entryUIDs || []
+  const room = buildRoom(roomSnapshot.data()!)
+  const entryUIDs: string[] = room.entryUIDs || []
 
   // TODO: immutableな書き方にしたい。
   const tokens: string[] = []
@@ -72,6 +79,14 @@ export const createMessage = functions.firestore.document(messagePath).onCreate(
   })
 
   await Promise.all(pushNotificationTask)
+
+  const batch = db.batch()
+
+  batch.set(
+    messageSnapshot.ref,
+    updateDocument<UpdateMessage>({ notified: true }),
+    { merge: true }
+  )
 
   const result = {
     documentID: snap.ref,

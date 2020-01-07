@@ -6,7 +6,7 @@ export type Secure = {
 }
 
 export const buildSecure = (data: firestore.DocumentData) => {
-  const newSecure = {
+  const newSecure: Secure = {
     certificateURL: data.certificateURL,
     pushTokens: data.pushTokens
   }

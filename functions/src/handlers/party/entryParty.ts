@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, EntryParty, buildParty } from '../../entities'
-import { isEmpty, uniq } from 'lodash'
+import { updateDocument, EntryParty } from '../../entities'
 
 export const entryParty = functions.https.onCall(async (data, context) => {
   const partyID = data.partyID as string
@@ -17,12 +16,10 @@ export const entryParty = functions.https.onCall(async (data, context) => {
     return { message: `not exist partyID ${partyID}`, contents: null }
   }
 
-  const party = buildParty(snapshot.data()!)
-
   batch.set(
     partyRef,
     updateDocument<EntryParty>({
-      entryUIDs: isEmpty(party.entryUIDs) ? [uid] : uniq([...party.entryUIDs, uid])
+      entryUIDs: firestore.FieldValue.arrayUnion(uid)
     }),
     { merge: true }
   )

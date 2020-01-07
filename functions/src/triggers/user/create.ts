@@ -8,15 +8,22 @@ export const createUser = functions.auth.user().onCreate(async user => {
   const isAnonymous = user.providerData.length === 0 // MEMO: 匿名認証時は空になっているぽい。
   const name = user.displayName ? user.displayName : ANONYMOUS_USERNAME
 
-  if (!uid) throw new Error('not found uid')
+  if (!uid) {
+    throw new Error('not found uid')
+  }
+
+  const db = firestore()
+
+  const userRef = db.collection('users').doc(uid)
+  const userSnapshot = await userRef.get()
+  if (userSnapshot.exists) {
+    return { message: `already create ${uid} user` }
+  }
 
   const userID = getRandomID()
   const newUser = initialUser({ uid, userID, name, isAnonymous })
-
-  const db = firestore()
+  
   const batch = db.batch()
-
-  const userRef = db.collection('users').doc(uid)
 
   batch.set(
     userRef,
@@ -31,7 +38,6 @@ export const createUser = functions.auth.user().onCreate(async user => {
   )
 
   const secureRef = userRef.collection('options').doc('secure')
-
   batch.set(secureRef, createDocument<Secure>({}))
 
   await batch.commit()

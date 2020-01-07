@@ -12,6 +12,7 @@ export type ReplyType = 'positive' | 'negative'
 export type EventType = 'nizikai' | 'afterParty'
 
 export type EventReply = {
+  repliedUID: string
   gender: 'male' | 'female'
   replies: GiftedChatReply[]
   count: number
