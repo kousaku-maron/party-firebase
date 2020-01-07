@@ -5,7 +5,7 @@ import { createHash } from 'crypto'
 
 const roomPath = 'rooms/{roomID}'
 
-export const updateRoomHash = functions.firestore.document(roomPath).onUpdate(async (change, context) => {
+export const updateRoomHash = functions.firestore.document(roomPath).onUpdate(async (change, _context) => {
   const roomSnapShot = await change.after.ref.get()
   if (!roomSnapShot.exists) {
     throw new Error('not found room')
@@ -14,10 +14,18 @@ export const updateRoomHash = functions.firestore.document(roomPath).onUpdate(as
   const room = buildRoom(roomSnapShot.data()!)
   const currentRoomHash = room.roomHash
 
-  const baseStr = room.entryUIDs ? room.entryUIDs.slice().sort().join('') : ''
-  const newRoomHash = createHash('sha256').update(baseStr, 'utf8').digest('hex')
+  const baseStr = room.entryUIDs
+    ? room.entryUIDs
+        .slice()
+        .sort()
+        .join('')
+    : ''
 
-  if(currentRoomHash === newRoomHash) {
+  const newRoomHash = createHash('sha256')
+    .update(baseStr, 'utf8')
+    .digest('hex')
+
+  if (currentRoomHash === newRoomHash) {
     return {
       message: 'Room hash is already updated.',
       contents: {
