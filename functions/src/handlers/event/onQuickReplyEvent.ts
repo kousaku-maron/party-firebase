@@ -21,8 +21,8 @@ export const onQuickReplyEvent = functions.https.onCall(async (data, context) =>
   const batch = db.batch()
   const uid = context!.auth!.uid
 
-  const partyRef = db.collection('parties').doc(roomID)
-  const eventRef = partyRef.collection('events')
+  const roomRef = db.collection('rooms').doc(roomID)
+  const eventRef = roomRef.collection('events')
 
   //TODO: 今後イベントごとに取得するようにする, partyMasterのuid, userは要相談 あとでpartyMasterアカウントを作って入れる
   const eventsSnapShot = await eventRef.where('name', '==', eventType).get()
@@ -30,11 +30,15 @@ export const onQuickReplyEvent = functions.https.onCall(async (data, context) =>
     return doc.id
   })
 
-  if (eventIDs.length !== 1) throw new Error('eventIDs contains multiple elements')
-  const eventID = eventIDs[0] as string
+  if (eventIDs.length !== 1) {
+    throw new Error('eventIDs contains multiple elements')
+  }
 
+  const eventID = eventIDs[0] as string
   const eventSnapShot = await eventRef.doc(eventID).get()
-  if (!eventSnapShot.exists) throw new Error('not found event')
+  if (!eventSnapShot.exists) {
+    throw new Error('not found event')
+  }
 
   const event = buildEvent(eventSnapShot.data()!)
 
@@ -43,8 +47,8 @@ export const onQuickReplyEvent = functions.https.onCall(async (data, context) =>
       message: 'You have already quick replied.',
       contents: [
         {
-          documentID: partyRef.id,
-          path: partyRef.path,
+          documentID: roomRef.id,
+          path: roomRef.path,
           value: false
         }
       ]
@@ -52,6 +56,7 @@ export const onQuickReplyEvent = functions.https.onCall(async (data, context) =>
   }
 
   const storeEventReply: EventReply = {
+    repliedUID: uid,
     gender,
     replies,
     count: 1
@@ -70,8 +75,8 @@ export const onQuickReplyEvent = functions.https.onCall(async (data, context) =>
   await batch.commit()
 
   const result = {
-    documentID: partyRef.id,
-    path: partyRef.path,
+    documentID: roomRef.id,
+    path: roomRef.path,
     value: true
   }
 
