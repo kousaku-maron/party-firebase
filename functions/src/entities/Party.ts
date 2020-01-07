@@ -9,7 +9,7 @@ export type Party = {
 }
 
 export const buildParty = (data: firestore.DocumentData) => {
-  const newParty = {
+  const newParty: Party = {
     name: data.name,
     thumbnailURL: data.thumbnailURL,
     enabled: data.enabled,
@@ -19,4 +19,4 @@ export const buildParty = (data: firestore.DocumentData) => {
   return newParty
 }
 
-export type EntryParty = Pick<Party, 'entryUIDs'>
+export type EntryParty = { entryUIDs: firestore.FieldValue }
