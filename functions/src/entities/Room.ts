@@ -16,3 +16,5 @@ export const buildRoom = (data: firestore.DocumentData) => {
   }
   return newRoom
 }
+
+export type UpdateRoom = Pick<Room, 'roomHash'>

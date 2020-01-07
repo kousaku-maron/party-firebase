@@ -12,3 +12,5 @@ export { createMessage } from './triggers/message'
 export { onQuickReplyEvent } from './handlers/event'
 
 export { sendEventMessage } from './triggers/event'
+
+export { updateRoomHash } from './triggers/room'
