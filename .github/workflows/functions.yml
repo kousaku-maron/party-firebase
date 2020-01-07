@@ -59,7 +59,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd functions
-          yarn
+          yarn --ignore-engines # semver@7.1.1でバージョンエラーが起きるので一時的に無視させる。
       - name: Download Artifact[lib]
         uses: actions/download-artifact@master
         with:
