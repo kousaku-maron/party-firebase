@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8]
+        node-version: [10]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [8]
+        node-version: [10]
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
@@ -59,7 +59,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd functions
-          yarn --ignore-engines # semver@7.1.1でバージョンエラーが起きるので一時的に無視させる。
+          yarn
       - name: Download Artifact[lib]
         uses: actions/download-artifact@master
         with:
