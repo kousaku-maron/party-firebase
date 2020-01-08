@@ -8,6 +8,8 @@ export { createUser } from './triggers/user'
 
 export { entryParty } from './handlers/party'
 
+export { updateRoomHash } from './triggers/room'
+
 export { createMessage, updateMessageUser } from './triggers/message'
 
 export { onQuickReplyEvent } from './handlers/event'

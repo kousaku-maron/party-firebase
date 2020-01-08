@@ -25,7 +25,7 @@ export const updateMessageUser = functions.firestore.document(userPath).onUpdate
     isAnonymous: user.isAnonymous,
     uid: user.uid,
     userID: user.userID,
-    name: user.name,
+    ...(user.name && { name: user.name }),
     ...(user.thumbnailURL && { thumbnailURL: user.thumbnailURL }),
     ...(user.gender && { gender: user.gender })
   }
