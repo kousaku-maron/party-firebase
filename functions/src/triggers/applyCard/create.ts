@@ -57,5 +57,5 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
     value: groupAfter
   }
 
-  return { message: 'Apply Cards are created or deleted successfully', contents: [result] }
+  return { message: 'Apply Cards are created successfully', contents: [result] }
 })
