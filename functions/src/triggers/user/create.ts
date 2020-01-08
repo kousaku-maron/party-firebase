@@ -22,7 +22,7 @@ export const createUser = functions.auth.user().onCreate(async user => {
 
   const userID = getRandomID()
   const newUser = initialUser({ uid, userID, name, isAnonymous })
-  
+
   const batch = db.batch()
 
   batch.set(

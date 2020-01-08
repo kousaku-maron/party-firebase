@@ -58,4 +58,6 @@ export type CreateMessage = Pick<
   'text' | 'user' | 'writerUID' | 'system' | 'quickReplies' | 'imageURL' | 'videoURL' | 'notified'
 >
 
-export type UpdateMessage = Pick<Message, 'notified'>
+export type UpdateMessage = Pick<Message, 'user'> & {
+  notified?: boolean
+}
