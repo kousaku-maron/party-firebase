@@ -8,7 +8,7 @@ export { createUser } from './triggers/user'
 
 export { entryParty } from './handlers/party'
 
-export { createApplyCard } from './triggers/applyCard'
+export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
 
 export { updateRoomHash } from './triggers/room'
 

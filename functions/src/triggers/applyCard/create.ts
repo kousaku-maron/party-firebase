@@ -23,49 +23,31 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
 
   const newAppliedUIDs = difference(groupAfter.appliedUIDs, groupBefore.appliedUIDs)
   const applyCardsAfterRef = db.collection('users').doc(groupAfter.organizerUID).collection('appliedCards')
-  
-  if(newAppliedUIDs.length > 0) {
-    const task = newAppliedUIDs.map(async uid => {
-      const userRef = db.collection('users').doc(uid)
-      const userSnapShot = await userRef.get()
-      if(!userSnapShot.exists) return
 
-      const user = buildUser(userSnapShot.data()!)
-      
-      batch.set(
-        applyCardsAfterRef.doc(),
-        createDocument<ApplyCard>({
-          partyID,
-          groupID,
-          organizerUID: uid,
-          users: [user]
-        }),
-        { merge: true }
-      )
-    })
-
-    await Promise.all(task)
+  if(newAppliedUIDs.length === 0) {
+    return { message: 'There are no apply cards to create.', contents: null }
   }
-  
-  const deleteAppliedUIDs = difference(groupBefore.appliedUIDs, groupAfter.appliedUIDs)
-  const applyCardsBeforeRef = db.collection('users').doc(groupBefore.organizerUID).collection('appliedCards')
 
-  if(deleteAppliedUIDs.length > 0) {
-    const task = deleteAppliedUIDs.map(async uid => {
-      const targetCardsRef = applyCardsBeforeRef
-        .where('partyID', '==', partyID)
-        .where('groupID', '==', groupID)
-        .where('organizerUID', '==', uid)
+  const task = newAppliedUIDs.map(async uid => {
+    const userRef = db.collection('users').doc(uid)
+    const userSnapShot = await userRef.get()
+    if(!userSnapShot.exists) return
 
-      const targetCardsSnapShot = await targetCardsRef.get()
-      if(targetCardsSnapShot.docs.length !== 1) return
+    const user = buildUser(userSnapShot.data()!)
+    
+    batch.set(
+      applyCardsAfterRef.doc(),
+      createDocument<ApplyCard>({
+        partyID,
+        groupID,
+        organizerUID: uid,
+        users: [user]
+      }),
+      { merge: true }
+    )
+  })
 
-      const targetCardRef = targetCardsSnapShot.docs[0].ref
-      batch.delete(targetCardRef)
-    })
-
-    await Promise.all(task)
-  }
+  await Promise.all(task)
 
   await batch.commit()
 
