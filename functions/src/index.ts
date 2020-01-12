@@ -8,6 +8,8 @@ export { createUser } from './triggers/user'
 
 export { entryParty } from './handlers/party'
 
+export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
+
 export { updateRoomHash } from './triggers/room'
 
 export { createMessage, updateMessageUser } from './triggers/message'
