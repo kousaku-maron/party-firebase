@@ -33,6 +33,10 @@ service cloud.firestore {
       match /options/secure {
         allow read, write: if isUserAuthenticated(uid);
       }
+
+      match /appliedCards/{appliedCardID} {
+        allow read, delete: if isUserAuthenticated(uid);
+      }
     }
 
     match /parties/{partyID} {
@@ -41,23 +45,25 @@ service cloud.firestore {
       match /groups/{groupID} {
         allow read, write: if isAuthenticated();
         
+        // TODO: 構成決まったら{document=**}を使わない書き方に変える。
         match /{document=**} {
           allow read: if isAuthenticated();
         }
-        match /members/{memberID}{
+
+        match /members/{memberID} {
           allow write: if isAuthenticated();
         }
       }
     }
 
     match /rooms/{roomID} {
-      allow read: if isAuthenticated();
+      allow read, write: if isAuthenticated();
 
       match /messages/{messageID} {
         allow read: if isAuthenticated();
         allow write: if isAuthenticated() && isAcceptCreateMessage();
       }
-      
+
       match /events/{eventsID} {
         allow read, write: if isAuthenticated();
       }
