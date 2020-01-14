@@ -15,26 +15,30 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partyID = context.params.partyID
   const groupID = context.params.groupID
 
-  const groupBefore = buildGroup(groupBeforeSnapShot.data()!)
-  const groupAfter = buildGroup(groupAfterSnapShot.data()!)
+  const groupBefore = buildGroup(change.before.data()!)
+  const groupAfter = buildGroup(change.after.data()!)
 
   const db = firestore()
   const batch = db.batch()
 
   const newAppliedUIDs = difference(groupAfter.appliedUIDs, groupBefore.appliedUIDs)
-  const applyCardsAfterRef = db.collection('users').doc(groupAfter.organizerUID).collection('appliedCards')
 
-  if(newAppliedUIDs.length === 0) {
+  const applyCardsAfterRef = db
+    .collection('users')
+    .doc(groupAfter.organizerUID)
+    .collection('appliedCards')
+
+  if (newAppliedUIDs.length === 0) {
     return { message: 'There are no apply cards to create.', contents: null }
   }
 
   const task = newAppliedUIDs.map(async uid => {
     const userRef = db.collection('users').doc(uid)
     const userSnapShot = await userRef.get()
-    if(!userSnapShot.exists) return
+    if (!userSnapShot.exists) return
 
     const user = buildUser(userSnapShot.data()!)
-    
+
     batch.set(
       applyCardsAfterRef.doc(),
       createDocument<ApplyCard>({
