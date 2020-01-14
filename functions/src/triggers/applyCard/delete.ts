@@ -15,16 +15,19 @@ export const deleteApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partyID = context.params.partyID
   const groupID = context.params.groupID
 
-  const groupBefore = buildGroup(groupBeforeSnapShot.data()!)
-  const groupAfter = buildGroup(groupAfterSnapShot.data()!)
+  const groupBefore = buildGroup(change.before.data()!)
+  const groupAfter = buildGroup(change.after.data()!)
 
   const db = firestore()
   const batch = db.batch()
- 
-  const deleteAppliedUIDs = difference(groupBefore.appliedUIDs, groupAfter.appliedUIDs)
-  const applyCardsBeforeRef = db.collection('users').doc(groupBefore.organizerUID).collection('appliedCards')
 
-  if(deleteAppliedUIDs.length === 0) {
+  const deleteAppliedUIDs = difference(groupBefore.appliedUIDs, groupAfter.appliedUIDs)
+  const applyCardsBeforeRef = db
+    .collection('users')
+    .doc(groupBefore.organizerUID)
+    .collection('appliedCards')
+
+  if (deleteAppliedUIDs.length === 0) {
     return { message: 'There are no apply cards to delete.', contents: null }
   }
 
@@ -35,7 +38,7 @@ export const deleteApplyCard = functions.firestore.document(groupPath).onUpdate(
       .where('organizerUID', '==', uid)
 
     const targetCardsSnapShot = await targetCardsRef.get()
-    if(targetCardsSnapShot.docs.length !== 1) return
+    if (targetCardsSnapShot.docs.length !== 1) return
 
     const targetCardRef = targetCardsSnapShot.docs[0].ref
     batch.delete(targetCardRef)
