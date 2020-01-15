@@ -8,7 +8,7 @@
   },
   "hosting": [
     {
-      "target": "nomoca-lp",
+      "target": "lp",
       "public": "lp/dist/",
       "rewrites": [
         {
