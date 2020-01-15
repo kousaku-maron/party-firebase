@@ -1,4 +1,4 @@
-name: Firebase Build and Deploy[hosting:nomoca-lp]
+name: Firebase Build and Deploy Dev[hosting:lp]
 on:
   push:
     branches:
@@ -49,4 +49,4 @@ jobs:
       - name: Deploy to Firebase
         run: |
           yarn add -D firebase-tools
-          ./node_modules/.bin/firebase deploy --only hosting:nomoca-lp --token=${{ secrets.FIREBASE_TOKEN }}
+          ./node_modules/.bin/firebase deploy --only hosting:nomoca-lp --token=${{ secrets.FIREBASE_TOKEN }} --project default
