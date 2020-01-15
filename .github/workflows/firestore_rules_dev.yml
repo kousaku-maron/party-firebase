@@ -1,4 +1,4 @@
-name: Firebase Deploy[firestore:rules]
+name: Firebase Deploy Dev[firestore:rules]
 on:
   push:
     branches:
@@ -17,4 +17,4 @@ jobs:
       - name: Deploy to Firebase
         run: |
           yarn add -D firebase-tools
-          ./node_modules/.bin/firebase deploy --only firestore:rules --token=${{ secrets.FIREBASE_TOKEN }}
+          ./node_modules/.bin/firebase deploy --only firestore:rules --token=${{ secrets.FIREBASE_TOKEN }} --project default
