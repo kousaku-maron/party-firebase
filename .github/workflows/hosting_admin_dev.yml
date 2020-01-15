@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/hosting_admin.yml
+      - .github/workflows/hosting_admin_dev.yml
       - 'admin/**'
 
 jobs:

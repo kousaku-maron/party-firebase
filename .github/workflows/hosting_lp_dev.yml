@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/hosting_lp.yml
+      - .github/workflows/hosting_lp_dev.yml
       - 'lp/**'
 
 jobs:
