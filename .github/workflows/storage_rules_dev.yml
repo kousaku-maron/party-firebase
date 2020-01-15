@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/storage_rules.yml
+      - .github/workflows/storage_rules_dev.yml
       - storage.rules
 
 jobs:

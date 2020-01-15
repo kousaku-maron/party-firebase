@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/firestore_rules.yml
+      - .github/workflows/firestore_rules_dev.yml
       - firestore.rules
 
 jobs:

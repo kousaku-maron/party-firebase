@@ -1,15 +1,26 @@
 {
   "projects": {
-    "default": "insta-693eb"
+    "default": "insta-693eb",
+    "stg": "party-stg-3520d"
   },
   "targets": {
     "insta-693eb": {
       "hosting": {
-        "nomoca-lp": [
+        "lp": [
           "nomoca-lp"
         ],
         "admin": [
           "nomoca-admin2"
+        ]
+      }
+    },
+    "party-stg-3520d": {
+      "hosting": {
+        "lp": {
+          "party-lp-stg"
+        },
+        "admin": [
+          "party-admin-stg"
         ]
       }
     }
