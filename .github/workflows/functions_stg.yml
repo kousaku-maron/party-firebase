@@ -1,0 +1,77 @@
+  
+name: Firebase Build and Deploy Stg[functions]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/functions_stg.yml
+      - 'functions/**'
+
+jobs:
+  build:
+    name: Build For Functions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: |
+          cd functions
+          yarn
+      - name: Build
+        run: |
+          cd functions
+          yarn build
+      - name: Archive Production Artifact[lib]
+        uses: actions/upload-artifact@master
+        with:
+          name: functions-lib
+          path: functions/lib
+      # node_modulesをアップロードする処理が重いため、毎度手動でインストールさせる。
+      # - name: Archive Production Artifact[node_modules]
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: functions-node_modules
+      #     path: functions/node_modules
+  deploy:
+    name: Deploy for Functions
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      # node_modulesをアップロードする処理が重いため、毎度手動でインストールさせる。
+      - name: Install Dependencies
+        run: |
+          cd functions
+          yarn
+      - name: Download Artifact[lib]
+        uses: actions/download-artifact@master
+        with:
+          name: functions-lib
+          path: functions/lib
+      # node_modulesをアップロードする処理が重いため、毎度手動でインストールさせる。
+      # - name: Download Artifact[node_modules]
+      #   uses: actions/download-artifact@master
+      #   with:
+      #     name: functions-node_modules
+      #     path: functions/node_modules
+      - name: Deploy to Firebase
+        run: |
+          yarn add -D firebase-tools
+          ./node_modules/.bin/firebase deploy --only functions --token=${{ secrets.FIREBASE_TOKEN }} --project ${{ secrets.STG_PROJECT_ID }} --non-interactive -f
