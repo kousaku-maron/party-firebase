@@ -34,6 +34,10 @@ service cloud.firestore {
         allow read, write: if isUserAuthenticated(uid);
       }
 
+      match /blockUsers/{blockUser} {
+        allow read, write, delete: if isUserAuthenticated(uid);
+      }
+
       match /appliedCards/{appliedCardID} {
         allow read, delete: if isUserAuthenticated(uid);
       }
