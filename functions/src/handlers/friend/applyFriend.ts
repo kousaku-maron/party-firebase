@@ -3,7 +3,7 @@ import { firestore } from 'firebase-admin'
 import { updateDocument, User, UpdateUser, buildUser } from '../../entities'
 
 export const applyFriend = functions.https.onCall(async (data, context) => {
-  const appliedFriendUID = data.appliedFriendUID as string
+  const appliedFriendsUID = data.appliedFriendsUID as string
   const uid = context!.auth!.uid
 
   const db = firestore()
@@ -11,29 +11,30 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
 
   const userRef = db.collection('users')
   const appliedFriendsRef = userRef
-    .doc(appliedFriendUID)
+    .doc(appliedFriendsUID)
     .collection('appliedFriends')
     .doc()
-  const snapshot = await userRef.doc(uid).get()
-  const user = buildUser(snapshot.data()!)
-  const convertedAppliedFriend: User = {
-    enabled: user.enabled,
-    isAccepted: user.isAccepted,
-    isAnonymous: user.isAnonymous,
-    uid: user.uid,
-    userID: user.userID,
-    name: user.name,
-    ...(user.thumbnailURL && { thumbnailURL: user.thumbnailURL }),
-    ...(user.gender && { gender: user.gender }),
-    ...(user.blockUIDs && { blockUIDs: user.blockUIDs }),
-    ...(user.appliedFriendsUIDs && { appliedFriendsUIDs: user.appliedFriendsUIDs }),
-    ...(user.acceptedFriendsUIDs && { acceptedFriendsUIDs: user.acceptedFriendsUIDs })
-  }
 
-  batch.set(appliedFriendsRef, updateDocument<User>(convertedAppliedFriend), { merge: true })
+  const snapshot = await userRef.doc(uid).get()
+  const applyingUser = buildUser(snapshot.data()!)
+
+  const convertedApplyingUser: User = {
+    enabled: applyingUser.enabled,
+    isAccepted: applyingUser.isAccepted,
+    isAnonymous: applyingUser.isAnonymous,
+    uid: applyingUser.uid,
+    userID: applyingUser.userID,
+    name: applyingUser.name,
+    ...(applyingUser.thumbnailURL && { thumbnailURL: applyingUser.thumbnailURL }),
+    ...(applyingUser.gender && { gender: applyingUser.gender }),
+    ...(applyingUser.blockUIDs && { blockUIDs: applyingUser.blockUIDs }),
+    ...(applyingUser.appliedFriendsUIDs && { appliedFriendsUIDs: applyingUser.appliedFriendsUIDs }),
+    ...(applyingUser.acceptedFriendsUIDs && { acceptedFriendsUIDs: applyingUser.acceptedFriendsUIDs })
+  }
+  batch.set(appliedFriendsRef, updateDocument<User>(convertedApplyingUser), { merge: true })
 
   batch.set(
-    userRef.doc(appliedFriendUID),
+    userRef.doc(appliedFriendsUID),
     updateDocument<UpdateUser>({
       appliedFriendsUIDs: firestore.FieldValue.arrayUnion(uid)
     }),

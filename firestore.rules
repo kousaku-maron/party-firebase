@@ -38,6 +38,14 @@ service cloud.firestore {
         allow read, write, delete: if isUserAuthenticated(uid);
       }
 
+      match /appliedFriends/{appliedFriend} {
+        allow read, write, delete: if isUserAuthenticated(uid);
+      }
+
+      match /acceptedFriends/{acceptedFriend} {
+        allow read, write, delete: if isUserAuthenticated(uid);
+      }
+
       match /appliedCards/{appliedCardID} {
         allow read, delete: if isUserAuthenticated(uid);
       }
