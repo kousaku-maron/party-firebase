@@ -6,9 +6,12 @@ export type User = {
   isAnonymous: boolean
   uid: string
   userID: string
-  name?: string
+  name: string
   thumbnailURL?: string
   gender?: string
+  blockUIDs?: string[]
+  appliedFriendUIDs?: string[]
+  friendUIDs?: string[]
 }
 
 export const buildUser = (data: firestore.DocumentData) => {
@@ -20,7 +23,10 @@ export const buildUser = (data: firestore.DocumentData) => {
     userID: data.userID,
     name: data.name,
     thumbnailURL: data.thumbnailURL,
-    gender: data.gender
+    gender: data.gender,
+    blockUIDs: data.blockUIDs,
+    appliedFriendUIDs: data.appliedFriendUIDs,
+    friendUIDs: data.friendUIDs
   }
 
   return newUser
@@ -34,7 +40,7 @@ export const initialUser = ({
 }: {
   uid: string
   userID: string
-  name?: string
+  name: string
   isAnonymous: boolean
 }) => {
   const user: User = {
@@ -61,4 +67,16 @@ export const partyMaster: User = {
   thumbnailURL:
     'https://firebasestorage.googleapis.com/v0/b/insta-693eb.appspot.com/o/users%2FtYwmmOkToqWSY7Eaq07YadJpngA%2Fb5cf6194b4f4e735bcf9d3cbac3de0f0.jpg?alt=media&token=48e7aebf-edf7-4a12-b465-c0d23df3076d',
   gender: 'male'
+}
+
+export type UpdateAppliedFriend = {
+  positiveReplies?: firestore.FieldValue
+  negativeReplies?: firestore.FieldValue
+  repliedUIDs?: firestore.FieldValue
+  isSendEventMessage?: boolean
+}
+
+export type UpdateUser = {
+  appliedFriendUIDs?: firestore.FieldValue
+  friendUIDs?: firestore.FieldValue
 }
