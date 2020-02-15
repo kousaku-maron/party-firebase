@@ -12,26 +12,26 @@ export const acceptFriend = functions.https.onCall(async (data, context) => {
   const userRef = db.collection('users')
   const friendRef = userRef
     .doc(friendUID)
-    .collection('friendUsers')
+    .collection('friends')
     .doc()
 
   const snapshot = await userRef.doc(uid).get()
-  const friendUser = buildUser(snapshot.data()!)
+  const friend = buildUser(snapshot.data()!)
 
-  const convertedFriendUser: User = {
-    enabled: friendUser.enabled,
-    isAccepted: friendUser.isAccepted,
-    isAnonymous: friendUser.isAnonymous,
-    uid: friendUser.uid,
-    userID: friendUser.userID,
-    name: friendUser.name,
-    ...(friendUser.thumbnailURL && { thumbnailURL: friendUser.thumbnailURL }),
-    ...(friendUser.gender && { gender: friendUser.gender }),
-    ...(friendUser.blockUIDs && { blockUIDs: friendUser.blockUIDs }),
-    ...(friendUser.appliedFriendUIDs && { appliedFriendUIDs: friendUser.appliedFriendUIDs }),
-    ...(friendUser.friendUIDs && { friendUIDs: friendUser.friendUIDs })
+  const convertedFriend: User = {
+    enabled: friend.enabled,
+    isAccepted: friend.isAccepted,
+    isAnonymous: friend.isAnonymous,
+    uid: friend.uid,
+    userID: friend.userID,
+    name: friend.name,
+    ...(friend.thumbnailURL && { thumbnailURL: friend.thumbnailURL }),
+    ...(friend.gender && { gender: friend.gender }),
+    ...(friend.blockUIDs && { blockUIDs: friend.blockUIDs }),
+    ...(friend.appliedFriendUIDs && { appliedFriendUIDs: friend.appliedFriendUIDs }),
+    ...(friend.friendUIDs && { friendUIDs: friend.friendUIDs })
   }
-  batch.set(friendRef, updateDocument<User>(convertedFriendUser), { merge: true })
+  batch.set(friendRef, updateDocument<User>(convertedFriend), { merge: true })
 
   batch.set(
     userRef.doc(friendUID),
