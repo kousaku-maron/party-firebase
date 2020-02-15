@@ -10,8 +10,8 @@ export type User = {
   thumbnailURL?: string
   gender?: string
   blockUIDs?: string[]
-  appliedFriendsUIDs?: string[]
-  acceptedFriendsUIDs?: string[]
+  appliedFriendUIDs?: string[]
+  friendUIDs?: string[]
 }
 
 export const buildUser = (data: firestore.DocumentData) => {
@@ -25,8 +25,9 @@ export const buildUser = (data: firestore.DocumentData) => {
     thumbnailURL: data.thumbnailURL,
     gender: data.gender,
     blockUIDs: data.blockUIDs,
-    appliedFriendsUIDs: data.appliedFriendsUIDs,
-    acceptedFriendsUIDs: data.acceptedFriendsUIDs  }
+    appliedFriendUIDs: data.appliedFriendUIDs,
+    friendUIDs: data.friendUIDs
+  }
 
   return newUser
 }
@@ -76,6 +77,6 @@ export type UpdateAppliedFriend = {
 }
 
 export type UpdateUser = {
-  appliedFriendsUIDs?: firestore.FieldValue
-  acceptedFriendsUIDs?: firestore.FieldValue
+  appliedFriendUIDs?: firestore.FieldValue
+  friendUIDs?: firestore.FieldValue
 }

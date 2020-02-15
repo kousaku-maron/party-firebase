@@ -3,16 +3,16 @@ import { firestore } from 'firebase-admin'
 import { updateDocument, User, UpdateUser, buildUser } from '../../entities'
 
 export const applyFriend = functions.https.onCall(async (data, context) => {
-  const appliedFriendsUID = data.appliedFriendsUID as string
+  const appliedFriendUID = data.appliedFriendUID as string
   const uid = context!.auth!.uid
 
   const db = firestore()
   const batch = db.batch()
 
   const userRef = db.collection('users')
-  const appliedFriendsRef = userRef
-    .doc(appliedFriendsUID)
-    .collection('appliedFriends')
+  const appliedFriendRef = userRef
+    .doc(appliedFriendUID)
+    .collection('appliedFriendUsers')
     .doc()
 
   const snapshot = await userRef.doc(uid).get()
@@ -28,15 +28,15 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
     ...(applyingUser.thumbnailURL && { thumbnailURL: applyingUser.thumbnailURL }),
     ...(applyingUser.gender && { gender: applyingUser.gender }),
     ...(applyingUser.blockUIDs && { blockUIDs: applyingUser.blockUIDs }),
-    ...(applyingUser.appliedFriendsUIDs && { appliedFriendsUIDs: applyingUser.appliedFriendsUIDs }),
-    ...(applyingUser.acceptedFriendsUIDs && { acceptedFriendsUIDs: applyingUser.acceptedFriendsUIDs })
+    ...(applyingUser.appliedFriendUIDs && { appliedFriendUIDs: applyingUser.appliedFriendUIDs }),
+    ...(applyingUser.friendUIDs && { friendUIDs: applyingUser.friendUIDs })
   }
-  batch.set(appliedFriendsRef, updateDocument<User>(convertedApplyingUser), { merge: true })
+  batch.set(appliedFriendRef, updateDocument<User>(convertedApplyingUser), { merge: true })
 
   batch.set(
-    userRef.doc(appliedFriendsUID),
+    userRef.doc(appliedFriendUID),
     updateDocument<UpdateUser>({
-      appliedFriendsUIDs: firestore.FieldValue.arrayUnion(uid)
+      appliedFriendUIDs: firestore.FieldValue.arrayUnion(uid)
     }),
     { merge: true }
   )
@@ -44,8 +44,8 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
   await batch.commit()
 
   const result = {
-    documentID: appliedFriendsRef.id,
-    path: appliedFriendsRef.path,
+    documentID: appliedFriendRef.id,
+    path: appliedFriendRef.path,
     value: true
   }
 
