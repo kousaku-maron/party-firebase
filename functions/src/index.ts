@@ -17,4 +17,4 @@ export { createMessage, updateMessageUser } from './triggers/message'
 export { onQuickReplyEvent } from './handlers/event'
 export { sendEventMessage } from './triggers/event'
 
-export { applyFriend } from './handlers/friend'
+export { applyFriend, acceptFriend } from './handlers/friend'
