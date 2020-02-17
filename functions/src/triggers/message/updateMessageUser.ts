@@ -25,9 +25,12 @@ export const updateMessageUser = functions.firestore.document(userPath).onUpdate
     isAnonymous: user.isAnonymous,
     uid: user.uid,
     userID: user.userID,
-    ...(user.name && { name: user.name }),
-    ...(user.thumbnailURL && { thumbnailURL: user.thumbnailURL }),
-    ...(user.gender && { gender: user.gender })
+    name: user.name,
+    thumbnailURL: user.thumbnailURL,
+    gender: user.gender,
+    blockUIDs: user.blockUIDs,
+    appliedFriendUIDs: user.appliedFriendUIDs,
+    friendUIDs: user.friendUIDs
   }
 
   // TODO: 100件でbatchを再回帰的に実行させるようにする。
