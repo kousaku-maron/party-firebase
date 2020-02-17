@@ -30,7 +30,6 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
     blockUIDs: applyingUser.blockUIDs,
     appliedFriendUIDs: applyingUser.appliedFriendUIDs,
     friendUIDs: applyingUser.friendUIDs
-
   }
   batch.set(appliedFriendRef, updateDocument<User>(convertedApplyingUser), { merge: true })
 

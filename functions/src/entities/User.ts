@@ -27,6 +27,7 @@ export const buildUser = (data: firestore.DocumentData) => {
     ...(data.blockUIDs && { blockUIDs: data.blockUIDs }),
     ...(data.appliedFriendUIDs && { appliedFriendUIDs: data.appliedFriendUIDs }),
     ...(data.friendUIDs && { friendUIDs: data.friendUIDs })
+
   }
 
   return newUser
