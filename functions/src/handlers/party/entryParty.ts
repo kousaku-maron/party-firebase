@@ -15,7 +15,7 @@ export const entryParty = functions.https.onCall(async (data, context) => {
   if (!snapshot.exists) {
     return { message: `not exist partyID ${partyID}`, contents: null }
   }
-  console.log(uid)
+
   batch.set(
     partyRef,
     updateDocument<EntryParty>({

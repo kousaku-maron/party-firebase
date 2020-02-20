@@ -26,7 +26,7 @@ export const updateMessageUser = functions.firestore.document(userPath).onUpdate
     messagesSnapshot.docs.map(messageDoc => {
       batch.set(
         messageDoc.ref,
-        updateDocument<UpdateMessage>({ user: user }),
+        updateDocument<UpdateMessage>({ user }),
         { merge: true }
       )
     })

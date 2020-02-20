@@ -64,15 +64,3 @@ export type CreateMessage = Pick<
 export type UpdateMessage = Pick<Message, 'user'> & {
   notified?: boolean
 }
-
-export const partyMaster: User = {
-  enabled: true,
-  isAccepted: true,
-  isAnonymous: false,
-  uid: 'tYwmmOkToqWSY7Eaq07YadJpngA',
-  userID: 'nyIMVTf3oCMK2OT6D9wc',
-  name: 'パーティーマスター　どなちゃん',
-  thumbnailURL:
-    'https://firebasestorage.googleapis.com/v0/b/insta-693eb.appspot.com/o/users%2FtYwmmOkToqWSY7Eaq07YadJpngA%2Fb5cf6194b4f4e735bcf9d3cbac3de0f0.jpg?alt=media&token=48e7aebf-edf7-4a12-b465-c0d23df3076d',
-  gender: 'male'
-}
