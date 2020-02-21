@@ -49,6 +49,11 @@ service cloud.firestore {
       match /appliedCards/{appliedCardID} {
         allow read, delete: if isUserAuthenticated(uid);
       }
+      
+      match /appliedCards/{appliedCardID} {
+        allow read, delete: if isUserAuthenticated(uid);
+      }
+
     }
 
     match /parties/{partyID} {
