@@ -20,3 +20,5 @@ export { sendEventMessage } from './triggers/event'
 export { applyFriend, acceptFriend } from './handlers/friend'
 
 export { reportUser } from './handlers/reports'
+
+export { blockUser } from './handlers/block'

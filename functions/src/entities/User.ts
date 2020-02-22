@@ -9,11 +9,12 @@ export type User = {
   name: string
   thumbnailURL?: string
   gender?: string
-  blockUIDs?: string[]
   appliedFriendUIDs?: string[]
   friendUIDs?: string[]
   reportUserUIDs?: string[]
   reportedUserUIDs?: string[]
+  blockUserUIDs?: string[]
+  blockedUserUIDs?: string[]
 }
 
 export const buildUser = (data: firestore.DocumentData) => {
@@ -26,11 +27,12 @@ export const buildUser = (data: firestore.DocumentData) => {
     name: data.name,
     ...(data.thumbnailURL && { thumbnailURL: data.thumbnailURL }),
     ...(data.gender && { gender: data.gender }),
-    ...(data.blockUIDs && { blockUIDs: data.blockUIDs }),
     ...(data.appliedFriendUIDs && { appliedFriendUIDs: data.appliedFriendUIDs }),
     ...(data.friendUIDs && { friendUIDs: data.friendUIDs }),
     ...(data.reportUserUIDs && { reportUserUIDs: data.reportUserUIDs }),
-    ...(data.reportedUserUIDs && { reportedUserUIDs: data.reportedUserUIDs })
+    ...(data.reportedUserUIDs && { reportedUserUIDs: data.reportedUserUIDs }),
+    ...(data.blockUserUIDs && { blockUserUIDs: data.blockUserUIDs }),
+    ...(data.blockedUserUIDs && { blockedUserUIDs: data.blockedUserUIDs })
   }
 
   return newUser
@@ -73,6 +75,8 @@ export type UpdateUser = {
   friendUIDs?: firestore.FieldValue
   reportUserUIDs?: firestore.FieldValue
   reportedUserUIDs?: firestore.FieldValue
+  blockUserUIDs?: firestore.FieldValue
+  blockedUserUIDs?: firestore.FieldValue
 }
 
 export const partyMaster: User = {
