@@ -72,6 +72,7 @@ export type UpdateUser = {
   appliedFriendUIDs?: firestore.FieldValue
   friendUIDs?: firestore.FieldValue
   reportUserUIDs?: firestore.FieldValue
+  reportedUserUIDs?: firestore.FieldValue
 }
 
 export const partyMaster: User = {

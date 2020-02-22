@@ -21,6 +21,12 @@ export const reportUser = functions.https.onCall(async (data, context) => {
     { merge: true }
   )
 
+  batch.set(
+    userRef.doc(reportUserUID),
+    updateDocument<UpdateUser>({ reportedUserUIDs: firestore.FieldValue.arrayUnion(reportedUserUID) }),
+    { merge: true }
+  )
+
   await batch.commit()
 
   const result = {
