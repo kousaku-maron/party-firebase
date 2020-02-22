@@ -18,20 +18,7 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
   const snapshot = await userRef.doc(uid).get()
   const applyingUser = buildUser(snapshot.data()!)
 
-  const convertedApplyingUser: User = {
-    enabled: applyingUser.enabled,
-    isAccepted: applyingUser.isAccepted,
-    isAnonymous: applyingUser.isAnonymous,
-    uid: applyingUser.uid,
-    userID: applyingUser.userID,
-    name: applyingUser.name,
-    ...(applyingUser.thumbnailURL && { thumbnailURL: applyingUser.thumbnailURL }),
-    ...(applyingUser.gender && { gender: applyingUser.gender }),
-    ...(applyingUser.blockUIDs && { blockUIDs: applyingUser.blockUIDs }),
-    ...(applyingUser.appliedFriendUIDs && { appliedFriendUIDs: applyingUser.appliedFriendUIDs }),
-    ...(applyingUser.friendUIDs && { friendUIDs: applyingUser.friendUIDs })
-  }
-  batch.set(appliedFriendRef, updateDocument<User>(convertedApplyingUser), { merge: true })
+  batch.set(appliedFriendRef, updateDocument<User>(applyingUser), { merge: true })
 
   batch.set(
     userRef.doc(appliedFriendUID),

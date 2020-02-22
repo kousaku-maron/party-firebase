@@ -7,9 +7,12 @@ type User = {
   isAnonymous: boolean
   uid: string
   userID: string
-  name?: string
+  name: string
   thumbnailURL?: string
   gender?: string
+  blockUIDs?: string[]
+  appliedFriendUIDs?: string[]
+  friendUIDs?: string[]
 }
 
 export type ApplyCard = {

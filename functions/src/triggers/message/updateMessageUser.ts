@@ -19,17 +19,6 @@ export const updateMessageUser = functions.firestore.document(userPath).onUpdate
   const roomsSnapshot = await roomsRef.where('entryUIDs', 'array-contains', user.uid).get()
   const roomIDs = roomsSnapshot.docs.map(roomDoc => roomDoc.id)
 
-  const messageUser = {
-    enabled: user.enabled,
-    isAccepted: user.isAccepted,
-    isAnonymous: user.isAnonymous,
-    uid: user.uid,
-    userID: user.userID,
-    ...(user.name && { name: user.name }),
-    ...(user.thumbnailURL && { thumbnailURL: user.thumbnailURL }),
-    ...(user.gender && { gender: user.gender })
-  }
-
   // TODO: 100件でbatchを再回帰的に実行させるようにする。
   const tasks = roomIDs.map(async roomID => {
     const messagesRef = roomsRef.doc(roomID).collection('messages')
@@ -37,7 +26,7 @@ export const updateMessageUser = functions.firestore.document(userPath).onUpdate
     messagesSnapshot.docs.map(messageDoc => {
       batch.set(
         messageDoc.ref,
-        updateDocument<UpdateMessage>({ user: messageUser }),
+        updateDocument<UpdateMessage>({ user }),
         { merge: true }
       )
     })
