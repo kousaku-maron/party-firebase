@@ -9,12 +9,13 @@ export type User = {
   name: string
   thumbnailURL?: string
   gender?: string
+  blockUIDs?: string[]
+  blockedUIDs?: string[]
+  applyFriendUIDs?: string[]
   appliedFriendUIDs?: string[]
   friendUIDs?: string[]
-  reportUserUIDs?: string[]
-  reportedUserUIDs?: string[]
-  blockUserUIDs?: string[]
-  blockedUserUIDs?: string[]
+  reportUIDs?: string[]
+  reportedUIDs?: string[]
 }
 
 export const buildUser = (data: firestore.DocumentData) => {
@@ -27,12 +28,13 @@ export const buildUser = (data: firestore.DocumentData) => {
     name: data.name,
     ...(data.thumbnailURL && { thumbnailURL: data.thumbnailURL }),
     ...(data.gender && { gender: data.gender }),
+    ...(data.blockUIDs && { blockUIDs: data.blockUIDs }),
+    ...(data.blockedUIDs && { blockedUIDs: data.blockedUIDs }),
+    ...(data.applyFriendUIDs && { applyFriendUIDs: data.applyFriendUIDs }),
     ...(data.appliedFriendUIDs && { appliedFriendUIDs: data.appliedFriendUIDs }),
     ...(data.friendUIDs && { friendUIDs: data.friendUIDs }),
-    ...(data.reportUserUIDs && { reportUserUIDs: data.reportUserUIDs }),
-    ...(data.reportedUserUIDs && { reportedUserUIDs: data.reportedUserUIDs }),
-    ...(data.blockUserUIDs && { blockUserUIDs: data.blockUserUIDs }),
-    ...(data.blockedUserUIDs && { blockedUserUIDs: data.blockedUserUIDs })
+    ...(data.reportUIDs && { reportUIDs: data.reportUIDs }),
+    ...(data.reportedUIDs && { reportedUIDs: data.reportedUIDs })
   }
 
   return newUser
@@ -71,12 +73,13 @@ export type UpdateAppliedFriend = {
 }
 
 export type UpdateUser = {
+  blockUIDs?: firestore.FieldValue
+  blockedUIDs?: firestore.FieldValue
+  applyFriendUIDs?: firestore.FieldValue
   appliedFriendUIDs?: firestore.FieldValue
   friendUIDs?: firestore.FieldValue
-  reportUserUIDs?: firestore.FieldValue
-  reportedUserUIDs?: firestore.FieldValue
-  blockUserUIDs?: firestore.FieldValue
-  blockedUserUIDs?: firestore.FieldValue
+  reportUIDs?: firestore.FieldValue
+  reportedUIDs?: firestore.FieldValue
 }
 
 export const partyMaster: User = {

@@ -38,18 +38,22 @@ service cloud.firestore {
         allow read, write, delete: if isUserAuthenticated(uid);
       }
 
+      match /blockedUsers/{blockedUser} {
+        allow read, write, delete: if isUserAuthenticated(uid);
+      }
+
+      match /applyFriendUsers/{applyFriendUser} {
+        allow read, write, delete: if isUserAuthenticated(uid);
+      }
+
       match /appliedFriendUsers/{appliedFriendUser} {
         allow read, write, delete: if isUserAuthenticated(uid);
       }
 
-      match /friendUsers/{friendUser} {
+      match /friends/{friend} {
         allow read, write, delete: if isUserAuthenticated(uid);
       }
 
-      match /appliedCards/{appliedCardID} {
-        allow read, delete: if isUserAuthenticated(uid);
-      }
-      
       match /appliedCards/{appliedCardID} {
         allow read, delete: if isUserAuthenticated(uid);
       }
@@ -84,6 +88,9 @@ service cloud.firestore {
       match /events/{eventsID} {
         allow read, write: if isAuthenticated();
       }
+    }
+    match /reports/{report} {
+      allow read, write: if isAuthenticated();
     }
   }
 }

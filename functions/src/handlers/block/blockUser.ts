@@ -4,40 +4,40 @@ import { updateDocument, User, UpdateUser, buildUser } from '../../entities'
 
 export const blockUser = functions.https.onCall(async (data, context) => {
   const uid = context!.auth!.uid
-  const blockUserUID = uid
-  const blockedUserUID = data.blockedUserUID as string
+  const blockUID = uid
+  const blockedUID = data.blockedUID as string
 
   const db = firestore()
   const batch = db.batch()
 
   const userRef = db.collection('users')
   const blockedUserRef = userRef
-    .doc(blockedUserUID)
-    .collection('blockedUser')
-    .doc(blockedUserUID)
+    .doc(blockUID)
+    .collection('blockedUsers')
+    .doc(blockedUID)
 
-  const blockedUserSnapShot = await userRef.doc(blockedUserUID).get()
-  const blockedUser = buildUser(blockedUserSnapShot)
+  const blockedUserSnapShot = await userRef.doc(blockedUID).get()
+  const blockedUser = buildUser(blockedUserSnapShot.data()!)
 
   batch.set(blockedUserRef, updateDocument<User>(blockedUser), { merge: true })
   batch.set(
-    userRef.doc(blockUserUID),
-    updateDocument<UpdateUser>({ blockedUserUIDs: firestore.FieldValue.arrayUnion(blockedUserUID) }),
+    userRef.doc(blockUID),
+    updateDocument<UpdateUser>({ blockedUIDs: firestore.FieldValue.arrayUnion(blockedUID) }),
     { merge: true }
   )
 
   const blockUserRef = userRef
-    .doc(blockedUserUID)
-    .collection('blockUser')
-    .doc(blockedUserUID)
+    .doc(blockedUID)
+    .collection('blockUsers')
+    .doc(blockUID)
 
-  const blockUserSnapShot = await userRef.doc(blockUserUID).get()
-  const blockUser = buildUser(blockUserSnapShot)
+  const blockUserSnapShot = await userRef.doc(blockUID).get()
+  const blockUser = buildUser(blockUserSnapShot.data()!)
 
   batch.set(blockUserRef, updateDocument<User>(blockUser), { merge: true })
   batch.set(
-    userRef.doc(blockedUserUID),
-    updateDocument<UpdateUser>({ blockUserUIDs: firestore.FieldValue.arrayUnion(blockUserUID) }),
+    userRef.doc(blockedUID),
+    updateDocument<UpdateUser>({ blockUIDs: firestore.FieldValue.arrayUnion(blockUID) }),
     { merge: true }
   )
 
