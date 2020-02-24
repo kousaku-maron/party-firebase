@@ -1,13 +1,12 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, UpdateUser, Report, buildReport } from '../../entities'
+import { updateDocument, UpdateUser, Report } from '../../entities'
 
 export const reportUser = functions.https.onCall(async (data, context) => {
   const uid = context!.auth!.uid
-  const reportUserUID = uid
-  const reportedUserUID = data.reportedUserUID as string
-  const comment = data.comment as string
-  const report = buildReport(reportUserUID, reportedUserUID, comment)
+  const reportUID = uid
+  const report = data.report as Report
+  const reportedUID = report.reportedUID
 
   const db = firestore()
   const batch = db.batch()
@@ -16,14 +15,14 @@ export const reportUser = functions.https.onCall(async (data, context) => {
 
   const userRef = db.collection('users')
   batch.set(
-    userRef.doc(reportedUserUID),
-    updateDocument<UpdateUser>({ reportUserUIDs: firestore.FieldValue.arrayUnion(reportUserUID) }),
+    userRef.doc(reportedUID),
+    updateDocument<UpdateUser>({ reportUIDs: firestore.FieldValue.arrayUnion(reportUID) }),
     { merge: true }
   )
 
   batch.set(
-    userRef.doc(reportUserUID),
-    updateDocument<UpdateUser>({ reportedUserUIDs: firestore.FieldValue.arrayUnion(reportedUserUID) }),
+    userRef.doc(reportUID),
+    updateDocument<UpdateUser>({ reportedUIDs: firestore.FieldValue.arrayUnion(reportedUID) }),
     { merge: true }
   )
 
