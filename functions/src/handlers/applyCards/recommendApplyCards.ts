@@ -39,8 +39,6 @@ export const recommendApplyCards = functions.https.onCall(async () => {
 
   users.map(user => {
     const shuffledGroups: Group[] = shuffleGroups(groups)
-    const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
-
     const recommendedGroups: Group[] = shuffledGroups.slice(0, recommendCardNumber)
 
     recommendedGroups.map(async recommendedGroup => {
@@ -50,6 +48,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
         return buildUser(doc.data()!)
       })
 
+      const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
       batch.set(
         applyCardsRef.doc(recommendedGroup.id),
         createDocument<ApplyCard>({
