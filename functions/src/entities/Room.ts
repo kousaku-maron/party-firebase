@@ -1,6 +1,7 @@
 import { firestore } from 'firebase-admin'
 
 export type Room = {
+  //TODO: id追加
   enabled: boolean
   roomHash: string
   name?: string

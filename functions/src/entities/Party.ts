@@ -1,6 +1,7 @@
 import { firestore } from 'firebase-admin'
 
 export type Party = {
+  id: string
   name: string
   thumbnailURL?: string
   enabled: boolean
@@ -8,8 +9,9 @@ export type Party = {
   entryUIDs?: string[] // 一時的にパラメーター設置。
 }
 
-export const buildParty = (data: firestore.DocumentData) => {
+export const buildParty = (id: string, data: firestore.DocumentData) => {
   const newParty: Party = {
+    id,
     name: data.name,
     thumbnailURL: data.thumbnailURL,
     enabled: data.enabled,

@@ -15,19 +15,33 @@ type User = {
   friendUIDs?: string[]
 }
 
+//same as Party type
+type Party = {
+  id: string
+  name: string
+  thumbnailURL?: string
+  enabled: boolean
+  date: Date
+  entryUIDs?: string[] // 一時的にパラメーター設置。
+}
+
 export type ApplyCard = {
+  id: string
   partyID: string
   groupID: string
   organizerUID: string
   users: User[]
+  party: Party
 }
 
-export const buildApplyCard = (data: firestore.DocumentData) => {
+export const buildApplyCard = (id: string, data: firestore.DocumentData) => {
   const newApplyCard: ApplyCard = {
+    id,
     partyID: data.partyID,
     groupID: data.groupID,
     organizerUID: data.organizerUID,
-    users: data.users
+    users: data.users,
+    party: data.party
   }
 
   return newApplyCard
