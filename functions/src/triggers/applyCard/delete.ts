@@ -15,8 +15,8 @@ export const deleteApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partyID = context.params.partyID
   const groupID = context.params.groupID
 
-  const groupBefore = buildGroup(change.before.data()!)
-  const groupAfter = buildGroup(change.after.data()!)
+  const groupBefore = buildGroup(change.before.id!, change.before.data()!)
+  const groupAfter = buildGroup(change.after.id!, change.after.data()!)
 
   const db = firestore()
   const batch = db.batch()

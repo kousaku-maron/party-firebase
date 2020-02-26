@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { createDocument, buildUser, ApplyCard, buildParty, Group, buildGroup } from '../../entities'
+import { getRandomID } from '../../services/util'
 
 const shuffleGroups = (groups: Group[]) => {
   const newGroups = groups.slice()
@@ -48,11 +49,13 @@ export const recommendApplyCards = functions.https.onCall(async () => {
         return buildUser(doc.data()!)
       })
 
+      const applyCardID = getRandomID()
+
       const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
       batch.set(
         applyCardsRef.doc(recommendedGroup.id),
         createDocument<ApplyCard>({
-          id: recommendedGroup.id,
+          id: applyCardID,
           partyID: tmpYokoHamaPartyID,
           groupID: recommendedGroup.id,
           organizerUID: recommendedGroup.organizerUID,
