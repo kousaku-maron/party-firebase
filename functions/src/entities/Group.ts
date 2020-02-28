@@ -1,27 +1,40 @@
 import { firestore } from 'firebase-admin'
 
 // TODO: 本当に必要なパラメーターのみ保存するよう見直す。
-//TODO: id groupID　どちらを残すか考える
+
+//Same as User
+type User = {
+  enabled: boolean
+  isAccepted: boolean
+  isAnonymous: boolean
+  uid: string
+  userID: string
+  name: string
+  thumbnailURL?: string
+  gender?: string
+  blockUIDs?: string[]
+  blockedUIDs?: string[]
+  applyFriendUIDs?: string[]
+  appliedFriendUIDs?: string[]
+  friendUIDs?: string[]
+  reportUIDs?: string[]
+  reportedUIDs?: string[]
+}
+
 export type Group = {
   id: string
-  organizerUID: string
-  organizerName: string
-  organizerGender: string
-  thumbnailURL?: string
-  enabled: boolean
+  organizer: User
   appliedUIDs: string[]
 }
 
 export const buildGroup = (id: string, data: firestore.DocumentData) => {
   const newGroup: Group = {
     id,
-    organizerUID: data.organizerUID,
-    organizerName: data.organizerName,
-    organizerGender: data.organizerGender,
-    thumbnailURL: data.thumbnailURL,
-    enabled: data.enabled,
+    organizer: data.organizer,
     appliedUIDs: data.appliedUIDs
   }
 
   return newGroup
 }
+
+export type CreateGroup = Omit<Group, 'id'>

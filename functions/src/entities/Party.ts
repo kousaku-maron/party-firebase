@@ -22,3 +22,5 @@ export const buildParty = (id: string, data: firestore.DocumentData) => {
 }
 
 export type EntryParty = { entryUIDs: firestore.FieldValue }
+
+export type CreateParty = Omit<Party, 'id'>

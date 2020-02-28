@@ -24,7 +24,7 @@ export const deleteApplyCard = functions.firestore.document(groupPath).onUpdate(
   const deleteAppliedUIDs = difference(groupBefore.appliedUIDs, groupAfter.appliedUIDs)
   const applyCardsBeforeRef = db
     .collection('users')
-    .doc(groupBefore.organizerUID)
+    .doc(groupBefore.organizer.uid)
     .collection('appliedCards')
 
   if (deleteAppliedUIDs.length === 0) {

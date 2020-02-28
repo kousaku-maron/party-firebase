@@ -6,7 +6,7 @@ export const reportUser = functions.https.onCall(async (data, context) => {
   const uid = context!.auth!.uid
   const reportUID = uid
   const report = data.report as Report
-  const reportedUID = report.reportedUID as string
+  const reportedUID = report.reportedUID
 
   const db = firestore()
   const batch = db.batch()

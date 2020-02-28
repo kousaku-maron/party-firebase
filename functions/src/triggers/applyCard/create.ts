@@ -1,8 +1,15 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { buildGroup, createDocument, ApplyCard, buildUser, buildParty } from '../../entities'
+import {
+  buildGroup,
+  createDocument,
+  CreateApplyCard,
+  buildUser,
+  buildParty,
+  CreateParty,
+  recommendApplyCardType
+} from '../../entities'
 import { difference } from 'lodash'
-import { getRandomID } from '../../services/util'
 
 const groupPath = 'parties/{partyID}/groups/{groupID}'
 
@@ -25,12 +32,15 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partiesRef = db.collection('parties').doc(partyID)
   const partySnapShot = await partiesRef.get()
   const party = buildParty(partiesRef.id!, partySnapShot.data()!)
+  const { id, ...others } = party// eslint-disable-line
+  const omittedParty = { ...others }
+  const createParty: CreateParty = { ...omittedParty }
 
   const newAppliedUIDs = difference(groupAfter.appliedUIDs, groupBefore.appliedUIDs)
 
   const applyCardsAfterRef = db
     .collection('users')
-    .doc(groupAfter.organizerUID)
+    .doc(groupAfter.organizer.uid)
     .collection('appliedCards')
 
   if (newAppliedUIDs.length === 0) {
@@ -43,18 +53,16 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
     if (!userSnapShot.exists) return
 
     const user = buildUser(userSnapShot.data()!)
-    const applyCardID = getRandomID()
 
-    //TODO: あとでpartyをいれる
     batch.set(
       applyCardsAfterRef.doc(),
-      createDocument<ApplyCard>({
-        id: applyCardID,
+      createDocument<CreateApplyCard>({
         partyID,
         groupID,
         organizerUID: uid,
         users: [user],
-        party
+        party: createParty,
+        type: recommendApplyCardType
       }),
       { merge: true }
     )
