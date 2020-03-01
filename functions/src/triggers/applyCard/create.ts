@@ -33,8 +33,7 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partySnapShot = await partiesRef.get()
   const party = buildParty(partiesRef.id!, partySnapShot.data()!)
   const { id, ...others } = party// eslint-disable-line
-  const omittedParty = { ...others }
-  const createParty: CreateParty = { ...omittedParty }
+  const createParty: CreateParty = { ...others }
 
   const newAppliedUIDs = difference(groupAfter.appliedUIDs, groupBefore.appliedUIDs)
 

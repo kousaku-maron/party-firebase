@@ -16,10 +16,9 @@ type User = {
 }
 
 //same as Party type
-//MEMO: Partyのtypeに何入れるか決めていないからとりあえず？にしている
 type Party = {
   name: string
-  type?: string
+  type: string
   thumbnailURL?: string
   enabled: boolean
   date: Date

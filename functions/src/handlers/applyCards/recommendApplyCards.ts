@@ -27,8 +27,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const partySnapShot = await partiesRef.get()
   const party = buildParty(partySnapShot.id!, partySnapShot.data()!)
   const { id, ...others } = party// eslint-disable-line
-  const omittedParty = { ...others }
-  const createParty: CreateParty = { ...omittedParty }
+  const createParty: CreateParty = { ...others }
 
   const groupsRef = partiesRef.collection('groups')
   const groupsSnapShot = await groupsRef.get()
@@ -41,7 +40,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const maximumBatchSize = 500
 
   const usersTasks = users.map(async (user, userIndex) => {
-    const shuffledGroups: Group[] = shuffle(groups)
+    const shuffledGroups: Group[] = shuffle<Group>(groups)
     const recommendedGroups: Group[] = shuffledGroups.slice(0, recommendCardNumber)
     const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
 
