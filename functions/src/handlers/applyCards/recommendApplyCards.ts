@@ -25,6 +25,8 @@ const shuffleGroups = (groups: Group[]) => {
 
 export const recommendApplyCards = functions.https.onCall(async () => {
   const db = firestore()
+  let batch = db.batch()
+
   const usersRef = db.collection('users')
   const usersSnapShot = await usersRef.get()
   const users = usersSnapShot.docs.map((doc: firestore.DocumentData) => {
@@ -48,21 +50,28 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const recommendCardNumber = 3
   const maximumBatchSize = 500
 
-  let batch = db.batch()
-  users.map(async (user, userIndex) => {
+  const usersTasks = users.map(async (user, userIndex) => {
     const shuffledGroups: Group[] = shuffleGroups(groups)
     const recommendedGroups: Group[] = shuffledGroups.slice(0, recommendCardNumber)
+    const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
 
-    recommendedGroups.map(async (recommendedGroup, groupsIndex) => {
+    const oldCardsRef = applyCardsRef.where('type', '==', 'today')
+
+    const oldCardsRefSnapShot = await oldCardsRef.get()
+
+    oldCardsRefSnapShot.docs.map(doc => {
+      const oldCardRef = doc.ref
+      batch.delete(oldCardRef)
+    })
+
+    const groupsTasks = recommendedGroups.map(async (recommendedGroup, groupsIndex) => {
       const membersRef = groupsRef.doc(recommendedGroup.id).collection('members')
       const membersSnapShot = await membersRef.get()
       const members = membersSnapShot.docs.map((doc: firestore.DocumentData) => {
         return buildUser(doc.data()!)
       })
 
-      const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
-
-      if (((groupsIndex + 1) * (userIndex + 1)) % maximumBatchSize == 0) {
+      if (((groupsIndex + 1 + recommendCardNumber) * (userIndex + 1)) % maximumBatchSize == 0) {
         await batch.commit()
         batch = db.batch()
       }
@@ -80,9 +89,12 @@ export const recommendApplyCards = functions.https.onCall(async () => {
         { merge: true }
       )
     })
-
-    await batch.commit()
+    await Promise.all(groupsTasks)
   })
+
+  await Promise.all(usersTasks)
+
+  await batch.commit()
 
   //TODO: 何を入れるか考える
   const result = {
