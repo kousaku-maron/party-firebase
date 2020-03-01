@@ -60,7 +60,7 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
         partyID,
         groupID,
         organizerUID: uid,
-        users: [user],
+        members: [user],
         party: createParty,
         type: recommendApplyCardType
       }),
