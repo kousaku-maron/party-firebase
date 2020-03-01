@@ -22,3 +22,5 @@ export { applyFriend, acceptFriend, refuseFriend } from './handlers/friend'
 export { reportUser } from './handlers/reports'
 
 export { blockUser } from './handlers/block'
+
+export { recommendApplyCards } from './handlers/applyCards'

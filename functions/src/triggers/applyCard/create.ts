@@ -1,6 +1,14 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { buildGroup, createDocument, ApplyCard, buildUser } from '../../entities'
+import {
+  buildGroup,
+  createDocument,
+  CreateApplyCard,
+  buildUser,
+  buildParty,
+  CreateParty,
+  recommendApplyCardType
+} from '../../entities'
 import { difference } from 'lodash'
 
 const groupPath = 'parties/{partyID}/groups/{groupID}'
@@ -15,17 +23,23 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partyID = context.params.partyID
   const groupID = context.params.groupID
 
-  const groupBefore = buildGroup(change.before.data()!)
-  const groupAfter = buildGroup(change.after.data()!)
+  const groupBefore = buildGroup(change.before.id!, change.before.data()!)
+  const groupAfter = buildGroup(change.after.id!, change.after.data()!)
 
   const db = firestore()
   const batch = db.batch()
+
+  const partiesRef = db.collection('parties').doc(partyID)
+  const partySnapShot = await partiesRef.get()
+  const party = buildParty(partiesRef.id!, partySnapShot.data()!)
+  const { id, ...others } = party// eslint-disable-line
+  const createParty: CreateParty = { ...others }
 
   const newAppliedUIDs = difference(groupAfter.appliedUIDs, groupBefore.appliedUIDs)
 
   const applyCardsAfterRef = db
     .collection('users')
-    .doc(groupAfter.organizerUID)
+    .doc(groupAfter.organizer.uid)
     .collection('appliedCards')
 
   if (newAppliedUIDs.length === 0) {
@@ -41,11 +55,13 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
 
     batch.set(
       applyCardsAfterRef.doc(),
-      createDocument<ApplyCard>({
+      createDocument<CreateApplyCard>({
         partyID,
         groupID,
         organizerUID: uid,
-        users: [user]
+        members: [user],
+        party: createParty,
+        type: recommendApplyCardType
       }),
       { merge: true }
     )

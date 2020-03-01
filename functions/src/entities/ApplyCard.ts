@@ -15,20 +15,43 @@ type User = {
   friendUIDs?: string[]
 }
 
+//same as Party type
+type Party = {
+  name: string
+  type: string
+  thumbnailURL?: string
+  enabled: boolean
+  date: Date
+  entryUIDs?: string[] // 一時的にパラメーター設置。
+}
+
+//MEMO: いったんuserはなしにする
 export type ApplyCard = {
+  id: string
   partyID: string
   groupID: string
   organizerUID: string
-  users: User[]
+  members?: User[]
+  party: Party
+  type: string
 }
 
-export const buildApplyCard = (data: firestore.DocumentData) => {
+export const buildApplyCard = (id: string, data: firestore.DocumentData) => {
   const newApplyCard: ApplyCard = {
+    id,
     partyID: data.partyID,
     groupID: data.groupID,
     organizerUID: data.organizerUID,
-    users: data.users
+    members: data.users,
+    party: data.party,
+    type: data.type
   }
 
   return newApplyCard
 }
+
+export type CreateApplyCard = Omit<ApplyCard, 'id'>
+
+//MEMO: 一時的に横浜のIDをとってきています　恐らく将来的には参加しているpartyのIDを使います
+export const recommendApplyCardPartyID = 'ifnY4xa1BmHlf0qdQR2Z'
+export const recommendApplyCardType = 'today'
