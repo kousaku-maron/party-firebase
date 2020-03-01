@@ -11,17 +11,7 @@ import {
   recommendApplyCardPartyID,
   recommendApplyCardType
 } from '../../entities'
-
-const shuffleGroups = (groups: Group[]) => {
-  const newGroups = groups.slice()
-  for (let i = newGroups.length - 1; i >= 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const swapGroup = newGroups[i]
-    newGroups[i] = newGroups[j]
-    newGroups[j] = swapGroup
-  }
-  return newGroups
-}
+import { shuffle } from '../../services/util'
 
 export const recommendApplyCards = functions.https.onCall(async () => {
   const db = firestore()
@@ -51,7 +41,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const maximumBatchSize = 500
 
   const usersTasks = users.map(async (user, userIndex) => {
-    const shuffledGroups: Group[] = shuffleGroups(groups)
+    const shuffledGroups: Group[] = shuffle(groups)
     const recommendedGroups: Group[] = shuffledGroups.slice(0, recommendCardNumber)
     const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
 
@@ -65,12 +55,6 @@ export const recommendApplyCards = functions.https.onCall(async () => {
     })
 
     const groupsTasks = recommendedGroups.map(async (recommendedGroup, groupsIndex) => {
-      const membersRef = groupsRef.doc(recommendedGroup.id).collection('members')
-      const membersSnapShot = await membersRef.get()
-      const members = membersSnapShot.docs.map((doc: firestore.DocumentData) => {
-        return buildUser(doc.data()!)
-      })
-
       if (((groupsIndex + 1 + recommendCardNumber) * (userIndex + 1)) % maximumBatchSize == 0) {
         await batch.commit()
         batch = db.batch()
@@ -82,7 +66,6 @@ export const recommendApplyCards = functions.https.onCall(async () => {
           partyID: recommendApplyCardPartyID,
           groupID: recommendedGroup.id,
           organizerUID: recommendedGroup.organizer.uid,
-          users: members,
           party: createParty,
           type: recommendApplyCardType
         }),

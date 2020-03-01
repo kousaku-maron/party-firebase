@@ -1,7 +1,9 @@
 import { firestore } from 'firebase-admin'
 
+//MEMO: Partyのtypeに何入れるか決めていないからとりあえず？にしている
 export type Party = {
   id: string
+  type?: string
   name: string
   thumbnailURL?: string
   enabled: boolean
@@ -12,6 +14,7 @@ export type Party = {
 export const buildParty = (id: string, data: firestore.DocumentData) => {
   const newParty: Party = {
     id,
+    type: data.type,
     name: data.name,
     thumbnailURL: data.thumbnailURL,
     enabled: data.enabled,

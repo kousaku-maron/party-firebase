@@ -16,20 +16,23 @@ type User = {
 }
 
 //same as Party type
+//MEMO: Partyのtypeに何入れるか決めていないからとりあえず？にしている
 type Party = {
   name: string
+  type?: string
   thumbnailURL?: string
   enabled: boolean
   date: Date
   entryUIDs?: string[] // 一時的にパラメーター設置。
 }
 
+//MEMO: いったんuserはなしにする
 export type ApplyCard = {
   id: string
   partyID: string
   groupID: string
   organizerUID: string
-  users: User[]
+  members?: User[]
   party: Party
   type: string
 }
@@ -40,7 +43,7 @@ export const buildApplyCard = (id: string, data: firestore.DocumentData) => {
     partyID: data.partyID,
     groupID: data.groupID,
     organizerUID: data.organizerUID,
-    users: data.users,
+    members: data.users,
     party: data.party,
     type: data.type
   }
