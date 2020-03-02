@@ -23,7 +23,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const usersRef = db.collection('users')
   const usersSnapShot = await usersRef.get()
   const users = usersSnapShot.docs.map((doc: firestore.DocumentData) => {
-    return buildUser(doc.data()!)
+    return buildUser(doc.id!, doc.data()!)
   })
 
   const partiesRef = db.collection('parties').doc(recommendApplyCardPartyID)
@@ -59,6 +59,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
         await batch.commit()
         batch = db.batch()
       }
+      //MEMO: 将来的に同伴ユーザーも入れることを考えて，membersは配列にしている
       batch.set(
         applyCardsRef.doc(),
         createDocument<CreateApplyCard>({
@@ -67,7 +68,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
           organizerUID: recommendedGroup.organizer.uid,
           party: party,
           type: recommendApplyCardType,
-          users: [recommendedGroup.organizer]
+          members: [recommendedGroup.organizer]
         }),
         { merge: true }
       )

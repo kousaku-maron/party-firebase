@@ -48,7 +48,7 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
     const userSnapShot = await userRef.get()
     if (!userSnapShot.exists) return
 
-    const user = buildUser(userSnapShot.data()!)
+    const user = buildUser(userSnapShot.id!, userSnapShot.data()!)
 
     batch.set(
       applyCardsAfterRef.doc(),
@@ -56,7 +56,7 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
         partyID,
         groupID,
         organizerUID: uid,
-        users: [user],
+        members: [user],
         party: party,
         type: recommendApplyCardType
       }),

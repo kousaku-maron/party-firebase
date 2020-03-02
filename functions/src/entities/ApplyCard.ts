@@ -2,6 +2,7 @@ import { firestore } from 'firebase-admin'
 
 // same origin User type
 type User = {
+  id: string
   enabled: boolean
   isAccepted: boolean
   isAnonymous: boolean
@@ -32,7 +33,7 @@ export type ApplyCard = {
   partyID: string
   groupID: string
   organizerUID: string
-  users: User[]
+  members: User[]
   party: Party
   type: string
 }
@@ -43,7 +44,7 @@ export const buildApplyCard = (id: string, data: firestore.DocumentData) => {
     partyID: data.partyID,
     groupID: data.groupID,
     organizerUID: data.organizerUID,
-    users: data.users,
+    members: data.members,
     party: data.party,
     type: data.type
   }

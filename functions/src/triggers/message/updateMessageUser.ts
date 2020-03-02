@@ -10,7 +10,7 @@ export const updateMessageUser = functions.firestore.document(userPath).onUpdate
     throw new Error('not found user')
   }
 
-  const user = buildUser(userSnapShot.data()!)
+  const user = buildUser(userSnapShot.id!, userSnapShot.data()!)
 
   const db = firestore()
   const batch = db.batch()
