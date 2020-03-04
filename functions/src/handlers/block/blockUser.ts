@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, User, UpdateUser, buildUser } from '../../entities'
+import { updateDocument, CreateUser, UpdateUser, buildUser } from '../../entities'
 
 export const blockUser = functions.https.onCall(async (data, context) => {
   const uid = context!.auth!.uid
@@ -17,9 +17,11 @@ export const blockUser = functions.https.onCall(async (data, context) => {
     .doc(blockedUID)
 
   const blockedUserSnapShot = await userRef.doc(blockedUID).get()
-  const blockedUser = buildUser(blockedUserSnapShot.data()!)
+  const blockedUser = buildUser(blockedUserSnapShot.id!, blockedUserSnapShot.data()!)
+  const { id:blockedUserID, ...blockedUserOthers } = blockedUser// eslint-disable-line
+  const createBlockedUser = { ...blockedUserOthers }
 
-  batch.set(blockedUserRef, updateDocument<User>(blockedUser), { merge: true })
+  batch.set(blockedUserRef, updateDocument<CreateUser>(createBlockedUser), { merge: true })
   batch.set(
     userRef.doc(blockUID),
     updateDocument<UpdateUser>({ blockedUIDs: firestore.FieldValue.arrayUnion(blockedUID) }),
@@ -32,9 +34,11 @@ export const blockUser = functions.https.onCall(async (data, context) => {
     .doc(blockUID)
 
   const blockUserSnapShot = await userRef.doc(blockUID).get()
-  const blockUser = buildUser(blockUserSnapShot.data()!)
+  const blockUser = buildUser(blockUserSnapShot.id!, blockUserSnapShot.data()!)
+  const { id:blockUserID, ...blockUserOthers } = blockUser// eslint-disable-line
+  const createBlockUser = { ...blockUserOthers }
 
-  batch.set(blockUserRef, updateDocument<User>(blockUser), { merge: true })
+  batch.set(blockUserRef, updateDocument<CreateUser>(createBlockUser), { merge: true })
   batch.set(
     userRef.doc(blockedUID),
     updateDocument<UpdateUser>({ blockUIDs: firestore.FieldValue.arrayUnion(blockUID) }),

@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, User, UpdateUser, buildUser } from '../../entities'
+import { updateDocument, CreateUser, UpdateUser, buildUser } from '../../entities'
 
 export const applyFriend = functions.https.onCall(async (data, context) => {
   const appliedFriendUID = data.appliedFriendUID as string
@@ -17,9 +17,11 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
     .doc(applyFriendUID)
 
   const applyFriendSnapShot = await userRef.doc(applyFriendUID).get()
-  const applyFriendUser = buildUser(applyFriendSnapShot.data()!)
+  const applyFriendUser = buildUser(applyFriendSnapShot.id!, applyFriendSnapShot.data()!)
+  const { id:applyFriendUserdID, ...applyFriendUserOthers } = applyFriendUser// eslint-disable-line
+  const createApplyFriendUserOthers = { ...applyFriendUserOthers }
 
-  batch.set(applyFriendUserRef, updateDocument<User>(applyFriendUser), { merge: true })
+  batch.set(applyFriendUserRef, updateDocument<CreateUser>(createApplyFriendUserOthers), { merge: true })
   batch.set(
     userRef.doc(appliedFriendUID),
     updateDocument<UpdateUser>({
@@ -34,9 +36,11 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
     .doc(appliedFriendUID)
 
   const appliedFriendSnapShot = await userRef.doc(appliedFriendUID).get()
-  const appliedFriendUser = buildUser(appliedFriendSnapShot.data()!)
+  const appliedFriendUser = buildUser(appliedFriendSnapShot.id!, appliedFriendSnapShot.data()!)
+  const { id:appliedFriendUserdID, ...appliedFriendUserOthers } = appliedFriendUser// eslint-disable-line
+  const createAppliedFriendUserOthers = { ...appliedFriendUserOthers }
 
-  batch.set(appliedFriendUserRef, updateDocument<User>(appliedFriendUser), { merge: true })
+  batch.set(appliedFriendUserRef, updateDocument<CreateUser>(createAppliedFriendUserOthers), { merge: true })
   batch.set(
     userRef.doc(applyFriendUID),
     updateDocument<UpdateUser>({

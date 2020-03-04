@@ -1,6 +1,7 @@
 import { firestore } from 'firebase-admin'
 
 export type User = {
+  id: string
   enabled: boolean
   isAccepted: boolean
   isAnonymous: boolean
@@ -18,8 +19,9 @@ export type User = {
   reportedUIDs?: string[]
 }
 
-export const buildUser = (data: firestore.DocumentData) => {
+export const buildUser = (id: string, data: firestore.DocumentData) => {
   const newUser: User = {
+    id,
     enabled: data.enabled,
     isAccepted: data.isAccepted,
     isAnonymous: data.isAnonymous,
@@ -51,7 +53,7 @@ export const initialUser = ({
   name: string
   isAnonymous: boolean
 }) => {
-  const user: User = {
+  const user: CreateUser = {
     enabled: true,
     isAccepted: false,
     isAnonymous,
@@ -72,6 +74,8 @@ export type UpdateAppliedFriend = {
   isSendEventMessage?: boolean
 }
 
+export type CreateUser = Omit<User, 'id'>
+
 export type UpdateUser = {
   blockUIDs?: firestore.FieldValue
   blockedUIDs?: firestore.FieldValue
@@ -83,6 +87,7 @@ export type UpdateUser = {
 }
 
 export const partyMaster: User = {
+  id: 'tYwmmOkToqWSY7Eaq07YadJpngA',
   enabled: true,
   isAccepted: true,
   isAnonymous: false,

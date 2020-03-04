@@ -3,7 +3,6 @@ import { firestore } from 'firebase-admin'
 import {
   createDocument,
   CreateApplyCard,
-  CreateParty,
   buildParty,
   Group,
   buildGroup,
@@ -26,8 +25,6 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const partiesRef = db.collection('parties').doc(recommendApplyCardPartyID)
   const partySnapShot = await partiesRef.get()
   const party = buildParty(partySnapShot.id!, partySnapShot.data()!)
-  const { id, ...others } = party// eslint-disable-line
-  const createParty: CreateParty = { ...others }
 
   const groupsRef = partiesRef.collection('groups')
   const groupsSnapShot = await groupsRef.get()
@@ -41,8 +38,11 @@ export const recommendApplyCards = functions.https.onCall(async () => {
     const shuffledGroups: Group[] = shuffle<Group>(groups.filter(group => group.id !== MyGroupID))
     const recommendedGroups: Group[] = shuffledGroups.slice(0, recommendCardNumber)
 
-    const applyCardsRef = db.collection('users').doc(organizer.uid).collection('appliedCards')
-    const oldCardsRef = applyCardsRef.where('type', '==', 'today')
+    const applyCardsRef = db
+      .collection('users')
+      .doc(organizer.uid)
+      .collection('appliedCards')
+    const oldCardsRef = applyCardsRef.where('type', '==', recommendApplyCardType)
 
     const oldCardsRefSnapShot = await oldCardsRef.get()
 
@@ -56,15 +56,16 @@ export const recommendApplyCards = functions.https.onCall(async () => {
         await batch.commit()
         batch = db.batch()
       }
-
+      //MEMO: 将来的に同伴ユーザーも入れることを考えて，membersは配列にしている
       batch.set(
         applyCardsRef.doc(),
         createDocument<CreateApplyCard>({
           partyID: recommendApplyCardPartyID,
           groupID: recommendedGroup.id,
           organizerUID: recommendedGroup.organizer.uid,
-          party: createParty,
-          type: recommendApplyCardType
+          party: party,
+          type: recommendApplyCardType,
+          members: [recommendedGroup.organizer]
         }),
         { merge: true }
       )
