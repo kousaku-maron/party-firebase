@@ -11,7 +11,7 @@ export const updateRoomHash = functions.firestore.document(roomPath).onUpdate(as
     throw new Error('not found room')
   }
 
-  const room = buildRoom(roomSnapShot.data()!)
+  const room = buildRoom(roomSnapShot.id, roomSnapShot.data()!)
   const currentRoomHash = room.roomHash
 
   const baseStr = room.entryUIDs

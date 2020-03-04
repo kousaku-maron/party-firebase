@@ -13,7 +13,7 @@ export { createGroup, deleteGroup } from './triggers/group'
 
 export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
 
-export { updateRoomHash } from './triggers/room'
+export { createRoom, updateRoomHash } from './triggers/room'
 
 export { createMessage, updateMessageUser } from './triggers/message'
 
