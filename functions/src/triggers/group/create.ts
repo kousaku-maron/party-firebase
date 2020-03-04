@@ -1,16 +1,11 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import {
-  createDocument,
-  buildUser,
-  buildParty,
-  CreateGroup
-} from '../../entities'
+import { createDocument, buildUser, buildParty, CreateGroup } from '../../entities'
 import { difference } from 'lodash'
 
 const groupPath = 'parties/{partyID}'
 
-export const createGroup = functions.firestore.document(groupPath).onUpdate(async (change, context) => {
+export const createGroup = functions.firestore.document(groupPath).onUpdate(async (change, _context) => {
   const partyBeforeSnapShot = await change.before.ref.get()
   const partyAfterSnapShot = await change.after.ref.get()
   if (!partyBeforeSnapShot.exists || !partyAfterSnapShot.exists) {
@@ -36,7 +31,7 @@ export const createGroup = functions.firestore.document(groupPath).onUpdate(asyn
     const userSnapShot = await userRef.get()
     if (!userSnapShot.exists) return
 
-    const user = buildUser(userSnapShot.data()!)
+    const user = buildUser(userRef.id, userSnapShot.data()!)
 
     batch.set(
       groupsRef.doc(),

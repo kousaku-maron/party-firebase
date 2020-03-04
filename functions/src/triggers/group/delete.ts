@@ -5,7 +5,7 @@ import { difference } from 'lodash'
 
 const groupPath = 'parties/{partyID}'
 
-export const deleteGroup = functions.firestore.document(groupPath).onUpdate(async (change, context) => {
+export const deleteGroup = functions.firestore.document(groupPath).onUpdate(async (change, _context) => {
   const partyBeforeSnapShot = await change.before.ref.get()
   const partyAfterSnapShot = await change.after.ref.get()
   if (!partyBeforeSnapShot.exists || !partyAfterSnapShot.exists) {
