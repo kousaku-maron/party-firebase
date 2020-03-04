@@ -4,6 +4,7 @@ import { firestore } from 'firebase-admin'
 
 //Same as User
 type User = {
+  id: string
   enabled: boolean
   isAccepted: boolean
   isAnonymous: boolean
