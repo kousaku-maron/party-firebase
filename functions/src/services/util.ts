@@ -16,3 +16,12 @@ export const shuffle = <T>(targets: T[]) => {
   }
   return newTargets
 }
+
+export const includesBothArrays = <T>(elements1: T[], elements2: T[]) => {
+  for (const element1 of elements1) {
+    if (elements2.includes(element1)) {
+      return { result: true, element: element1 }
+    }
+  }
+  return { result: false, element: null }
+}

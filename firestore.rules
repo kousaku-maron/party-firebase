@@ -54,7 +54,19 @@ service cloud.firestore {
         allow read, write, delete: if isUserAuthenticated(uid);
       }
 
-      match /appliedCards/{appliedCardID} {
+      match /appliedCards/{appliedCard} {
+        allow read, delete: if isUserAuthenticated(uid);
+      }
+
+      match /likeGroupAssets/{likeGroupAsset} {
+        allow read, delete: if isUserAuthenticated(uid);
+      }
+
+      match /likedGroupAssets/{likedGroupAsset  } {
+        allow read, delete: if isUserAuthenticated(uid);
+      }
+
+      match /matchedGroupAssets/{matchedGroupAsset} {
         allow read, delete: if isUserAuthenticated(uid);
       }
 
