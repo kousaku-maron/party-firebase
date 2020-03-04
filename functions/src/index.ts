@@ -7,6 +7,9 @@ export { updateUserID } from './handlers/user'
 export { createUser } from './triggers/user'
 
 export { entryParty } from './handlers/party'
+export { entryInitialParties } from './triggers/party'
+
+export { createGroup, deleteGroup } from './triggers/group'
 
 export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
 
