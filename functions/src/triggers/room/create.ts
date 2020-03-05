@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { buildGroupAsset, createDocument, CreateRoom, buildUser } from '../../entities'
-import { createHash } from 'crypto'
+import { createListHash } from '../../services/util'
 
 const userPath = 'users/{uid}/matchGroupAssets/{matchGroupAssetID}'
 
@@ -25,10 +25,7 @@ export const createRoom = functions.firestore.document(userPath).onCreate(async 
 
   const me = buildUser(userSnapshot.id, userSnapshot.data()!)
 
-  const baseStr = [me.uid, groupAsset.group.organizerUID].sort().join('')
-  const newRoomHash = createHash('sha256')
-    .update(baseStr, 'utf8')
-    .digest('hex')
+  const newRoomHash = createListHash([me.uid, groupAsset.group.organizerUID])
 
   const roomsRef = db.collection('rooms')
   const roomsSnapshot = await roomsRef.where('roomHash', '==', newRoomHash).get()
