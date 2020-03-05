@@ -1,29 +1,9 @@
 import { firestore } from 'firebase-admin'
-
-// TODO: 本当に必要なパラメーターのみ保存するよう見直す。
-
-//Same as User
-type User = {
-  id: string
-  enabled: boolean
-  isAccepted: boolean
-  isAnonymous: boolean
-  uid: string
-  userID: string
-  name: string
-  thumbnailURL?: string
-  gender?: string
-  blockUIDs?: string[]
-  blockedUIDs?: string[]
-  applyFriendUIDs?: string[]
-  appliedFriendUIDs?: string[]
-  friendUIDs?: string[]
-  reportUIDs?: string[]
-  reportedUIDs?: string[]
-}
+import { User } from './User'
 
 export type Group = {
   id: string
+  organizerUID: string
   organizer: User
   appliedUIDs: string[]
 }
@@ -31,6 +11,7 @@ export type Group = {
 export const buildGroup = (id: string, data: firestore.DocumentData) => {
   const newGroup: Group = {
     id,
+    organizerUID: data.organizerUID,
     organizer: data.organizer,
     appliedUIDs: data.appliedUIDs
   }
