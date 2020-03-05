@@ -32,7 +32,7 @@ export const createMessage = functions.firestore.document(messagePath).onCreate(
     return { message: `not exists ${roomID} room` }
   }
 
-  const room = buildRoom(roomSnapshot.data()!)
+  const room = buildRoom(roomSnapshot.id, roomSnapshot.data()!)
   const entryUIDs: string[] = room.entryUIDs || []
 
   // TODO: immutableな書き方にしたい。
