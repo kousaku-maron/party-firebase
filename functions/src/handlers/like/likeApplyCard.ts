@@ -162,10 +162,10 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   const organizerUserMyGroupAssetRef = usersRef
     .doc(organizerUID)
     .collection('appliedCards')
-    .doc(userMyGroupAsset.id)
+    .where('groupID', '==', userGroupID)
   const organizerUserMyGroupAssetSnapShot = await organizerUserMyGroupAssetRef.get()
 
-  if (!organizerUserMyGroupAssetSnapShot.exists) {
+  if (organizerUserMyGroupAssetSnapShot.docs.length === 0) {
     batch.set(
       organizerUserMyGroupAssetRef,
       createDocument<CreateApplyCard>({
