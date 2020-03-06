@@ -7,31 +7,29 @@ import {
   CreateGroupAsset,
   buildGroup,
   createDocument,
-  ApplyCard,
-  CreateApplyCard
+  ApplyCard
 } from '../../entities'
 
 export const likeApplyCard = functions.https.onCall(async (data, context) => {
-  const organizerApplyCard: ApplyCard = data.applyCard
+  const targetApplyCard: ApplyCard = data.applyCard
   const uid = context!.auth!.uid
 
   const db = firestore()
   const batch = db.batch()
 
   const usersRef = db.collection('users')
-  const partyID = organizerApplyCard.partyID
+  const partyID = targetApplyCard.partyID
   const partyRef = db.collection('parties').doc(partyID)
   const groupsRef = partyRef.collection('groups')
 
-  const organizerApplyCardID = organizerApplyCard.id
-  const organizerApplyCardRef = usersRef
+  const targetApplyCardID = targetApplyCard.id
+  const targetApplyCardRef = usersRef
     .doc(uid)
     .collection('appliedCards')
-    .doc(organizerApplyCardID)
+    .doc(targetApplyCardID)
 
-  const organizerUID = organizerApplyCard.organizerUID
-  const organizerGroupID = organizerApplyCard.groupID
-  const organizerMatchedGroupAssetsRef = usersRef.doc(organizerUID).collection('matchedGroupAssets')
+  const targetUID = targetApplyCard.organizerUID
+  const targetGroupID = targetApplyCard.groupID
 
   const userGroupsSnapShot = await groupsRef.where('organizerUID', '==', uid).get()
 
@@ -53,35 +51,40 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
     userMyGroupAssetsSnapShot.docs[0].data()!
   )
 
-  const organizerMyGroupAssetRef = usersRef
-    .doc(organizerUID)
+  const targetMyGroupAssetRef = usersRef
+    .doc(targetUID)
     .collection('myGroupAssets')
-    .where('groupID', '==', organizerGroupID)
+    .where('groupID', '==', targetGroupID)
 
-  const organizerMyGroupAssetSnapShot = await organizerMyGroupAssetRef.get()
+  const targetMyGroupAssetSnapShot = await targetMyGroupAssetRef.get()
 
-  //MEMO: ここではgroupIDが被る可能性があるが，0番目のorganizerデータを使う
-  if (organizerMyGroupAssetSnapShot.docs.length === 0) return
+  //MEMO: ここではgroupIDが被る可能性があるが，0番目のtargetデータを使う
+  if (targetMyGroupAssetSnapShot.docs.length === 0) return
 
-  const organizerMyGroupAsset = buildGroupAsset(
-    organizerMyGroupAssetSnapShot.docs[0].id!,
-    organizerMyGroupAssetSnapShot.docs[0].data()!
+  const targetMyGroupAsset = buildGroupAsset(
+    targetMyGroupAssetSnapShot.docs[0].id!,
+    targetMyGroupAssetSnapShot.docs[0].data()!
   )
 
-  const organizerLikedGroupAssetSnapShot = await usersRef
-    .doc(organizerUID)
+  const targetLikedGroupAssetRef = usersRef
+    .doc(targetUID)
     .collection('likedGroupAssets')
-    .doc(userMyGroupAsset.id)
-    .get()
+    .where('groupID', '==', userGroupID)
 
-  if (organizerLikedGroupAssetSnapShot.exists) {
-    const userMatchedGroupAssetsRef = usersRef.doc(uid).collection('matchedGroupAssets')
+  const targetLikedGroupAssetSnapShot = await targetLikedGroupAssetRef.get()
 
+  const userMatchedGroupAssetsRef = usersRef.doc(uid).collection('matchedGroupAssets')
+  const userMyGroupAssetID = userMatchedGroupAssetsRef.doc().id
+
+  const targetMatchedGroupAssetsRef = usersRef.doc(targetUID).collection('matchedGroupAssets')
+  const targetMyGroupAssetID = targetMatchedGroupAssetsRef.doc().id
+
+  if (targetLikedGroupAssetSnapShot.docs.length !== 0) {
     batch.set(
-      userMatchedGroupAssetsRef.doc(organizerMyGroupAsset.id),
+      userMatchedGroupAssetsRef.doc(targetMyGroupAssetID),
       createDocument<CreateGroupAsset>({
-        groupID: organizerMyGroupAsset.groupID,
-        group: organizerMyGroupAsset.group
+        groupID: targetMyGroupAsset.groupID,
+        group: targetMyGroupAsset.group
       }),
       {
         merge: true
@@ -90,12 +93,12 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
     batch.set(
       usersRef.doc(uid),
-      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(organizerMyGroupAsset.id) }),
+      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(targetMyGroupAssetID) }),
       { merge: true }
     )
 
     batch.set(
-      organizerMatchedGroupAssetsRef.doc(userMyGroupAsset.id),
+      targetMatchedGroupAssetsRef.doc(userMyGroupAssetID),
       createDocument<CreateGroupAsset>({
         groupID: userMyGroupAsset.groupID,
         group: userMyGroupAsset.group
@@ -106,12 +109,12 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
     )
 
     batch.set(
-      usersRef.doc(organizerUID),
-      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(userMyGroupAsset.id) }),
+      usersRef.doc(targetUID),
+      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(userMyGroupAssetID) }),
       { merge: true }
     )
 
-    batch.delete(organizerApplyCardRef)
+    batch.delete(targetApplyCardRef)
 
     await batch.commit()
 
@@ -125,10 +128,10 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   const userLikedGroupAssetsRef = usersRef.doc(uid).collection('likedGroupAssets')
 
   batch.set(
-    userLikedGroupAssetsRef.doc(organizerMyGroupAsset.id),
+    userLikedGroupAssetsRef.doc(targetMyGroupAssetID),
     createDocument<CreateGroupAsset>({
-      groupID: organizerMyGroupAsset.groupID,
-      group: organizerMyGroupAsset.group
+      groupID: targetMyGroupAsset.groupID,
+      group: targetMyGroupAsset.group
     }),
     {
       merge: true
@@ -136,14 +139,14 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   )
   batch.set(
     usersRef.doc(uid),
-    updateDocument<UpdateUser>({ likedGroupAssetIDs: firestore.FieldValue.arrayUnion(organizerMyGroupAsset.id) }),
+    updateDocument<UpdateUser>({ likedGroupAssetIDs: firestore.FieldValue.arrayUnion(targetMyGroupAssetID) }),
     { merge: true }
   )
 
-  const organizerLikeGroupAssetsRef = usersRef.doc(organizerUID).collection('likeGroupAssets')
+  const targetLikeGroupAssetsRef = usersRef.doc(targetUID).collection('likeGroupAssets')
 
   batch.set(
-    organizerLikeGroupAssetsRef.doc(userMyGroupAsset.id),
+    targetLikeGroupAssetsRef.doc(userMyGroupAssetID),
     createDocument<CreateGroupAsset>({
       groupID: userMyGroupAsset.id,
       group: userMyGroupAsset.group
@@ -154,35 +157,35 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   )
 
   batch.set(
-    usersRef.doc(organizerUID),
-    updateDocument<UpdateUser>({ likeGroupAssetIDs: firestore.FieldValue.arrayUnion(userMyGroupAsset.id) }),
+    usersRef.doc(targetUID),
+    updateDocument<UpdateUser>({ likeGroupAssetIDs: firestore.FieldValue.arrayUnion(userMyGroupAssetID) }),
     { merge: true }
   )
 
-  const organizerUserMyGroupAssetRef = usersRef
-    .doc(organizerUID)
-    .collection('appliedCards')
-    .where('groupID', '==', userGroupID)
-  const organizerUserMyGroupAssetSnapShot = await organizerUserMyGroupAssetRef.get()
+  // const targetUserMyGroupAssetRef = usersRef
+  //   .doc(targetUID)
+  //   .collection('appliedCards')
+  //   .where('groupID', '==', userGroupID)
+  // const targetUserMyGroupAssetSnapShot = await targetUserMyGroupAssetRef.get()
 
-  if (organizerUserMyGroupAssetSnapShot.docs.length === 0) {
-    batch.set(
-      organizerUserMyGroupAssetRef,
-      createDocument<CreateApplyCard>({
-        partyID,
-        groupID: userGroupID,
-        organizerUID: uid,
-        members: [userGroup.organizer],
-        party: organizerApplyCard.party,
-        type: organizerApplyCard.type
-      }),
-      {
-        merge: true
-      }
-    )
-  }
+  // if (targetUserMyGroupAssetSnapShot.docs.length === 0) {
+  //   batch.set(
+  //     targetUserMyGroupAssetRef,
+  //     createDocument<CreateApplyCard>({
+  //       partyID,
+  //       groupID: userGroupID,
+  //       organizerUID: uid,
+  //       members: [userGroup.organizer],
+  //       party: targetApplyCard.party,
+  //       type: targetApplyCard.type
+  //     }),
+  //     {
+  //       merge: true
+  //     }
+  //   )
+  // }
 
-  batch.delete(organizerApplyCardRef)
+  batch.delete(targetApplyCardRef)
 
   await batch.commit()
 
