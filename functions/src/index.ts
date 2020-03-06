@@ -20,3 +20,5 @@ export { reportUser } from './handlers/reports'
 export { blockUser } from './handlers/block'
 
 export { recommendApplyCards } from './handlers/applyCards'
+
+export { likeApplyCard } from './handlers/like'
