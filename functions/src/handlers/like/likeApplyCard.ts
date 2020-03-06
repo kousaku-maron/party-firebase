@@ -73,15 +73,15 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
   const targetLikedGroupAssetSnapShot = await targetLikedGroupAssetRef.get()
 
-  const userMatchedGroupAssetsRef = usersRef.doc(uid).collection('matchedGroupAssets')
-  const userMyGroupAssetID = userMatchedGroupAssetsRef.doc().id
-
-  const targetMatchedGroupAssetsRef = usersRef.doc(targetUID).collection('matchedGroupAssets')
-  const targetMyGroupAssetID = targetMatchedGroupAssetsRef.doc().id
-
   if (targetLikedGroupAssetSnapShot.docs.length !== 0) {
+    const userMatchedGroupAssetsRef = usersRef.doc(uid).collection('matchedGroupAssets')
+    const userMatchedGroupAssetRef = userMatchedGroupAssetsRef.doc()
+
+    const targetMatchedGroupAssetsRef = usersRef.doc(targetUID).collection('matchedGroupAssets')
+    const targetMatchedGroupAssetRef = targetMatchedGroupAssetsRef.doc()
+
     batch.set(
-      userMatchedGroupAssetsRef.doc(targetMyGroupAssetID),
+      userMatchedGroupAssetsRef.doc(targetMatchedGroupAssetRef.id),
       createDocument<CreateGroupAsset>({
         groupID: targetMyGroupAsset.groupID,
         group: targetMyGroupAsset.group
@@ -93,12 +93,14 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
     batch.set(
       usersRef.doc(uid),
-      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(targetMyGroupAssetID) }),
+      updateDocument<UpdateUser>({
+        matchGroupAssetIDs: firestore.FieldValue.arrayUnion(targetMatchedGroupAssetRef.id)
+      }),
       { merge: true }
     )
 
     batch.set(
-      targetMatchedGroupAssetsRef.doc(userMyGroupAssetID),
+      targetMatchedGroupAssetsRef.doc(userMatchedGroupAssetRef.id),
       createDocument<CreateGroupAsset>({
         groupID: userMyGroupAsset.groupID,
         group: userMyGroupAsset.group
@@ -110,7 +112,7 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
     batch.set(
       usersRef.doc(targetUID),
-      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(userMyGroupAssetID) }),
+      updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(userMatchedGroupAssetRef.id) }),
       { merge: true }
     )
 
@@ -126,9 +128,19 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   }
 
   const userLikedGroupAssetsRef = usersRef.doc(uid).collection('likedGroupAssets')
+  const userLikedGroupAsset = usersRef
+    .doc(uid)
+    .collection('likedGroupAssets')
+    .doc()
+
+  const targetLikeGroupAssetsRef = usersRef.doc(targetUID).collection('likeGroupAssets')
+  const targetLikeGroupAssetRef = usersRef
+    .doc(targetUID)
+    .collection('likeGroupAssets')
+    .doc()
 
   batch.set(
-    userLikedGroupAssetsRef.doc(targetMyGroupAssetID),
+    userLikedGroupAssetsRef.doc(targetLikeGroupAssetRef.id),
     createDocument<CreateGroupAsset>({
       groupID: targetMyGroupAsset.groupID,
       group: targetMyGroupAsset.group
@@ -139,14 +151,12 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   )
   batch.set(
     usersRef.doc(uid),
-    updateDocument<UpdateUser>({ likedGroupAssetIDs: firestore.FieldValue.arrayUnion(targetMyGroupAssetID) }),
+    updateDocument<UpdateUser>({ likedGroupAssetIDs: firestore.FieldValue.arrayUnion(targetLikeGroupAssetRef.id) }),
     { merge: true }
   )
 
-  const targetLikeGroupAssetsRef = usersRef.doc(targetUID).collection('likeGroupAssets')
-
   batch.set(
-    targetLikeGroupAssetsRef.doc(userMyGroupAssetID),
+    targetLikeGroupAssetsRef.doc(userLikedGroupAsset.id),
     createDocument<CreateGroupAsset>({
       groupID: userMyGroupAsset.id,
       group: userMyGroupAsset.group
@@ -158,7 +168,7 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
   batch.set(
     usersRef.doc(targetUID),
-    updateDocument<UpdateUser>({ likeGroupAssetIDs: firestore.FieldValue.arrayUnion(userMyGroupAssetID) }),
+    updateDocument<UpdateUser>({ likeGroupAssetIDs: firestore.FieldValue.arrayUnion(userLikedGroupAsset.id) }),
     { merge: true }
   )
 
