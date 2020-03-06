@@ -17,6 +17,10 @@ export type User = {
   friendUIDs?: string[]
   reportUIDs?: string[]
   reportedUIDs?: string[]
+  likeGroupAssetIDs?: string[]
+  likedGroupAssetIDs?: string[]
+  matchGroupAssetIDs?: string[]
+  myGroupAssetIDs?: string[]
 }
 
 export const buildUser = (id: string, data: firestore.DocumentData) => {
@@ -36,7 +40,11 @@ export const buildUser = (id: string, data: firestore.DocumentData) => {
     ...(data.appliedFriendUIDs && { appliedFriendUIDs: data.appliedFriendUIDs }),
     ...(data.friendUIDs && { friendUIDs: data.friendUIDs }),
     ...(data.reportUIDs && { reportUIDs: data.reportUIDs }),
-    ...(data.reportedUIDs && { reportedUIDs: data.reportedUIDs })
+    ...(data.reportedUIDs && { reportedUIDs: data.reportedUIDs }),
+    ...(data.likeGroupAssetIDs && { likeGroupAssetIDs: data.likeGroupAssetIDs }),
+    ...(data.likedGroupAssetIDs && { likedGroupAssetIDs: data.likedGroupAssetIDs }),
+    ...(data.matchGroupAssetIDs && { matchGroupAssetIDs: data.matchGroupAssetIDs }),
+    ...(data.myGroupAssetAssetIDs && { myGroupAssetAssetIDs: data.myGroupAssetAssetIDs })
   }
 
   return newUser
@@ -84,6 +92,10 @@ export type UpdateUser = {
   friendUIDs?: firestore.FieldValue
   reportUIDs?: firestore.FieldValue
   reportedUIDs?: firestore.FieldValue
+  likeGroupAssetIDs?: firestore.FieldValue
+  likedGroupAssetIDs?: firestore.FieldValue
+  matchGroupAssetIDs?: firestore.FieldValue
+  myGroupAssetIDs?: firestore.FieldValue
 }
 
 export const partyMaster: User = {
