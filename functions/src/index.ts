@@ -9,7 +9,9 @@ export { entryInitialParties } from './triggers/party'
 
 export { createGroup, deleteGroup } from './triggers/group'
 
-export { updateRoomHash } from './triggers/room'
+export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
+
+export { createRoom, updateRoomHash } from './triggers/room'
 
 export { createMessage, updateMessageUser } from './triggers/message'
 

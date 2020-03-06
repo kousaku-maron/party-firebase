@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { UpdateRoom, buildRoom, updateDocument } from '../../entities'
-import { createHash } from 'crypto'
+import { createListHash } from '../../services/util'
 
 const roomPath = 'rooms/{roomID}'
 
@@ -11,19 +11,10 @@ export const updateRoomHash = functions.firestore.document(roomPath).onUpdate(as
     throw new Error('not found room')
   }
 
-  const room = buildRoom(roomSnapShot.data()!)
+  const room = buildRoom(roomSnapShot.id, roomSnapShot.data()!)
+
   const currentRoomHash = room.roomHash
-
-  const baseStr = room.entryUIDs
-    ? room.entryUIDs
-        .slice()
-        .sort()
-        .join('')
-    : ''
-
-  const newRoomHash = createHash('sha256')
-    .update(baseStr, 'utf8')
-    .digest('hex')
+  const newRoomHash = createListHash(room.entryUIDs ? room.entryUIDs : [])
 
   if (currentRoomHash === newRoomHash) {
     return {

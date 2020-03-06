@@ -1,4 +1,5 @@
 import { firestore } from 'firebase-admin'
+import { createHash } from 'crypto'
 
 // MEMO: https://qiita.com/hiko1129/items/9de868bec465d725f90b
 export const getRandomID = () => {
@@ -15,4 +16,13 @@ export const shuffle = <T>(targets: T[]) => {
     newTargets[j] = swapTarget
   }
   return newTargets
+}
+
+export const createListHash = (list: string[]) => {
+  const baseStr = list.slice().sort().join('')
+  const newHash = createHash('sha256')
+    .update(baseStr, 'utf8')
+    .digest('hex')
+
+  return newHash
 }
