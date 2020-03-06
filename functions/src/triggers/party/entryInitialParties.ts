@@ -9,7 +9,7 @@ export const entryInitialParties = functions.firestore.document(userPath).onCrea
     throw new Error('not found user')
   }
 
-  const user = buildUser(snapshot.data()!)
+  const user = buildUser(snapshot.id, snapshot.data()!)
 
   const db = firestore()
   const batch = db.batch()
