@@ -74,4 +74,4 @@ jobs:
       - name: Deploy to Firebase
         run: |
           yarn add -D firebase-tools
-          ./node_modules/.bin/firebase deploy --only functions:updateUserID,createUser,entryParty,entryInitialParties,createGroup,deleteGroup,updateRoomHash,createMessage,updateMessageUser,applyFriend,acceptFriend,refuseFriend,reportUser,blockUser,recommendApplyCards --token=${{ secrets.FIREBASE_TOKEN }} --project ${{ secrets.DEV_PROJECT_ID }} --non-interactive -f
+          ./node_modules/.bin/firebase deploy --only functions:updateUserID,functions:createUser,functions:entryParty,functions:entryInitialParties,functions:createGroup,functions:deleteGroup,functions:updateRoomHash,functions:createMessage,functions:updateMessageUser,functions:applyFriend,functions:acceptFriend,functions:refuseFriend,functions:reportUser,functions:blockUser,functions:recommendApplyCards --token=${{ secrets.FIREBASE_TOKEN }} --project ${{ secrets.DEV_PROJECT_ID }} --non-interactive -f
