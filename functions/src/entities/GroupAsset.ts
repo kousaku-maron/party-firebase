@@ -16,3 +16,5 @@ export const buildGroupAsset = (id: string, data: firestore.DocumentData) => {
 
   return newGroupAsset
 }
+
+export type CreateGroupAsset = Omit<GroupAsset, 'id'>
