@@ -73,7 +73,6 @@ jobs:
       #     path: functions/node_modules
       - name: Deploy to Firebase
         run: |
-          yarn add -D firebase-tools
           cd scripts
           yarn
           node deploy_functions.js ${{ secrets.STG_PROJECT_ID }} ${{ secrets.FIREBASE_TOKEN }}
