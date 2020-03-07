@@ -2,7 +2,7 @@ const { execSync } = require('child_process')
 const _ = require('lodash')
 
 const time = 60
-const per = 15
+const per = 10
 
 const project = process.env.PROJECT_ID
 const token = process.env.TOKEN
