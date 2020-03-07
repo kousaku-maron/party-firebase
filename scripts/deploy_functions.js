@@ -8,7 +8,7 @@ console.log(`Project: ${project}`)
 
 const functions = require('../functions/lib')
 
-_.chunk(Object.keys(functions), 15).forEach(names => {
+_.chunk(Object.keys(functions), 10).forEach(names => {
   const only = names.map(name => `functions:${name}`).join()
   const command = `yarn firebase deploy --force --only ${only} --project ${project} --token ${token}`
   console.log(`target functions: ${only}`)
