@@ -1,8 +1,8 @@
 const { execSync } = require('child_process')
 const _ = require('lodash')
 
-const project = process.argv[0]
-const token = process.argv[1]
+const project = process.env.PROJECT_ID
+const token = process.env.TOKEN
 
 console.log(`Project: ${project}`)
 
