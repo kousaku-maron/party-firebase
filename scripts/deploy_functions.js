@@ -1,8 +1,8 @@
 const { execSync } = require('child_process')
 const _ = require('lodash')
 
-const project = process.env['FIREBASE_PROJECT_NAME']
-const token = process.env['FIREBASE_DEPLOY_TOKEN']
+const project = process.argv[0]
+const token = process.argv[1]
 
 console.log(`Project: ${project}`)
 
