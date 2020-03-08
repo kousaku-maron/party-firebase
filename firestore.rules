@@ -35,64 +35,90 @@ service cloud.firestore {
       }
 
       match /blockUsers {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{blockUserID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
       match /applyFriendUsers {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{applyFriendUserID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
       match /appliedFriendUsers {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{appliedFriendUserID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
       match /friends {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{friendID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
       match /appliedCards {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{appliedCardID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
       match /likeGroupAssets {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{likeGroupAssetID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
       match /likedGroupAssets {
-        allow read, write, delete: if isUserAuthenticated(uid);
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
         match /{likedGroupAssetID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
 
-      match /matchedGroupAssets {
-        allow read, write, delete: if isUserAuthenticated(uid);
-        match /{matchedGroupAssetID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+      match /matchGroupAssets {
+        allow read: if isUserAuthenticated();
+        allow write, delete: if isUserAuthenticated(uid);
+        match /{matchGroupAssetID} {
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
+
       match /myGroupAssets {
         allow read, write, delete: if isUserAuthenticated(uid);
         match /{myGroupAssetID} {
-          allow read, write, delete: if isUserAuthenticated(uid); 
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
+        }
+      }
+
+      match /appliedParties {
+        allow read, write, delete: if isUserAuthenticated(uid);
+        match /{appliedPartyID} {
+          allow write, delete: if isUserAuthenticated(uid); 
+          allow read: if isUserAuthenticated();
         }
       }
     }

@@ -74,10 +74,10 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   const targetLikedGroupAssetSnapShot = await targetLikedGroupAssetRef.get()
 
   if (targetLikedGroupAssetSnapShot.docs.length !== 0) {
-    const userMatchedGroupAssetsRef = usersRef.doc(uid).collection('matchedGroupAssets')
+    const userMatchedGroupAssetsRef = usersRef.doc(uid).collection('matchGroupAssets')
     const userMatchedGroupAssetRef = userMatchedGroupAssetsRef.doc()
 
-    const targetMatchedGroupAssetsRef = usersRef.doc(targetUID).collection('matchedGroupAssets')
+    const targetMatchedGroupAssetsRef = usersRef.doc(targetUID).collection('matchGroupAssets')
     const targetMatchedGroupAssetRef = targetMatchedGroupAssetsRef.doc()
 
     batch.set(
