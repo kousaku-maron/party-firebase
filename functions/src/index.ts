@@ -18,6 +18,6 @@ export { updateMessageUser } from './triggers/message'
 
 export { applyFriend, acceptFriend, refuseFriend } from './handlers/friend'
 
-export { reportUser } from './handlers/reports'
+export { createReport } from './handlers/report/create'
 
 export { blockUser } from './handlers/block'
