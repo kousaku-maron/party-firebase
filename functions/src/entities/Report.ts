@@ -1,5 +1,5 @@
 export type Report = {
-  //TODO: id追加
+  id: string
   reportUID: string
   reportedUID: string
   comment: string

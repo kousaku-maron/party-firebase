@@ -18,7 +18,7 @@ export const createMessage = functions.firestore.document(messagePath).onCreate(
   if (!messageSnapshot.exists) {
     return { message: `not exists message` }
   }
-  const message = buildMessage(messageSnapshot.data()!)
+  const message = buildMessage(messageSnapshot.id, messageSnapshot.data()!)
   if (message.notified) {
     return { message: 'already send push notification.' }
   }
@@ -48,7 +48,7 @@ export const createMessage = functions.firestore.document(messagePath).onCreate(
 
     if (!secureSnapshot.exists) return
 
-    const secure = buildSecure(secureSnapshot.data()!)
+    const secure = buildSecure(secureSnapshot.id, secureSnapshot.data()!)
     if (secure.pushTokens) {
       tokens.push(...secure.pushTokens)
     }

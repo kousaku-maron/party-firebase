@@ -10,17 +10,16 @@ export { entryInitialParties } from './triggers/party'
 export { createGroup, deleteGroup } from './triggers/group'
 
 export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
+export { recommendApplyCards } from './handlers/applyCards'
 
-export { createRoom, updateRoomHash } from './triggers/room'
+export { updateRoomHash, updateNewMessage } from './triggers/room'
 
-export { createMessage, updateMessageUser } from './triggers/message'
+export { updateMessageUser } from './triggers/message'
 
 export { applyFriend, acceptFriend, refuseFriend } from './handlers/friend'
 
 export { reportUser } from './handlers/reports'
 
 export { blockUser } from './handlers/block'
-
-export { recommendApplyCards } from './handlers/applyCards'
 
 export { likeApplyCard } from './handlers/like'

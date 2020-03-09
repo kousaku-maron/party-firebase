@@ -29,6 +29,6 @@ export const buildRoom = (id: string, data: firestore.DocumentData) => {
 
 export type CreateRoom = Omit<Room, 'id'>
 
-export type UpdateRoom = Pick<Room, 'name' | 'thumbnailURL'> & {
+export type UpdateRoom = Pick<Room, 'name' | 'thumbnailURL' | 'newMessage'> & {
   roomHash?: string
 }
