@@ -10,7 +10,7 @@ export { entryInitialParties } from './triggers/party'
 export { createGroup, deleteGroup } from './triggers/group'
 
 export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
-export { recommendApplyCards } from './handlers/applyCards'
+export { recommendApplyCards } from './handlers/applyCard'
 
 export { updateRoomHash, updateNewMessage } from './triggers/room'
 
