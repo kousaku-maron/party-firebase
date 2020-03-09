@@ -1,4 +1,5 @@
 import { firestore } from 'firebase-admin'
+import { User } from './User'
 
 export type Party = {
   id: string
@@ -7,7 +8,9 @@ export type Party = {
   thumbnailURL?: string
   enabled: boolean
   date: Date
-  entryUIDs?: string[] // 一時的にパラメーター設置。
+  entryUIDs?: string[]
+  users?: User[]
+  tags?: string[]
 }
 
 export const buildParty = (id: string, data: firestore.DocumentData) => {
@@ -15,10 +18,12 @@ export const buildParty = (id: string, data: firestore.DocumentData) => {
     id,
     type: data.type,
     name: data.name,
-    thumbnailURL: data.thumbnailURL,
+    ...(data.thumbnailURL && { thumbnailURL: data.thumbnailURL }),
     enabled: data.enabled,
     date: data.date.toDate(),
-    entryUIDs: data.entryUIDs
+    ...(data.entryUIDs && { entryUIDs: data.entryUIDs }),
+    ...(data.users && { users: data.users }),
+    ...(data.tags && { tags: data.tags })
   }
   return newParty
 }
