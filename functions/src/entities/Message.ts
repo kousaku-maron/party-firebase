@@ -1,4 +1,5 @@
 import { firestore } from 'firebase-admin'
+import { User } from './User'
 
 // same gifted-chat Reply type
 type Reply = {
@@ -14,23 +15,8 @@ type QuickReplies = {
   keepIt?: boolean
 }
 
-// same origin User type
-type User = {
-  id: string
-  enabled: boolean
-  isAccepted: boolean
-  isAnonymous: boolean
-  uid: string
-  userID: string
-  name: string
-  thumbnailURL?: string
-  gender?: string
-  blockUIDs?: string[]
-  appliedFriendUIDs?: string[]
-  friendUIDs?: string[]
-}
-
 export type Message = {
+  id: string
   text: string
   createdAt: Date
   imageURL?: string
@@ -42,8 +28,9 @@ export type Message = {
   notified: boolean
 }
 
-export const buildMessage = (data: firestore.DocumentData) => {
+export const buildMessage = (id: string, data: firestore.DocumentData) => {
   const newMessage: Message = {
+    id,
     text: data.text,
     createdAt: data.createdAt.toDate(),
     imageURL: data.imageURL,

@@ -16,7 +16,7 @@ export const updateNewMessage = functions.firestore.document(messagePath).onCrea
     return { message: `not exists message` }
   }
 
-  const message = buildMessage(messageSnapshot.data()!)
+  const message = buildMessage(messageSnapshot.id, messageSnapshot.data()!)
 
   const db = firestore()
 
