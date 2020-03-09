@@ -1,4 +1,5 @@
 import { firestore } from 'firebase-admin'
+import { Message } from './Message'
 
 export type Room = {
   //TODO: id追加
@@ -22,4 +23,5 @@ export const buildRoom = (data: firestore.DocumentData) => {
 
 export type UpdateRoom = Pick<Room, 'name' | 'thumbnailURL'> & {
   roomHash?: string
+  newMessage?: Message
 }
