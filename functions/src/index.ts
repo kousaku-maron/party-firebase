@@ -1,8 +1,22 @@
 import * as admin from 'firebase-admin'
 admin.initializeApp()
 
-export { updateUserID } from './handlers/user'
+export {
+  updateUserID,
+  applyFriend,
+  unapplyFriend,
+  acceptFriend,
+  refuseFriend,
+  blockUser,
+  unblockUser
+} from './handlers/user'
 export { createUser } from './triggers/user'
+
+export { createFriend, deleteFriend } from './triggers/friend'
+
+export { createApplyAndAppliedFriendUser, deleteApplyAndAppliedFriendUser } from './triggers/applyFriendUser'
+
+export { createBlockAndBlockedUser, deleteBlockAndBlockedUser } from './triggers/blockUser'
 
 export { entryParty } from './handlers/party'
 export { entryInitialParties } from './triggers/party'
@@ -16,8 +30,4 @@ export { updateRoomHash, updateNewMessage } from './triggers/room'
 
 export { updateMessageUser } from './triggers/message'
 
-export { applyFriend, acceptFriend, refuseFriend } from './handlers/friend'
-
 export { createReport } from './handlers/report/create'
-
-export { blockUser } from './handlers/block'
