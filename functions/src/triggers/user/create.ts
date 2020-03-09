@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateUser, initialUser, ANONYMOUS_USERNAME, Secure, createDocument } from '../../entities'
+import { CreateUser, initialUser, ANONYMOUS_USERNAME, CreateSecure, createDocument } from '../../entities'
 import { getRandomID } from '../../services/util'
 
 export const createUser = functions.auth.user().onCreate(async user => {
@@ -38,7 +38,7 @@ export const createUser = functions.auth.user().onCreate(async user => {
   )
 
   const secureRef = userRef.collection('options').doc('secure')
-  batch.set(secureRef, createDocument<Secure>({}))
+  batch.set(secureRef, createDocument<CreateSecure>({}))
 
   await batch.commit()
 

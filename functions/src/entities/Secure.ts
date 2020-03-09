@@ -15,3 +15,5 @@ export const buildSecure = (id: string, data: firestore.DocumentData) => {
 
   return newSecure
 }
+
+export type CreateSecure = Omit<Secure, 'id'>
