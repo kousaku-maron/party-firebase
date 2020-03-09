@@ -1,6 +1,7 @@
 import { firestore } from 'firebase-admin'
 
 export type User = {
+  id: string
   enabled: boolean
   isAccepted: boolean
   isAnonymous: boolean
@@ -16,10 +17,16 @@ export type User = {
   friendUIDs?: string[]
   reportUIDs?: string[]
   reportedUIDs?: string[]
+  likeGroupAssetIDs?: string[]
+  likedGroupAssetIDs?: string[]
+  matchGroupAssetIDs?: string[]
+  myGroupAssetIDs?: string[]
+  appliedPartyUIDs?: string[]
 }
 
-export const buildUser = (data: firestore.DocumentData) => {
+export const buildUser = (id: string, data: firestore.DocumentData) => {
   const newUser: User = {
+    id,
     enabled: data.enabled,
     isAccepted: data.isAccepted,
     isAnonymous: data.isAnonymous,
@@ -34,7 +41,12 @@ export const buildUser = (data: firestore.DocumentData) => {
     ...(data.appliedFriendUIDs && { appliedFriendUIDs: data.appliedFriendUIDs }),
     ...(data.friendUIDs && { friendUIDs: data.friendUIDs }),
     ...(data.reportUIDs && { reportUIDs: data.reportUIDs }),
-    ...(data.reportedUIDs && { reportedUIDs: data.reportedUIDs })
+    ...(data.reportedUIDs && { reportedUIDs: data.reportedUIDs }),
+    ...(data.likeGroupAssetIDs && { likeGroupAssetIDs: data.likeGroupAssetIDs }),
+    ...(data.likedGroupAssetIDs && { likedGroupAssetIDs: data.likedGroupAssetIDs }),
+    ...(data.matchGroupAssetIDs && { matchGroupAssetIDs: data.matchGroupAssetIDs }),
+    ...(data.myGroupAssetAssetIDs && { myGroupAssetAssetIDs: data.myGroupAssetAssetIDs }),
+    ...(data.appliedPartyUIDs && { appliedPartyUIDs: data.appliedPartyUIDs })
   }
 
   return newUser
@@ -51,7 +63,7 @@ export const initialUser = ({
   name: string
   isAnonymous: boolean
 }) => {
-  const user: User = {
+  const user: CreateUser = {
     enabled: true,
     isAccepted: false,
     isAnonymous,
@@ -72,6 +84,8 @@ export type UpdateAppliedFriend = {
   isSendEventMessage?: boolean
 }
 
+export type CreateUser = Omit<User, 'id'>
+
 export type UpdateUser = {
   blockUIDs?: firestore.FieldValue
   blockedUIDs?: firestore.FieldValue
@@ -80,9 +94,15 @@ export type UpdateUser = {
   friendUIDs?: firestore.FieldValue
   reportUIDs?: firestore.FieldValue
   reportedUIDs?: firestore.FieldValue
+  likeGroupAssetIDs?: firestore.FieldValue
+  likedGroupAssetIDs?: firestore.FieldValue
+  matchGroupAssetIDs?: firestore.FieldValue
+  myGroupAssetIDs?: firestore.FieldValue
+  appliedPartyUIDs?: firestore.FieldValue
 }
 
 export const partyMaster: User = {
+  id: 'tYwmmOkToqWSY7Eaq07YadJpngA',
   enabled: true,
   isAccepted: true,
   isAnonymous: false,

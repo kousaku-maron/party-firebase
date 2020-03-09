@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/functions_dev.yml
       - 'functions/**'
+      - 'scripts/**'
 
 jobs:
   build:
@@ -73,5 +74,9 @@ jobs:
       #     path: functions/node_modules
       - name: Deploy to Firebase
         run: |
-          yarn add -D firebase-tools
-          ./node_modules/.bin/firebase deploy --only functions --token=${{ secrets.FIREBASE_TOKEN }} --project ${{ secrets.DEV_PROJECT_ID }} --non-interactive -f
+          cd scripts
+          yarn
+          node deploy_functions.js
+        env:
+          PROJECT_ID: ${{ secrets.DEV_PROJECT_ID }}
+          TOKEN: ${{ secrets.FIREBASE_TOKEN }}

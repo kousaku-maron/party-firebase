@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, User, UpdateUser, buildUser } from '../../entities'
+import { updateDocument, CreateUser, UpdateUser, buildUser } from '../../entities'
 
 export const acceptFriend = functions.https.onCall(async (data, context) => {
   const friendUID = data.friendUID as string
@@ -24,9 +24,11 @@ export const acceptFriend = functions.https.onCall(async (data, context) => {
     .doc(acceptedFriendUID)
 
   const acceptedUserSnapShot = await userRef.doc(acceptedFriendUID).get()
-  const acceptedFriend = buildUser(acceptedUserSnapShot.data()!)
+  const acceptedFriend = buildUser(acceptedUserSnapShot.id!, acceptedUserSnapShot.data()!)
+  const { id:acceptedFriendID, ...acceptedFriendOthers } = acceptedFriend// eslint-disable-line
+  const createAcceptedFriend = { ...acceptedFriendOthers }
 
-  batch.set(acceptedFriendRef, updateDocument<User>(acceptedFriend), { merge: true })
+  batch.set(acceptedFriendRef, updateDocument<CreateUser>(createAcceptedFriend), { merge: true })
   batch.set(
     userRef.doc(acceptFriendUID),
     updateDocument<UpdateUser>({
@@ -48,8 +50,11 @@ export const acceptFriend = functions.https.onCall(async (data, context) => {
     .doc(acceptFriendUID)
 
   const acceptUserSnapShot = await userRef.doc(acceptFriendUID).get()
-  const accepFriendUser = buildUser(acceptUserSnapShot.data()!)
-  batch.set(acceptFriendRef, updateDocument<User>(accepFriendUser), { merge: true })
+  const accepFriend = buildUser(acceptUserSnapShot.id!, acceptUserSnapShot.data()!)
+  const { id:accepFriendUserdID, ...accepFriendOthers } = accepFriend// eslint-disable-line
+  const createAccepFriend = { ...accepFriendOthers }
+
+  batch.set(acceptFriendRef, updateDocument<CreateUser>(createAccepFriend), { merge: true })
   batch.set(
     userRef.doc(acceptedFriendUID),
     updateDocument<UpdateUser>({

@@ -6,7 +6,6 @@ import {
   CreateApplyCard,
   buildUser,
   buildParty,
-  CreateParty,
   recommendApplyCardType
 } from '../../entities'
 import { difference } from 'lodash'
@@ -32,8 +31,6 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
   const partiesRef = db.collection('parties').doc(partyID)
   const partySnapShot = await partiesRef.get()
   const party = buildParty(partiesRef.id!, partySnapShot.data()!)
-  const { id, ...others } = party// eslint-disable-line
-  const createParty: CreateParty = { ...others }
 
   const newAppliedUIDs = difference(groupAfter.appliedUIDs, groupBefore.appliedUIDs)
 
@@ -51,7 +48,7 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
     const userSnapShot = await userRef.get()
     if (!userSnapShot.exists) return
 
-    const user = buildUser(userSnapShot.data()!)
+    const user = buildUser(userSnapShot.id!, userSnapShot.data()!)
 
     batch.set(
       applyCardsAfterRef.doc(),
@@ -60,7 +57,7 @@ export const createApplyCard = functions.firestore.document(groupPath).onUpdate(
         groupID,
         organizerUID: uid,
         members: [user],
-        party: createParty,
+        party: party,
         type: recommendApplyCardType
       }),
       { merge: true }

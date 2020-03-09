@@ -5,8 +5,12 @@ export { updateUserID } from './handlers/user'
 export { createUser } from './triggers/user'
 
 export { entryParty } from './handlers/party'
+export { entryInitialParties } from './triggers/party'
+
+export { createGroup, deleteGroup } from './triggers/group'
 
 export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
+export { recommendApplyCards } from './handlers/applyCards'
 
 export { updateRoomHash, updateNewMessage } from './triggers/room'
 
@@ -18,4 +22,4 @@ export { reportUser } from './handlers/reports'
 
 export { blockUser } from './handlers/block'
 
-export { recommendApplyCards } from './handlers/applyCards'
+export { likeApplyCard } from './handlers/like'

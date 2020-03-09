@@ -2,9 +2,7 @@ import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import {
   createDocument,
-  buildUser,
   CreateApplyCard,
-  CreateParty,
   buildParty,
   Group,
   buildGroup,
@@ -12,6 +10,9 @@ import {
   recommendApplyCardType
 } from '../../entities'
 import { shuffle } from '../../services/util'
+
+const recommendCardNumber = 3
+const maximumBatchSize = 500
 
 //TODO: 定刻でおすすめカードを作る時は，以下のように書き換え必須．
 // export const recommendApplyCards = functions.pubsub
@@ -21,17 +22,9 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   const db = firestore()
   let batch = db.batch()
 
-  const usersRef = db.collection('users')
-  const usersSnapShot = await usersRef.get()
-  const users = usersSnapShot.docs.map((doc: firestore.DocumentData) => {
-    return buildUser(doc.data()!)
-  })
-
   const partiesRef = db.collection('parties').doc(recommendApplyCardPartyID)
   const partySnapShot = await partiesRef.get()
   const party = buildParty(partySnapShot.id!, partySnapShot.data()!)
-  const { id, ...others } = party// eslint-disable-line
-  const createParty: CreateParty = { ...others }
 
   const groupsRef = partiesRef.collection('groups')
   const groupsSnapShot = await groupsRef.get()
@@ -39,16 +32,17 @@ export const recommendApplyCards = functions.https.onCall(async () => {
     return buildGroup(doc.id!, doc.data()!)
   })
 
-  //TODO: 一時的にこの数字を使っています
-  const recommendCardNumber = 3
-  const maximumBatchSize = 500
+  const tasks = groups.map(async (group, index) => {
+    const { id: MyGroupID, organizer } = group
 
-  const usersTasks = users.map(async (user, userIndex) => {
-    const shuffledGroups: Group[] = shuffle<Group>(groups)
+    const shuffledGroups: Group[] = shuffle<Group>(groups.filter(group => group.id !== MyGroupID))
     const recommendedGroups: Group[] = shuffledGroups.slice(0, recommendCardNumber)
-    const applyCardsRef = usersRef.doc(user.uid).collection('appliedCards')
 
-    const oldCardsRef = applyCardsRef.where('type', '==', 'today')
+    const applyCardsRef = db
+      .collection('users')
+      .doc(organizer.uid)
+      .collection('appliedCards')
+    const oldCardsRef = applyCardsRef.where('type', '==', recommendApplyCardType)
 
     const oldCardsRefSnapShot = await oldCardsRef.get()
 
@@ -57,28 +51,30 @@ export const recommendApplyCards = functions.https.onCall(async () => {
       batch.delete(oldCardRef)
     })
 
-    const groupsTasks = recommendedGroups.map(async (recommendedGroup, groupsIndex) => {
-      if (((groupsIndex + 1 + recommendCardNumber) * (userIndex + 1)) % maximumBatchSize == 0) {
+    const createCardTasks = recommendedGroups.map(async (recommendedGroup, groupIndex) => {
+      if (((groupIndex + 1 + recommendCardNumber) * (index + 1)) % maximumBatchSize == 0) {
         await batch.commit()
         batch = db.batch()
       }
-
+      //MEMO: 将来的に同伴ユーザーも入れることを考えて，membersは配列にしている
       batch.set(
         applyCardsRef.doc(),
         createDocument<CreateApplyCard>({
           partyID: recommendApplyCardPartyID,
           groupID: recommendedGroup.id,
           organizerUID: recommendedGroup.organizer.uid,
-          party: createParty,
-          type: recommendApplyCardType
+          party: party,
+          type: recommendApplyCardType,
+          members: [recommendedGroup.organizer]
         }),
         { merge: true }
       )
     })
-    await Promise.all(groupsTasks)
+
+    await Promise.all(createCardTasks)
   })
 
-  await Promise.all(usersTasks)
+  await Promise.all(tasks)
 
   await batch.commit()
 

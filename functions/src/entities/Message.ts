@@ -16,6 +16,7 @@ type QuickReplies = {
 
 // same origin User type
 type User = {
+  id: string
   enabled: boolean
   isAccepted: boolean
   isAnonymous: boolean
