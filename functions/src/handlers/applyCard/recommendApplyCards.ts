@@ -14,10 +14,6 @@ import { shuffle } from '../../services/util'
 const recommendCardNumber = 3
 const maximumBatchSize = 500
 
-//TODO: 定刻でおすすめカードを作る時は，以下のように書き換え必須．
-// export const recommendApplyCards = functions.pubsub
-//   .schedule('00 23 * * *')
-//   .timeZone('Asia/Tokyo')
 export const recommendApplyCards = functions.https.onCall(async () => {
   const db = firestore()
   let batch = db.batch()
