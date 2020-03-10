@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { updateDocument, UpdateUser, Report } from '../../entities'
 
-export const reportUser = functions.https.onCall(async (data, context) => {
+export const createReport = functions.https.onCall(async (data, context) => {
   const uid = context!.auth!.uid
   const reportUID = uid
   const report = data.report as Report
@@ -34,5 +34,5 @@ export const reportUser = functions.https.onCall(async (data, context) => {
     value: report
   }
 
-  return { message: 'report user is succeded', contents: [result] }
+  return { message: 'report create is succeded', contents: [result] }
 })

@@ -1,1 +1,7 @@
 export * from './updateUserID'
+export * from './applyFriend'
+export * from './unapplyFriend'
+export * from './acceptFriend'
+export * from './refuseFriend'
+export * from './blockUser'
+export * from './unblockUser'
