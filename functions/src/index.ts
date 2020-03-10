@@ -23,7 +23,7 @@ export { entryInitialParties } from './triggers/party'
 
 export { createGroup, deleteGroup } from './triggers/group'
 
-export { createApplyCard, deleteApplyCard } from './triggers/applyCard'
+export { createApplyCard, deleteApplyCard, recommendApplyCardsScheduler } from './triggers/applyCard'
 export { recommendApplyCards, likeApplyCard } from './handlers/applyCard'
 
 export { createRoom, updateRoomHash, updateNewMessage } from './triggers/room'
