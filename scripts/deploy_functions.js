@@ -6,10 +6,11 @@ const per = 10
 
 const project = process.env.PROJECT_ID
 const token = process.env.TOKEN
+const indexPath = process.env.INDEX_PATH
 
 console.log(`Project: ${project}`)
 
-const functions = require('../functions/lib')
+const functions = require(`../functions/lib/${indexPath}`)
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
