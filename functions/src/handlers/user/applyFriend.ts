@@ -19,7 +19,7 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
   batch.set(
     usersRef.doc(uid),
     updateDocument<UpdateUser>({
-      appliedFriendUIDs: firestore.FieldValue.arrayUnion(applyFriendUID)
+      applyFriendUIDs: firestore.FieldValue.arrayUnion(applyFriendUID)
     }),
     { merge: true }
   )
@@ -27,7 +27,7 @@ export const applyFriend = functions.https.onCall(async (data, context) => {
   batch.set(
     applyFriendSnapShot.ref,
     updateDocument<UpdateUser>({
-      applyFriendUIDs: firestore.FieldValue.arrayUnion(uid)
+      appliedFriendUIDs: firestore.FieldValue.arrayUnion(uid)
     }),
     { merge: true }
   )
