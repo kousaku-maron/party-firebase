@@ -80,3 +80,4 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.STG_PROJECT_ID }}
           TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          INDEX_PATH: index.stg
