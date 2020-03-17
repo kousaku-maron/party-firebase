@@ -1,5 +1,5 @@
 import { firestore } from 'firebase-admin'
-import { User } from './User'
+import { User, buildUser } from './User'
 
 // same gifted-chat Reply type
 type Reply = {
@@ -33,12 +33,12 @@ export const buildMessage = (id: string, data: firestore.DocumentData) => {
     id,
     text: data.text,
     createdAt: data.createdAt.toDate(),
-    imageURL: data.imageURL,
-    videoURL: data.videoURL,
-    user: data.user,
-    writerUID: data.writerUID,
+    ...(data.imageURL && { imageURL: data.imageURL }),
+    ...(data.videoURL && { videoURL: data.videoURL }),
+    ...(data.user && { user: buildUser(data.user.id, data.user) }),
+    ...(data.writerUID && { writerUID: data.writerUID }),
     system: data.system,
-    quickReplies: data.quickReplies,
+    ...(data.quickReplies && { quickReplies: data.quickReplies }),
     notified: data.notified
   }
   return newMessage
