@@ -35,6 +35,8 @@ export const updateNewMessage = functions.firestore.document(messagePath).onCrea
     { merge: true }
   )
 
+  await batch.commit()
+
   const result = {
     documentID: snap.ref,
     path: snap.ref.path,
