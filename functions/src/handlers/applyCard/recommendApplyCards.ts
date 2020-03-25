@@ -7,7 +7,7 @@ import {
   Group,
   buildGroup,
   recommendApplyCardPartyID,
-  recommendApplyCardType
+  recommendPartyType
 } from '../../entities'
 import { shuffle } from '../../services/util'
 
@@ -17,12 +17,17 @@ const maximumBatchSize = 500
 export const recommendApplyCards = functions.https.onCall(async () => {
   const db = firestore()
   let batch = db.batch()
+  const partiesRef = db.collection('parties')
+  const tagedPartyRef = partiesRef
+    .where('enabled', '==', true)
+    .where('tags', 'array-contains-any', [recommendPartyType])
+  const partySnapShot = await tagedPartyRef.get()
 
-  const partiesRef = db.collection('parties').doc(recommendApplyCardPartyID)
-  const partySnapShot = await partiesRef.get()
-  const party = buildParty(partySnapShot.id!, partySnapShot.data()!)
+  if (partySnapShot.docs.length != 1) return
 
-  const groupsRef = partiesRef.collection('groups')
+  const party = buildParty(partySnapShot.docs[0].id!, partySnapShot.docs[0].data()!)
+
+  const groupsRef = partiesRef.doc(party.id).collection('groups')
   const groupsSnapShot = await groupsRef.get()
   const groups = groupsSnapShot.docs.map((doc: firestore.DocumentData) => {
     return buildGroup(doc.id!, doc.data()!)
@@ -38,7 +43,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
       .collection('users')
       .doc(organizer.uid)
       .collection('appliedCards')
-    const oldCardsRef = applyCardsRef.where('type', '==', recommendApplyCardType)
+    const oldCardsRef = applyCardsRef.where('type', '==', recommendPartyType)
 
     const oldCardsRefSnapShot = await oldCardsRef.get()
 
@@ -60,7 +65,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
           groupID: recommendedGroup.id,
           organizerUID: recommendedGroup.organizer.uid,
           party: party,
-          type: recommendApplyCardType,
+          type: recommendPartyType,
           members: [recommendedGroup.organizer]
         }),
         { merge: true }
