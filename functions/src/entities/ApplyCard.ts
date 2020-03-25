@@ -30,3 +30,4 @@ export type CreateApplyCard = Omit<ApplyCard, 'id'>
 
 export const recommendApplyCardPartyID = 'uEobSpZVyqhqt33KjJqZ'
 export const recommendApplyCardType = 'today'
+export const recommendApplyCardTags = ['everyday']

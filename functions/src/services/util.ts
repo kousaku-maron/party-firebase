@@ -19,7 +19,10 @@ export const shuffle = <T>(targets: T[]) => {
 }
 
 export const createListHash = (list: string[]) => {
-  const baseStr = list.slice().sort().join('')
+  const baseStr = list
+    .slice()
+    .sort()
+    .join('')
   const newHash = createHash('sha256')
     .update(baseStr, 'utf8')
     .digest('hex')
