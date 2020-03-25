@@ -25,14 +25,8 @@ export const entryInitialParties = functions.firestore.document(userPath).onCrea
     return { message: `not exist party whose tag is ${recommendApplyCardTags}`, contents: null }
   }
 
-  const partyRefIDs: string[] = []
-  const partyRefPaths: string[] = []
-
-  const tasks = partySnapShot.docs.map(async partyDocument => {
-    const partyRef = partyDocument.ref
-    partyRefIDs.push(partyRef.id)
-    partyRefPaths.push(partyRef.path)
-
+  partySnapShot.docs.map(doc => {
+    const partyRef = doc.ref
     batch.set(
       partyRef,
       updateDocument<EntryParty>({
@@ -42,7 +36,8 @@ export const entryInitialParties = functions.firestore.document(userPath).onCrea
     )
   })
 
-  await Promise.all(tasks)
+  const partyRefIDs = partySnapShot.docs.map(doc => doc.ref.id)
+  const partyRefPaths = partySnapShot.docs.map(doc => doc.ref.path)
 
   await batch.commit()
 
