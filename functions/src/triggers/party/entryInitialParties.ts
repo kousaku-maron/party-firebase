@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { buildUser, updateDocument, recommendApplyCardPartyID, EntryParty } from '../../entities'
+import { buildUser, updateDocument, recommendApplyCardTags, EntryParty } from '../../entities'
 
 const userPath = 'users/{uid}'
 
@@ -14,27 +14,36 @@ export const entryInitialParties = functions.firestore.document(userPath).onCrea
   const db = firestore()
   const batch = db.batch()
 
-  const partiesRef = db.collection('parties').doc(recommendApplyCardPartyID) // TODO: 初期参加ラベルを付与し、それで制御
-  const partySnapshot = await partiesRef.get()
-  const partyRef = partySnapshot.ref
+  const partiesRef = db.collection('parties') // TODO: 初期参加ラベルを付与し、それで制御
+  const tagedPartyRef = partiesRef
+    .where('enabled', '==', true)
+    .where('tags', 'array-contains-any', recommendApplyCardTags)
 
-  if (!partySnapshot.exists) {
-    return { message: `not exist partyID ${recommendApplyCardPartyID}`, contents: null }
+  const partySnapShot = await tagedPartyRef.get()
+
+  if (partySnapShot.docs.length == 0) {
+    return { message: `not exist party whose tag is ${recommendApplyCardTags}`, contents: null }
   }
 
-  batch.set(
-    partyRef,
-    updateDocument<EntryParty>({
-      entryUIDs: firestore.FieldValue.arrayUnion(user.uid)
-    }),
-    { merge: true }
-  )
+  partySnapShot.docs.map(doc => {
+    const partyRef = doc.ref
+    batch.set(
+      partyRef,
+      updateDocument<EntryParty>({
+        entryUIDs: firestore.FieldValue.arrayUnion(user.uid)
+      }),
+      { merge: true }
+    )
+  })
+
+  const partyRefIDs = partySnapShot.docs.map(doc => doc.ref.id)
+  const partyRefPaths = partySnapShot.docs.map(doc => doc.ref.path)
 
   await batch.commit()
 
   const result = {
-    documentID: partyRef.id,
-    path: partyRef.path,
+    documentID: partyRefIDs,
+    path: partyRefPaths,
     value: user.uid
   }
 
