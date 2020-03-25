@@ -1,14 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import {
-  createDocument,
-  CreateApplyCard,
-  buildParty,
-  Group,
-  buildGroup,
-  recommendApplyCardPartyID,
-  recommendPartyType
-} from '../../entities'
+import { createDocument, CreateApplyCard, buildParty, Group, buildGroup, recommendPartyType } from '../../entities'
 import { shuffle } from '../../services/util'
 
 const recommendCardNumber = 3
@@ -26,8 +18,9 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   if (partySnapShot.docs.length != 1) return
 
   const party = buildParty(partySnapShot.docs[0].id!, partySnapShot.docs[0].data()!)
+  const partyID = party.id
 
-  const groupsRef = partiesRef.doc(party.id).collection('groups')
+  const groupsRef = partiesRef.doc(partyID).collection('groups')
   const groupsSnapShot = await groupsRef.get()
   const groups = groupsSnapShot.docs.map((doc: firestore.DocumentData) => {
     return buildGroup(doc.id!, doc.data()!)
@@ -61,7 +54,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
       batch.set(
         applyCardsRef.doc(),
         createDocument<CreateApplyCard>({
-          partyID: recommendApplyCardPartyID,
+          partyID: partyID,
           groupID: recommendedGroup.id,
           organizerUID: recommendedGroup.organizer.uid,
           party: party,
