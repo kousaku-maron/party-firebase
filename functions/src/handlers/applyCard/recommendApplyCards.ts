@@ -11,15 +11,15 @@ export const recommendApplyCards = functions.https.onCall(async () => {
   let batch = db.batch()
   const partiesRef = db.collection('parties')
 
-  const partyTagTasks = recommendApplyCardTags.map(async recommendApplyCardTag => {
-    const tagedPartyRef = partiesRef
-      .where('enabled', '==', true)
-      .where('tags', 'array-contains-any', [recommendApplyCardTag])
-    const partySnapShot = await tagedPartyRef.get()
+  const tagedPartyRef = partiesRef
+    .where('enabled', '==', true)
+    .where('tags', 'array-contains-any', recommendApplyCardTags)
+  const partySnapShot = await tagedPartyRef.get()
 
-    if (partySnapShot.docs.length != 1) return
+  if (partySnapShot.docs.length == 0) return
 
-    const party = buildParty(partySnapShot.docs[0].id!, partySnapShot.docs[0].data()!)
+  const partyTasks = partySnapShot.docs.map(async partyDocument => {
+    const party = buildParty(partyDocument.id!, partyDocument.data()!)
     const partyID = party.id
 
     const groupsRef = partiesRef.doc(partyID).collection('groups')
@@ -73,7 +73,7 @@ export const recommendApplyCards = functions.https.onCall(async () => {
     await Promise.all(userTasks)
   })
 
-  await Promise.all(partyTagTasks)
+  await Promise.all(partyTasks)
 
   await batch.commit()
 
