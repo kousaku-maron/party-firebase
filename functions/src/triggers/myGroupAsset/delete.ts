@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { updateDocument, buildGroup, UpdateUser } from '../../entities'
 
-const groupPath = 'parties/{partyID}/groups'
+const groupPath = 'parties/{partyID}/groups/{groupID}'
 
 export const deleteMyGroupAsset = functions.firestore.document(groupPath).onDelete(async (snapshot, _context) => {
   const groupDeletedSnapShot = await snapshot.ref.get()
@@ -20,16 +20,19 @@ export const deleteMyGroupAsset = functions.firestore.document(groupPath).onDele
   const uid = group.organizerUID
   const userRef = db.collection('users').doc(uid)
 
-  const myGroupAssetRef = userRef.collection('myGroupAssets').where('groupID', '==', groupID)
+  const myGroupAssetsRef = userRef.collection('myGroupAssets')
+  const myGroupAssetRef = myGroupAssetsRef.where('groupID', '==', groupID)
   const myGroupAssetsSnapShot = await myGroupAssetRef.get()
 
   if (myGroupAssetsSnapShot.docs.length !== 1) return
+  const myGrpupAssetID = myGroupAssetsSnapShot.docs[0].id
 
   batch.delete(myGroupAssetsSnapShot.docs[0].ref)
 
   batch.set(
-    userRef,
-    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayRemove(groupID) })
+    myGroupAssetsRef.doc(myGrpupAssetID),
+    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayRemove(groupID) }),
+    { merge: true }
   )
 
   await batch.commit()
@@ -37,7 +40,7 @@ export const deleteMyGroupAsset = functions.firestore.document(groupPath).onDele
   const result = {
     documentID: uid,
     path: userRef.path,
-    value: groupID
+    value: myGrpupAssetID
   }
 
   return { message: 'myGroupAsset is deleted successfully', contents: [result] }

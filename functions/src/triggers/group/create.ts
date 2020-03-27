@@ -38,7 +38,8 @@ export const createGroup = functions.firestore.document(groupPath).onUpdate(asyn
       createDocument<CreateGroup>({
         organizerUID: uid,
         organizer: user,
-        appliedUIDs: []
+        appliedUIDs: [],
+        enabled: true
       }),
       { merge: true }
     )

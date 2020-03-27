@@ -5,6 +5,8 @@ export type Group = {
   id: string
   organizerUID: string
   organizer: User
+  thumbnailURL?: string
+  enabled: boolean
   appliedUIDs: string[]
 }
 
@@ -13,6 +15,8 @@ export const buildGroup = (id: string, data: firestore.DocumentData) => {
     id,
     organizerUID: data.organizerUID,
     organizer: data.organizer,
+    ...(data.thumbnailURL && { thumbnailURL: data.thumbnailURL }),
+    enabled: data.enabled,
     appliedUIDs: data.appliedUIDs
   }
 
