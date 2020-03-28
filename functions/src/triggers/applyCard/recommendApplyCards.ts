@@ -3,11 +3,11 @@ import { firestore } from 'firebase-admin'
 import { createDocument, CreateApplyCard, buildParty, Group, buildGroup, recommendApplyCardTags } from '../../entities'
 import { shuffle } from '../../services/util'
 
-const recommendCardNumber = 3
+const recommendCardNumber = 1
 const maximumBatchSize = 500
 
 export const recommendApplyCardsScheduler = functions.pubsub
-  .schedule('00 23 * * *')
+  .schedule('01 0 * * *')
   .timeZone('Asia/Tokyo')
   .onRun(async _context => {
     const db = firestore()
@@ -52,10 +52,6 @@ export const recommendApplyCardsScheduler = functions.pubsub
         })
 
         const createCardTasks = recommendedGroups.map(async (recommendedGroup, groupIndex) => {
-          if (((groupIndex + 1 + recommendCardNumber) * (index + 1)) % maximumBatchSize == 0) {
-            await batch.commit()
-            batch = db.batch()
-          }
           //MEMO: 将来的に同伴ユーザーも入れることを考えて，membersは配列にしている
           batch.set(
             applyCardsRef.doc(),
@@ -69,6 +65,11 @@ export const recommendApplyCardsScheduler = functions.pubsub
             }),
             { merge: true }
           )
+
+          if ((groupIndex + 1 + recommendCardNumber * (index + 1)) % maximumBatchSize == 0) {
+            await batch.commit()
+            batch = db.batch()
+          }
         })
 
         await Promise.all(createCardTasks)

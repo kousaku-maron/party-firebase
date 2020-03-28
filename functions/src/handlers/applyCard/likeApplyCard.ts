@@ -84,7 +84,8 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
       userMatchedGroupAssetsRef.doc(targetMatchedGroupAssetRef.id),
       createDocument<CreateGroupAsset>({
         groupID: targetMyGroupAsset.groupID,
-        group: targetMyGroupAsset.group
+        group: targetMyGroupAsset.group,
+        enabled: true
       }),
       {
         merge: true
@@ -103,7 +104,8 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
       targetMatchedGroupAssetsRef.doc(userMatchedGroupAssetRef.id),
       createDocument<CreateGroupAsset>({
         groupID: userMyGroupAsset.groupID,
-        group: userMyGroupAsset.group
+        group: userMyGroupAsset.group,
+        enabled: true
       }),
       {
         merge: true
@@ -143,7 +145,8 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
     userLikedGroupAssetsRef.doc(targetLikeGroupAssetRef.id),
     createDocument<CreateGroupAsset>({
       groupID: targetMyGroupAsset.groupID,
-      group: targetMyGroupAsset.group
+      group: targetMyGroupAsset.group,
+      enabled: true
     }),
     {
       merge: true
@@ -159,7 +162,8 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
     targetLikeGroupAssetsRef.doc(userLikedGroupAsset.id),
     createDocument<CreateGroupAsset>({
       groupID: userMyGroupAsset.id,
-      group: userMyGroupAsset.group
+      group: userMyGroupAsset.group,
+      enabled: true
     }),
     {
       merge: true
