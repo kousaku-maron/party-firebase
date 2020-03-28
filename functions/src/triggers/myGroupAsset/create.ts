@@ -18,13 +18,7 @@ export const createMyGroupAsset = functions.firestore.document(groupPath).onCrea
   const uid = group.organizerUID
   const userRef = db.collection('users').doc(uid)
 
-  batch.set(
-    userRef,
-    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayUnion(groupID) }),
-    { merge: true }
-  )
-
-  const myGroupAssetRef = userRef.collection('myGroupAssets').doc(groupID)
+  const myGroupAssetRef = userRef.collection('myGroupAssets').doc()
   batch.set(
     myGroupAssetRef,
     createDocument<CreateGroupAsset>({
@@ -33,6 +27,13 @@ export const createMyGroupAsset = functions.firestore.document(groupPath).onCrea
       enabled: true
     })
   )
+
+  batch.set(
+    userRef,
+    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayUnion(myGroupAssetRef.id) }),
+    { merge: true }
+  )
+
 
   await batch.commit()
 

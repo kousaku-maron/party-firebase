@@ -31,7 +31,7 @@ export const deleteMyGroupAsset = functions.firestore.document(groupPath).onDele
 
   batch.set(
     myGroupAssetsRef.doc(myGrpupAssetID),
-    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayRemove(groupID) }),
+    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayRemove(myGrpupAssetID) }),
     { merge: true }
   )
 
