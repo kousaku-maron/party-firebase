@@ -24,7 +24,9 @@ export const deleteMyGroupAsset = functions.firestore.document(groupPath).onDele
   const myGroupAssetRef = myGroupAssetsRef.where('groupID', '==', groupID)
   const myGroupAssetsSnapShot = await myGroupAssetRef.get()
 
-  if (myGroupAssetsSnapShot.docs.length !== 1) return
+  if (myGroupAssetsSnapShot.docs.length !== 1) {
+    throw new Error('groupAsset is not singular')
+  }
   const myGrpupAssetID = myGroupAssetsSnapShot.docs[0].id
 
   batch.delete(myGroupAssetsSnapShot.docs[0].ref)
