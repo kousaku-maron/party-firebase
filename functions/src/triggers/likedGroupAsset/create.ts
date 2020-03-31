@@ -5,7 +5,7 @@ import { difference } from 'lodash'
 
 const userPath = 'users/{userID}'
 
-export const create = functions.firestore.document(userPath).onUpdate(async (change, _context) => {
+export const createLikedGroupAsset = functions.firestore.document(userPath).onUpdate(async (change, _context) => {
   const userBeforeSnapShot = await change.before.ref.get()
   const userAfterSnapShot = await change.after.ref.get()
   if (!userBeforeSnapShot.exists || !userAfterSnapShot.exists) {
