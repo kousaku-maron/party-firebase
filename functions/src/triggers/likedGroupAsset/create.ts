@@ -27,13 +27,16 @@ export const createLikedGroupAsset = functions.firestore.document(userPath).onUp
   const task = newGroupAssetIDs.map(async groupAssetID => {
     const groupAssetSnapShot = await db
       .collectionGroup('myGroupAssets')
-      .where('organizerUID', '==', groupAssetID)
+      .where('groupID', '==', groupAssetID)
       .get()
-    if (groupAssetSnapShot.docs.length !== 0) {
+
+    if (groupAssetSnapShot.docs.length !== 1) {
       throw new Error('groupAsset is not unique')
     }
 
+    console.log('create groupAsset before')
     const groupAsset = buildGroupAsset(groupAssetSnapShot.docs[0].id, groupAssetSnapShot.docs[0].data())
+    console.log('create groupAsset after')
 
     batch.set(
       change.after.ref.collection('likedGroupAsset').doc(),

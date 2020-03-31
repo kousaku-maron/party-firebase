@@ -62,7 +62,7 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
   batch.set(
     usersRef.doc(targetUID),
-    updateDocument<UpdateUser>({ likeGroupAssetIDs: firestore.FieldValue.arrayUnion(targetGroupID) }),
+    updateDocument<UpdateUser>({ likeGroupAssetIDs: firestore.FieldValue.arrayUnion(userGroupID) }),
     { merge: true }
   )
 
