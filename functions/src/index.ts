@@ -23,6 +23,9 @@ export { entryInitialParties } from './triggers/party'
 
 export { createGroup, deleteGroup } from './triggers/group'
 
+export { createMyGroupAsset, updateMyGroupAsset, deleteMyGroupAsset } from './triggers/myGroupAsset'
+export { create } from './triggers/likedGroupAsset'
+
 export { createApplyCard, deleteApplyCard, recommendApplyCardsScheduler } from './triggers/applyCard'
 export { recommendApplyCards, likeApplyCard } from './handlers/applyCard'
 
