@@ -1,11 +1,11 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { CreateGroupAsset, createDocument, buildUser, buildGroupAsset } from '../../entities'
+import { CreateGroupAsset, createDocument, buildUser, buildGroupAsset } from '../../../entities'
 import { difference } from 'lodash'
 
 const userPath = 'users/{userID}'
 
-export const createLikedGroupAsset = functions.firestore.document(userPath).onUpdate(async (change, _context) => {
+export const createLikeGroupAsset = functions.firestore.document(userPath).onUpdate(async (change, _context) => {
   const userBeforeSnapShot = await change.before.ref.get()
   const userAfterSnapShot = await change.after.ref.get()
   if (!userBeforeSnapShot.exists || !userAfterSnapShot.exists) {
@@ -18,30 +18,28 @@ export const createLikedGroupAsset = functions.firestore.document(userPath).onUp
   const db = firestore()
   const batch = db.batch()
 
-  const newGroupAssetIDs = difference(userAfter.likedGroupAssetIDs ?? [], userBefore.likedGroupAssetIDs ?? [])
+  const newGroupAssetIDs = difference(userAfter.likeGroupAssetIDs ?? [], userBefore.likeGroupAssetIDs ?? [])
 
   if (newGroupAssetIDs.length === 0) {
-    return { message: 'There are no new likedGroupAssetID to create.', contents: null }
+    return { message: 'There are no new likeGroupAssetID to create.', contents: null }
   }
 
-  const task = newGroupAssetIDs.map(async groupAssetID => {
+  const task = newGroupAssetIDs.map(async newGroupAssetID => {
     const groupAssetSnapShot = await db
       .collectionGroup('myGroupAssets')
-      .where('groupID', '==', groupAssetID)
+      .where('groupID', '==', newGroupAssetID)
       .get()
 
     if (groupAssetSnapShot.docs.length !== 1) {
       throw new Error('groupAsset is not unique')
     }
 
-    console.log('create groupAsset before')
     const groupAsset = buildGroupAsset(groupAssetSnapShot.docs[0].id, groupAssetSnapShot.docs[0].data())
-    console.log('create groupAsset after')
 
     batch.set(
-      change.after.ref.collection('likedGroupAsset').doc(),
+      change.after.ref.collection('likeGroupAssets').doc(),
       createDocument<CreateGroupAsset>({
-        groupID: groupAsset.id,
+        groupID: groupAsset.group.id,
         enabled: groupAsset.enabled,
         group: groupAsset.group
       }),
@@ -56,7 +54,7 @@ export const createLikedGroupAsset = functions.firestore.document(userPath).onUp
   const result = {
     documentID: change.after.ref,
     path: change.after.ref.path,
-    value: { ...newGroupAssetIDs }
+    value: { userAfter }
   }
-  return { message: 'likedGroupAsset is created successfully', contents: [result] }
+  return { message: 'likeGroupAsset is created successfully', contents: [result] }
 })

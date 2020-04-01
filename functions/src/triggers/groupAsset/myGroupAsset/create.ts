@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
-import { updateDocument, buildGroup, UpdateUser, createDocument, CreateGroupAsset } from '../../entities'
+import { updateDocument, buildGroup, UpdateUser, createDocument, CreateGroupAsset } from '../../../entities'
 
 const groupPath = 'parties/{partyID}/groups/{groupID}'
 
@@ -31,7 +31,7 @@ export const createMyGroupAsset = functions.firestore.document(groupPath).onCrea
 
   batch.set(
     userRef,
-    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayUnion(myGroupAssetRef.id) }),
+    updateDocument<UpdateUser>({ myGroupAssetIDs: firestore.FieldValue.arrayUnion(groupID) }),
     { merge: true }
   )
 

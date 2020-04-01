@@ -11,9 +11,9 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
 
   const usersRef = db.collection('users')
 
-  const organizerUID = targetApplyCard.organizerUID
-  const targetUserSnapShot = await usersRef.doc(organizerUID).get()
-  const targetUser = buildUser(organizerUID, targetUserSnapShot)
+  const targetUID = targetApplyCard.organizerUID
+  const targetUserSnapShot = await usersRef.doc(targetUID).get()
+  const targetUser = buildUser(targetUID, targetUserSnapShot.data()!)
 
   const partyID = targetApplyCard.partyID
   const partyRef = db.collection('parties').doc(partyID)
@@ -25,15 +25,14 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
     .collection('appliedCards')
     .doc(targetApplyCardID)
 
-  const targetUID = targetApplyCard.organizerUID
   const targetGroupID = targetApplyCard.groupID
-
   const userGroupsSnapShot = await groupsRef.where('organizerUID', '==', uid).get()
 
   if (userGroupsSnapShot.docs.length !== 1) return
   const userGroupID = userGroupsSnapShot.docs[0].id
 
-  if (targetUser.likedGroupAssetIDs?.includes(userGroupID)) {
+  if (targetUser.likedGroupAssetIDs && targetUser.likedGroupAssetIDs.includes(userGroupID)) {
+    console.log('passed')
     batch.set(
       usersRef.doc(targetUID),
       updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(userGroupID) }),
