@@ -32,7 +32,6 @@ export const likeApplyCard = functions.https.onCall(async (data, context) => {
   const userGroupID = userGroupsSnapShot.docs[0].id
 
   if (targetUser.likedGroupAssetIDs && targetUser.likedGroupAssetIDs.includes(userGroupID)) {
-    console.log('passed')
     batch.set(
       usersRef.doc(targetUID),
       updateDocument<UpdateUser>({ matchGroupAssetIDs: firestore.FieldValue.arrayUnion(userGroupID) }),
