@@ -6,7 +6,7 @@ import { buildMessage, buildRoom, buildSecure, updateDocument, UpdateMessage } f
 const expo = new Expo()
 const messagePath = 'rooms/{roomID}/messages/{messageID}'
 
-export const createMessage = functions.firestore.document(messagePath).onCreate(async (snap, context) => {
+export const pushMessageNotification = functions.firestore.document(messagePath).onCreate(async (snap, context) => {
   if (!snap.exists) {
     return { message: `not exist message`, contents: null }
   }
@@ -37,7 +37,7 @@ export const createMessage = functions.firestore.document(messagePath).onCreate(
 
   // TODO: immutableな書き方にしたい。
   const tokens: string[] = []
-  const collectTokenTask = entryUIDs.map(async uid => {
+  const collectTokenTask = entryUIDs.filter(uid => uid !== message.writerUID).map(async uid => {
     const secureRef = db
       .collection('users')
       .doc(uid)

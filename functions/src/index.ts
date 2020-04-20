@@ -43,4 +43,6 @@ export { createRoom, updateRoomHash, updateNewMessage } from './triggers/room'
 
 export { updateMessageUser } from './triggers/message'
 
+export { pushMessageNotification } from './triggers/notification'
+
 export { createReport } from './handlers/report/create'
