@@ -35,7 +35,7 @@ export const pushFcmMessage = functions.firestore.document(messagePath).onCreate
 
   // TODO: immutableな書き方にしたい。
   const tokens: string[] = []
-  const collectTokenTask = entryUIDs.map(async uid => {
+  const collectTokenTask = entryUIDs.filter(uid => uid !== message.writerUID).map(async uid => {
     const secureRef = db
       .collection('users')
       .doc(uid)
