@@ -15,7 +15,7 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "expo-server-sdk": "^3.4.0",
-    "firebase-admin": "^8.9.2",
+    "firebase-admin": "^8.11.0",
     "firebase-functions": "^3.5.0",
     "lodash": "^4.17.15"
   },
