@@ -43,7 +43,7 @@ export const pushFcmMessage = functions.firestore.document(messagePath).onCreate
         .collection('pushTokens')
 
       const snapShot = await pushTokensRef.get()
-      if (!snapShot.empty) {
+      if (snapShot.empty) {
         return []
       }
 
@@ -61,7 +61,7 @@ export const pushFcmMessage = functions.firestore.document(messagePath).onCreate
     tokens
   }
 
-  await messaging().sendMulticast(pushMessage)
+  const batchResponse = await messaging().sendMulticast(pushMessage)
 
   const batch = db.batch()
 
@@ -70,6 +70,35 @@ export const pushFcmMessage = functions.firestore.document(messagePath).onCreate
     updateDocument<UpdateMessage>({ notified: true }),
     { merge: true }
   )
+
+  const removeFailedTokenTask = batchResponse.responses
+    .map((resp, index) => ({ token: tokens[index], ...resp }))
+    .filter(({ error }) => {
+      if (error && error.code === 'messaging/invalid-registration-token') {
+        return true
+      }
+
+      if (error && error.code === 'messaging/registration-token-not-registered') {
+        return true
+      }
+
+      return false
+    })
+    .map(({ token }) => token)
+    .map(async token => {
+      const snapshot = await db
+        .collectionGroup('pushTokens')
+        .where('token', '==', token)
+        .get()
+
+      snapshot.docs.forEach(doc => {
+        batch.delete(doc.ref)
+      })
+    })
+
+  await Promise.all(removeFailedTokenTask)
+
+  await batch.commit()
 
   const result = {
     documentID: snap.ref,
