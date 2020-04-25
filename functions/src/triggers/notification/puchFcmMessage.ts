@@ -35,24 +35,26 @@ export const pushFcmMessage = functions.firestore.document(messagePath).onCreate
 
   // TODO: immutableな書き方にしたい。
   const tokens: string[] = []
-  const collectTokenTask = entryUIDs.filter(uid => uid !== message.writerUID).map(async uid => {
-    const secureRef = db
-      .collection('users')
-      .doc(uid)
-      .collection('options')
-      .doc('secure')
+  const collectTokenTask = entryUIDs
+    .filter(uid => uid !== message.writerUID)
+    .map(async uid => {
+      const secureRef = db
+        .collection('users')
+        .doc(uid)
+        .collection('options')
+        .doc('secure')
 
-    const secureSnapshot = await secureRef.get()
+      const secureSnapshot = await secureRef.get()
 
-    if (!secureSnapshot.exists) return
+      if (!secureSnapshot.exists) return
 
-    const secure = buildSecure(secureSnapshot.id, secureSnapshot.data()!)
-    if (secure.pushTokens) {
-      tokens.push(...secure.pushTokens)
-    }
+      const secure = buildSecure(secureSnapshot.id, secureSnapshot.data()!)
+      if (secure.pushTokens) {
+        tokens.push(...secure.pushTokens)
+      }
 
-    return
-  })
+      return
+    })
 
   await Promise.all(collectTokenTask)
 
