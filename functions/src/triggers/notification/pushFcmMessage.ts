@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions'
 import { firestore, messaging } from 'firebase-admin'
-import { buildMessage, buildRoom, buildSecure, updateDocument, UpdateMessage } from '../../entities'
+import { buildMessage, buildRoom, updateDocument, UpdateMessage, buildPushToken } from '../../entities'
+import { uniq } from 'lodash'
 
 const messagePath = 'rooms/{roomID}/messages/{messageID}'
 
@@ -33,30 +34,24 @@ export const pushFcmMessage = functions.firestore.document(messagePath).onCreate
   const room = buildRoom(roomSnapshot.id, roomSnapshot.data()!)
   const entryUIDs: string[] = room.entryUIDs || []
 
-  // TODO: immutableな書き方にしたい。
-  const tokens: string[] = []
   const collectTokenTask = entryUIDs
     .filter(uid => uid !== message.writerUID)
     .map(async uid => {
-      const secureRef = db
+      const pushTokensRef = db
         .collection('users')
         .doc(uid)
-        .collection('options')
-        .doc('secure')
+        .collection('pushTokens')
 
-      const secureSnapshot = await secureRef.get()
-
-      if (!secureSnapshot.exists) return
-
-      const secure = buildSecure(secureSnapshot.id, secureSnapshot.data()!)
-      if (secure.pushTokens) {
-        tokens.push(...secure.pushTokens)
+      const snapShot = await pushTokensRef.get()
+      if (!snapShot.empty) {
+        return []
       }
 
-      return
+      const tokens = snapShot.docs.map(doc => buildPushToken(doc.id, doc.data()).token)
+      return tokens
     })
 
-  await Promise.all(collectTokenTask)
+  const tokens = uniq((await Promise.all(collectTokenTask)).reduce((prev, crt) => [...prev, ...crt]))
 
   const pushMessage: messaging.MulticastMessage = {
     notification: {
