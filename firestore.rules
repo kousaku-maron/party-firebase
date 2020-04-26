@@ -34,9 +34,16 @@ service cloud.firestore {
         allow read, write: if isUserAuthenticated(uid);
       }
 
+      match /pushTokens {
+        allow read, write: if isUserAuthenticated(uid);
+        match /{pushTokenID} {
+          allow read, write: if isUserAuthenticated(uid);
+        }
+      }
+
       match /blockUsers {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{blockUserID} {
           allow read: if isAuthenticated();
           allow write, delete: if isUserAuthenticated(uid); 
@@ -45,55 +52,55 @@ service cloud.firestore {
 
       match /applyFriendUsers {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{applyFriendUserID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /appliedFriendUsers {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{appliedFriendUserID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /friends {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{friendID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /appliedCards {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{appliedCardID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /likeGroupAssets {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{likeGroupAssetID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /likedGroupAssets {
         allow read: if isAuthenticated();
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{likedGroupAssetID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
@@ -102,23 +109,23 @@ service cloud.firestore {
         allow write, delete: if isUserAuthenticated(uid);
         match /{matchGroupAssetID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /myGroupAssets {
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{myGroupAssetID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
 
       match /appliedParties {
-        allow write, delete: if isUserAuthenticated(uid);
+        allow write: if isUserAuthenticated(uid);
         match /{appliedPartyID} {
           allow read: if isAuthenticated();
-          allow write, delete: if isUserAuthenticated(uid); 
+          allow write: if isUserAuthenticated(uid); 
         }
       }
     }

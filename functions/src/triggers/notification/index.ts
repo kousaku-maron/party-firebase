@@ -1,2 +1,2 @@
 export * from './expoPushMessage'
-export * from './puchFcmMessage'
+export * from './pushFcmMessage'
