@@ -39,7 +39,7 @@ export {
 export { createApplyCard, deleteApplyCard, recommendApplyCardsScheduler } from './triggers/applyCard'
 export { recommendApplyCards, likeApplyCard } from './handlers/applyCard'
 
-export { createRoom, updateRoomHash, updateNewMessage } from './triggers/room'
+export { createRoom, updateNewMessage } from './triggers/room'
 
 export { updateMessageUser } from './triggers/message'
 
