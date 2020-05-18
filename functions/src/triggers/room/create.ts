@@ -1,7 +1,6 @@
 import * as functions from 'firebase-functions'
 import { firestore } from 'firebase-admin'
 import { buildGroupAsset, createDocument, CreateRoom, buildUser } from '../../entities'
-import { createListHash } from '../../services/util'
 
 const userPath = 'users/{uid}/matchGroupAssets/{matchGroupAssetID}'
 
@@ -25,25 +24,17 @@ export const createRoom = functions.firestore.document(userPath).onCreate(async 
 
   const me = buildUser(userSnapshot.id, userSnapshot.data()!)
 
-  const newRoomHash = createListHash([me.uid, groupAsset.group.organizerUID])
-
   const roomsRef = db.collection('rooms')
-  const roomsSnapshot = await roomsRef.where('roomHash', '==', newRoomHash).get()
-
-  if (roomsSnapshot.docs.length > 0) {
-    return { message: `already created ${newRoomHash} room` }
-  }
-
   const roomRef = roomsRef.doc()
+  const value: CreateRoom = {
+    enabled: true,
+    entryUIDs: [me.uid, groupAsset.group.organizerUID],
+    users: [me, groupAsset.group.organizer]
+  }
 
   batch.set(
     roomRef,
-    createDocument<CreateRoom>({
-      enabled: true,
-      roomHash: newRoomHash,
-      entryUIDs: [me.uid, groupAsset.group.organizerUID],
-      users: [me, groupAsset.group.organizer]
-    }),
+    createDocument<CreateRoom>(value),
     { merge: true }
   )
 
@@ -52,7 +43,7 @@ export const createRoom = functions.firestore.document(userPath).onCreate(async 
   const result = {
     documentID: roomRef.id,
     path: roomRef.path,
-    value: newRoomHash
+    value
   }
 
   return { message: 'create room', contents: [result] }
